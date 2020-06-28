@@ -1,7 +1,4 @@
 from urllib.parse import urljoin
-from sphinx.util import logging
-
-logger = logging.getLogger(__name__)
 
 
 def get_tags(context, doctree, config):
