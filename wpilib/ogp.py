@@ -1,5 +1,7 @@
 from urllib.parse import urljoin
 
+DEFAULT_DESCRIPTION_LENGTH = 200
+
 
 def get_tags(context, doctree, config):
     # Get the URL of the specific page
@@ -7,11 +9,16 @@ def get_tags(context, doctree, config):
     # Get the image from the config
     image_url = config["ogp_image"]
 
-    # Get the first 200 letters from the page
+    # Get the first X letters from the page (Configured in config)
     description = doctree.astext().replace('\n', ' ')
 
-    if len(description) > 200:
-        description = description[:197] + "..."
+    try:
+        desc_len = int(config["ogp_description_length"])
+    except ValueError:
+        desc_len = DEFAULT_DESCRIPTION_LENGTH
+
+    if len(description) > desc_len:
+        description = description[:desc_len - 3] + "..."
 
     # Make the ogp tags
     tags = """
@@ -34,6 +41,7 @@ def html_page_context(app, pagename, templatename, context, doctree):
 
 def setup(app):
     app.add_config_value("ogp_site_url", None, "html")
+    app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_type", "website", "html")
 
