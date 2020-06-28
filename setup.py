@@ -1,5 +1,4 @@
 import subprocess
-
 import setuptools
 
 # This will fail if something happens or if not in a git repository.
