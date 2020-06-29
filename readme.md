@@ -1,5 +1,5 @@
-# wpilib-ogpgit
-Sphinx extension to add support for ogp (https://ogp.me/)
+# sphinxext-opengraph
+Sphinx extension to add support for opengraph (https://ogp.me/)
 
 ## Options
 These values are placed in the conf.py of your sphinx project.

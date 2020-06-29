@@ -11,15 +11,15 @@ with open("readme.md", 'r') as readme:
     long_description = readme.read()
 
 setuptools.setup(
-    name="wpilib-ogp",
+    name="sphinxext-opengraph",
     version=version,
     author="Itay Ziv",
     author_email="itay220204@gmail.com",
     description="Sphinx Extension to enable OGP support",
     long_descrption=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/wpilibsuite/ogp",
-    packages=['wpilib'],
+    url="https://github.com/wpilibsuite/sphinxext-opengraph",
+    packages=['sphinxext'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",

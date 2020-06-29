@@ -1,1 +1,1 @@
-name="wpilib-ogp"
+name="sphinxext-opengraph"
