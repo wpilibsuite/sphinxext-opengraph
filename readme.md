@@ -1,5 +1,5 @@
 # sphinxext-opengraph
-Sphinx extension to add support for opengraph (https://ogp.me/)
+Sphinx extension to generate OpenGraph metadata (https://ogp.me/)
 
 ## Options
 These values are placed in the conf.py of your sphinx project.
