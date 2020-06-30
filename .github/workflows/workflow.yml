@@ -1,0 +1,55 @@
+name: Test and Deploy
+on:
+  push:
+    branches:
+      - master
+  create:
+    tags:
+      - '*'
+jobs:
+  test-extension:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7',  '3.8', 'pypy3']
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          set -xe
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install -r dev-requirements.txt
+      - name: Run Tests for ${{ matrix.python-version }}
+        run: |
+        python -m pytest -vv
+  pypi-release:
+    needs: test-extension
+    runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ./dev-requirements.txt
+      - name: Build PyPI Wheel
+        run: |
+          python setup.py sdist
+          python setup.py bdist_wheel
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_password }}
