@@ -1,29 +1,42 @@
 # sphinxext-opengraph
 Sphinx extension to generate OpenGraph metadata (https://ogp.me/)
 
+## Installation
+
+### Windows
+
+`python -m pip install sphinxext-opengraph`
+
+### Linux
+
+`python3 -m pip install sphinxext-opengraph`
+
 ## Options
 These values are placed in the conf.py of your sphinx project.
 
-### Site URL
-- *Formal Name:* `ogp_site_url`
-- *Default Value:* None
+* `ogp_site_url`
+    * This config option is very important, set it to the URL the site is being hosted on. 
+* `ogp_description_length`
+    * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200. 
+* `ogp_image`
+    * This is not required. Link to image to show.
+* `ogp_type`
+    * This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types. By default it is set to `website`, which should be fine for most use cases.
 
-This config option is very important, set it to the URL the site is being hosted on.
+## Example Config
 
-### Description Length
-- *Formal Name:* `ogp_description_length`
-- *Default Value:* `200`
+### Simple Config
 
-Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200.
+```python
+ogp_site_url = "http://example.org/"
+ogp_image = "http://example.org/image.png"
+```
 
-### Image
-- *Formal Name:* `ogp_image`
-- *Default Value:* None
+### Advanced Config
 
-This is not required. Link to image to show.
-
-### Type
-- *Formal Name:* `ogp_type`
-- *Default Value:* `website`
-
-This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types.
+```python
+ogp_site_url = "http://example.org/"
+ogp_image = "http://example.org/image.png"
+ogp_description_length = 300
+ogp_type = "article"
+```
