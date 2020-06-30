@@ -19,6 +19,7 @@ setuptools.setup(
     long_descrption=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/wpilibsuite/sphinxext-opengraph",
+    install_requires=['sphinx>=2.0'],
     packages=['sphinxext'],
     classifiers=[
         "Programming Language :: Python :: 3",

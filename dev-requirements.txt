@@ -1,4 +1,4 @@
-Sphinx
+sphinx
 pytest==5.4.3
 beautifulsoup4==4.9.1
 setuptools==47.3.1
