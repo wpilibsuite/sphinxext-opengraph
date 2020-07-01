@@ -27,7 +27,7 @@ jobs:
           python -m pip install -r dev-requirements.txt
       - name: Run Tests for ${{ matrix.python-version }}
         run: |
-        python -m pytest -vv
+          python -m pytest -vv
   pypi-release:
     needs: test-extension
     runs-on: ubuntu-latest
