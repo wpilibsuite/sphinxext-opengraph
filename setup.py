@@ -7,7 +7,7 @@ ret = subprocess.run("git describe --tags --abbrev=0", stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE, check=True, shell=True)
 version = ret.stdout.decode("utf-8").strip()
 
-with open("readme.md", 'r', encoding="utf-8") as readme:
+with open("README.md", 'r', encoding="utf-8") as readme:
     long_description = readme.read()
 
 setuptools.setup(
