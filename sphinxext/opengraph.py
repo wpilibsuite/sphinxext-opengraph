@@ -2,13 +2,28 @@ from urllib.parse import urljoin
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
+def make_tag(property: str, content: str) -> str:
+    return f'<meta property="{property}" content="{content}" />\n  '
 
 def get_tags(context, doctree, config):
-    # Get the URL of the specific page
-    page_url = urljoin(config["ogp_site_url"], context["pagename"] + context["file_suffix"])
-    # Get the image from the config
-    image_url = config["ogp_image"]
+    tags = ""
 
+    # title tag
+    tags += make_tag("og:title", context["title"])
+
+    # type tag
+    tags += make_tag("og:type", config["ogp_type"])
+
+    # url tag
+    # Get the URL of the specific page
+    page_url = urljoin(
+        config["ogp_site_url"],
+        context["pagename"] + context["file_suffix"]
+    )
+    tags += make_tag("og:url", page_url)
+
+
+    # description tag
     # Get the first X letters from the page (Configured in config)
     description = doctree.astext().replace('\n', ' ')
 
@@ -20,16 +35,13 @@ def get_tags(context, doctree, config):
     if len(description) > desc_len:
         description = description[:desc_len - 3] + "..."
 
-    # Make the ogp tags
-    tags = """
-    <meta property="og:title" content="{title}" />
-    <meta property="og:type" content="{type}" />
-    <meta property="og:url" content="{url}" />
-    <meta property="og:description" content="{desc}" />
-    """.format(title=context["title"], type=config["ogp_type"], url=page_url, desc=description)
+    tags += make_tag("og:description", description)
 
+    # image tag
+    # Get the image from the config
+    image_url = config["ogp_image"]
     if image_url:
-        tags += '<meta property="og:image" content="{image}" />'.format(image=image_url)
+        tags += make_tag("og:image", image_url)
 
     return tags
 
