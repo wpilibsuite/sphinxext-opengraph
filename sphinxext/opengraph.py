@@ -1,15 +1,125 @@
 from urllib.parse import urljoin
+import docutils.nodes as nodes
+import string
+
 
 DEFAULT_DESCRIPTION_LENGTH = 200
+
+
+class OGMetadataCreatorVisitor(nodes.NodeVisitor):
+    """
+    Finds the title and creates a description from a doctree
+    """
+
+    def __init__(self, desc_len, document=None):
+
+        # Hack to prevent requirement for the doctree to be passed in.
+        # It's only used by doctree.walk(...) to print debug messages. 
+        if document == None:
+            class document_cls:
+                class reporter:
+                    @staticmethod
+                    def debug(*args, **kwaargs):
+                        pass
+
+            document = document_cls()
+
+        super().__init__(document)
+        self.title = ""
+        self.description = ""
+        self.desc_len = desc_len
+        self.list_level = 0
+
+        # Exceptions can't be raised from dispatch_departure()
+        # This is used to loop the stop call back to the next dispatch_visit()
+        self.stop = False
+
+    def dispatch_visit(self, node: nodes.Element) -> None:
+
+        if self.stop:
+            self.title = self.title or ""
+            raise nodes.StopTraversal
+
+        # Skip all admonitions
+        if isinstance(node, nodes.Admonition):
+            raise nodes.SkipNode
+
+        # Mark start of nested lists
+        if isinstance(node, nodes.Sequential):
+            self.list_level += 1
+            if self.list_level > 1:
+                self.description += "-"
+
+        # Skip the first title - it's the title of the page
+        if not self.title and isinstance(node, nodes.title):
+            self.title = node.astext()
+            raise nodes.SkipNode
+
+        # Only include leaf nodes in the description
+        if len(node.children) == 0:
+            text = node.astext().replace("\r", "").replace("\n", " ").strip()
+
+            # Remove double spaces
+            while text.find("  ") != -1:
+                text = text.replace("  ", " ")
+
+            # Put a space between elements if one does not already exist.
+            if (
+                len(self.description) > 0
+                and len(text) > 0
+                and self.description[-1] not in string.whitespace
+                and text[0] not in string.whitespace + string.punctuation
+            ):
+                self.description += " "
+
+            self.description += text
+
+    def dispatch_departure(self, node: nodes.Element) -> None:
+
+        # Separate title from text
+        if isinstance(node, nodes.title):
+            self.description += ":"
+
+        # Separate list elements
+        if isinstance(node, nodes.Part):
+            self.description += ","
+
+        # Separate end of list from text
+        if isinstance(node, nodes.Sequential):
+            if self.description[-1] == ",":
+                self.description = self.description[:-1]
+            self.description += "."
+            self.list_level -= 1
+
+        # Check for length
+        if len(self.description) > self.desc_len:
+            self.description = self.description[: self.desc_len]
+            if self.desc_len >= 3:
+                self.description = self.description[:-3] + "..."
+
+            self.stop = True
+
 
 def make_tag(property: str, content: str) -> str:
     return f'<meta property="{property}" content="{content}" />\n  '
 
+
 def get_tags(context, doctree, config):
+
+    # Set length of description
+    try:
+        desc_len = int(config["ogp_description_length"])
+    except ValueError:
+        desc_len = DEFAULT_DESCRIPTION_LENGTH
+
+    # Parse/walk doctree for metadata (tag/description)
+    mcv = OGMetadataCreatorVisitor(desc_len)
+    doctree.walkabout(mcv)
+
     tags = ""
 
     # title tag
-    tags += make_tag("og:title", context["title"])
+    tags += make_tag("og:title", mcv.title)
 
     # type tag
     tags += make_tag("og:type", config["ogp_type"])
@@ -28,18 +138,7 @@ def get_tags(context, doctree, config):
         tags += make_tag("og:site_name", site_name)
 
     # description tag
-    # Get the first X letters from the page (Configured in config)
-    description = doctree.astext().replace('\n', ' ')
-
-    try:
-        desc_len = int(config["ogp_description_length"])
-    except ValueError:
-        desc_len = DEFAULT_DESCRIPTION_LENGTH
-
-    if len(description) > desc_len:
-        description = description[:desc_len - 3] + "..."
-
-    tags += make_tag("og:description", description)
+    tags += make_tag("og:description", mcv.description)
 
     # image tag
     # Get the image from the config
