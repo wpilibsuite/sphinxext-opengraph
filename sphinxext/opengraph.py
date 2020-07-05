@@ -22,6 +22,10 @@ def get_tags(context, doctree, config):
     )
     tags += make_tag("og:url", page_url)
 
+    # site name tag
+    site_name = config["ogp_site_name"]
+    if site_name:
+        tags += make_tag("og:site_name", site_name)
 
     # description tag
     # Get the first X letters from the page (Configured in config)
@@ -56,6 +60,7 @@ def setup(app):
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_type", "website", "html")
+    app.add_config_value("ogp_site_name", None, "html")
 
     app.connect('html-page-context', html_page_context)
 
