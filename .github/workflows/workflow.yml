@@ -1,5 +1,8 @@
 name: Test and Deploy
 on:
+  pull_request:
+    branches: 
+      - master
   push:
     branches:
       - master
@@ -31,7 +34,7 @@ jobs:
   pypi-release:
     needs: test-extension
     runs-on: ubuntu-latest
-    if: contains(github.ref, 'refs/tags/')
+    if: contains(github.ref, 'refs/tags/') && github.repository_owner	== 'wpilibsuite'
     steps:
       - uses: actions/checkout@v2
         with:
