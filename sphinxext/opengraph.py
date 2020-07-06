@@ -66,6 +66,10 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
         if self.stop:
             raise nodes.StopTraversal
 
+        # Skip comments
+        if isinstance(node, nodes.Invisible):
+            raise nodes.SkipNode
+
         # Skip all admonitions
         if isinstance(node, nodes.Admonition):
             raise nodes.SkipNode
