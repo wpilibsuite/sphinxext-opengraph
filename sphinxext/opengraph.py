@@ -1,17 +1,40 @@
 from urllib.parse import urljoin
 import docutils.nodes as nodes
 import string
+from html.parser import HTMLParser
 
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
+class HTMLTextParser(HTMLParser):
+    """
+    Parse HTML into text
+    """
+    def __init__(self):
+        super().__init__()
+        # All text found
+        self.text = ""
+        # Only text outside of html tags
+        self.text_outside_tags = ""
+        self.level = 0
+
+    def handle_starttag(self, tag, attrs):
+        self.level += 1
+        
+    def handle_endtag(self, tag):
+        self.level -= 1
+
+    def handle_data(self, data):
+        self.text += data
+        if self.level == 0:
+            self.text_outside_tags += data
 
 class OGMetadataCreatorVisitor(nodes.NodeVisitor):
     """
     Finds the title and creates a description from a doctree
     """
 
-    def __init__(self, desc_len, document=None):
+    def __init__(self, desc_len, known_titles=None, document=None):
 
         # Hack to prevent requirement for the doctree to be passed in.
         # It's only used by doctree.walk(...) to print debug messages. 
@@ -24,11 +47,15 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
 
             document = document_cls()
 
+        if known_titles == None:
+            known_titles = []
+
         super().__init__(document)
-        self.title = ""
         self.description = ""
         self.desc_len = desc_len
         self.list_level = 0
+        self.known_titles = known_titles
+        self.first_title_found = False
 
         # Exceptions can't be raised from dispatch_departure()
         # This is used to loop the stop call back to the next dispatch_visit()
@@ -37,7 +64,6 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
     def dispatch_visit(self, node: nodes.Element) -> None:
 
         if self.stop:
-            self.title = self.title or ""
             raise nodes.StopTraversal
 
         # Skip all admonitions
@@ -50,10 +76,11 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
             if self.list_level > 1:
                 self.description += "-"
 
-        # Skip the first title - it's the title of the page
-        if not self.title and isinstance(node, nodes.title):
-            self.title = node.astext()
-            raise nodes.SkipNode
+        # Skip the first title if it's the title of the page
+        if not self.first_title_found and isinstance(node, nodes.title):
+            self.first_title_found = True
+            if node.astext() in self.known_titles:
+                raise nodes.SkipNode
 
         # Only include leaf nodes in the description
         if len(node.children) == 0:
@@ -112,14 +139,19 @@ def get_tags(context, doctree, config):
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
+    # Get the title and parse any html in it
+    htp = HTMLTextParser()
+    htp.feed(context["title"])
+    htp.close()
+
     # Parse/walk doctree for metadata (tag/description)
-    mcv = OGMetadataCreatorVisitor(desc_len)
+    mcv = OGMetadataCreatorVisitor(desc_len, [htp.text, htp.text_outside_tags])
     doctree.walkabout(mcv)
 
-    tags = ""
+    tags = "\n  "
 
     # title tag
-    tags += make_tag("og:title", mcv.title)
+    tags += make_tag("og:title", htp.text)
 
     # type tag
     tags += make_tag("og:type", config["ogp_type"])
