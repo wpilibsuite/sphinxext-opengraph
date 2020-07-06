@@ -39,3 +39,44 @@ def test_type(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="description-length")
 def test_description_length(og_meta_tags):
     assert len(get_tag_content(og_meta_tags, "description")) == 50
+
+
+@pytest.mark.sphinx("html", testroot="sitename")
+def test_site_name(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "site_name") == "Example's Docs!"
+
+
+@pytest.mark.sphinx("html", testroot="skip-admonitions")
+def test_skip_admonitions(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "description") == "This is text."
+
+
+@pytest.mark.sphinx("html", testroot="skip-title")
+def test_skip_first_title(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert "A Title" not in description
+    assert "Another Title" in description
+
+
+@pytest.mark.sphinx("html", testroot="skip-title")
+def test_skip_title_punctuation(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert "Another Title:" in description
+
+
+@pytest.mark.sphinx("html", testroot="double-spacing")
+def test_remove_double_spacing(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert "  " not in description
+
+
+@pytest.mark.sphinx("html", testroot="list")
+def test_list_punctuation(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert description == "Item 1, Item 2, Item 3, Item 4."
+
+
+@pytest.mark.sphinx("html", testroot="nested-lists")
+def test_nested_list_punctuation(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert description == "Item 1, Item 2- Nested Item 1, Nested Item 2., Item 3, Item 4."
