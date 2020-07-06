@@ -12,6 +12,8 @@ These values are placed in the conf.py of your sphinx project.
     * This config option is very important, set it to the URL the site is being hosted on. 
 * `ogp_description_length`
     * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200. 
+* `ogp_site_name`
+    * This is not required. Name of the site. This is displayed above the title.
 * `ogp_image`
     * This is not required. Link to image to show.
 * `ogp_type`
