@@ -1,4 +1,6 @@
 # sphinxext-opengraph
+![Build](https://github.com/wpilibsuite/sphinxext-opengraph/workflows/Test%20and%20Deploy/badge.svg)
+
 Sphinx extension to generate OpenGraph metadata (https://ogp.me/)
 
 ## Installation
