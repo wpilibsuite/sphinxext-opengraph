@@ -80,3 +80,9 @@ def test_list_punctuation(og_meta_tags):
 def test_nested_list_punctuation(og_meta_tags):
     description = get_tag_content(og_meta_tags, "description")
     assert description == "Item 1, Item 2- Nested Item 1, Nested Item 2., Item 3, Item 4."
+
+
+@pytest.mark.sphinx("html", testroot="skip-comments")
+def test_skip_comments(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "description") == "This is text."
+
