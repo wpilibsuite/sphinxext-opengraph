@@ -7,6 +7,14 @@ Sphinx extension to generate OpenGraph metadata (https://ogp.me/)
 
 `python -m pip install sphinxext-opengraph`
 
+## Usage
+Just add `sphinxext.opengraph` to your extensions list in your `conf.py`
+
+```python
+extensions = [
+   sphinxext.opengraph,
+]
+```
 ## Options
 These values are placed in the conf.py of your sphinx project.
 
