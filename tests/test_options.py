@@ -86,3 +86,8 @@ def test_nested_list_punctuation(og_meta_tags):
 def test_skip_comments(og_meta_tags):
     assert get_tag_content(og_meta_tags, "description") == "This is text."
 
+
+@pytest.mark.sphinx("html", testroot="custom-tags")
+def test_custom_tags(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "ignore_canonical") == "true"
+    

@@ -184,6 +184,9 @@ def get_tags(context: Dict[str, Any], doctree: nodes.document, config: Dict[str,
     if image_url:
         tags += make_tag("og:image", image_url)
 
+    # custom tags
+    tags += '\n'.join(config['ogp_custom_meta_tags'])
+
     return tags
 
 
@@ -198,6 +201,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
+    app.add_config_value("ogp_custom_meta_tags", [], "html")
 
     app.connect('html-page-context', html_page_context)
 
