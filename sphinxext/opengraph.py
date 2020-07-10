@@ -1,8 +1,10 @@
+from typing import Any, Dict, Iterable, Sequence, Tuple
 from urllib.parse import urljoin
 import docutils.nodes as nodes
 import string
 from html.parser import HTMLParser
-
+import sphinx
+from sphinx.application import Sphinx
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
@@ -18,13 +20,13 @@ class HTMLTextParser(HTMLParser):
         self.text_outside_tags = ""
         self.level = 0
 
-    def handle_starttag(self, tag, attrs):
+    def handle_starttag(self, tag, attrs) -> None:
         self.level += 1
         
-    def handle_endtag(self, tag):
+    def handle_endtag(self, tag) -> None:
         self.level -= 1
 
-    def handle_data(self, data):
+    def handle_data(self, data) -> None:
         self.text += data
         if self.level == 0:
             self.text_outside_tags += data
@@ -34,7 +36,7 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
     Finds the title and creates a description from a doctree
     """
 
-    def __init__(self, desc_len, known_titles=None, document=None):
+    def __init__(self, desc_len: int, known_titles: Iterable[str] = None, document: nodes.document = None):
 
         # Hack to prevent requirement for the doctree to be passed in.
         # It's only used by doctree.walk(...) to print debug messages. 
@@ -135,7 +137,7 @@ def make_tag(property: str, content: str) -> str:
     return f'<meta property="{property}" content="{content}" />\n  '
 
 
-def get_tags(context, doctree, config):
+def get_tags(context: Dict[str, Any], doctree: nodes.document, config: Dict[str, Any]) -> str:
 
     # Set length of description
     try:
@@ -182,20 +184,24 @@ def get_tags(context, doctree, config):
     if image_url:
         tags += make_tag("og:image", image_url)
 
+    # custom tags
+    tags += '\n'.join(config['ogp_custom_meta_tags'])
+
     return tags
 
 
-def html_page_context(app, pagename, templatename, context, doctree):
+def html_page_context(app: Sphinx, pagename: str, templatename: str, context: Dict[str, Any], doctree: nodes.document) -> None:
     if doctree:
         context['metatags'] += get_tags(context, doctree, app.config)
 
 
-def setup(app):
+def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_site_url", None, "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
+    app.add_config_value("ogp_custom_meta_tags", [], "html")
 
     app.connect('html-page-context', html_page_context)
 
