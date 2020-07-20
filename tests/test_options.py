@@ -17,7 +17,10 @@ def test_simple(og_meta_tags):
     assert len(og_meta_tags) > 0
     assert get_tag_content(og_meta_tags, "type") == "website"
     assert len(description) == 200
-    assert description == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at lorem ornare, fringilla massa nec, venenatis mi. Donec erat sapien, tincidunt nec rhoncus nec, scelerisque id diam. Orci vari..."
+    assert (
+        description
+        == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at lorem ornare, fringilla massa nec, venenatis mi. Donec erat sapien, tincidunt nec rhoncus nec, scelerisque id diam. Orci vari..."
+    )
 
 
 @pytest.mark.sphinx("html", testroot="simple")
@@ -84,7 +87,9 @@ def test_list_punctuation(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="nested-lists")
 def test_nested_list_punctuation(og_meta_tags):
     description = get_tag_content(og_meta_tags, "description")
-    assert description == "Item 1, Item 2- Nested Item 1, Nested Item 2., Item 3, Item 4."
+    assert (
+        description == "Item 1, Item 2- Nested Item 1, Nested Item 2., Item 3, Item 4."
+    )
 
 
 @pytest.mark.sphinx("html", testroot="skip-comments")
@@ -95,4 +100,3 @@ def test_skip_comments(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="custom-tags")
 def test_custom_tags(og_meta_tags):
     assert get_tag_content(og_meta_tags, "ignore_canonical") == "true"
-    

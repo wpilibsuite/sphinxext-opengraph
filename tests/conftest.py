@@ -28,10 +28,10 @@ def meta_tags(content):
 
 @pytest.fixture()
 def og_meta_tags(content):
-    return [tag for tag in _meta_tags(content) if tag.get("property", "").startswith("og:")]
+    return [
+        tag for tag in _meta_tags(content) if tag.get("property", "").startswith("og:")
+    ]
 
 
 def pytest_configure(config):
-    config.addinivalue_line(
-        "markers", "sphinx"
-    )
+    config.addinivalue_line("markers", "sphinx")
