@@ -31,6 +31,11 @@ def test_image(og_meta_tags):
     assert get_tag_content(og_meta_tags, "image") == "http://example.org/image.png"
 
 
+@pytest.mark.sphinx("html", testroot="image")
+def test_image_alt(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "image:alt") == "Example's Docs!"
+
+
 @pytest.mark.sphinx("html", testroot="type")
 def test_type(og_meta_tags):
     assert get_tag_content(og_meta_tags, "type") == "article"

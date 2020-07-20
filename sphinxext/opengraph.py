@@ -184,6 +184,15 @@ def get_tags(context: Dict[str, Any], doctree: nodes.document, config: Dict[str,
     if image_url:
         tags += make_tag("og:image", image_url)
 
+    # Add image alt text (either provided by config or from site_name)
+    ogp_image_alt = config["ogp_image_alt"]
+    if isinstance(ogp_image_alt, str):
+        tags += make_tag("og:image:alt", config["ogp_image_alt"])
+    elif config["ogp_image_alt"] and site_name:
+        tags += make_tag("og:image:alt", site_name)
+    elif config["ogp_image_alt"] and htp.text:
+        tags += make_tag("og:image:alt", htp.text)
+
     # custom tags
     tags += '\n'.join(config['ogp_custom_meta_tags'])
 
@@ -199,6 +208,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_site_url", None, "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
+    app.add_config_value("ogp_image_alt", True, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
