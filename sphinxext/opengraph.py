@@ -187,10 +187,10 @@ def get_tags(context: Dict[str, Any], doctree: nodes.document, config: Dict[str,
     # Add image alt text (either provided by config or from site_name)
     ogp_image_alt = config["ogp_image_alt"]
     if isinstance(ogp_image_alt, str):
-        tags += make_tag("og:image:alt", config["ogp_image_alt"])
-    elif config["ogp_image_alt"] and site_name:
+        tags += make_tag("og:image:alt", ogp_image_alt)
+    elif ogp_image_alt and site_name:
         tags += make_tag("og:image:alt", site_name)
-    elif config["ogp_image_alt"] and htp.text:
+    elif ogp_image_alt and htp.text:
         tags += make_tag("og:image:alt", htp.text)
 
     # custom tags
@@ -219,4 +219,3 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
-
