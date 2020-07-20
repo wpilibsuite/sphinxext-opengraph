@@ -219,3 +219,4 @@ def setup(app: Sphinx) -> Dict[str, Any]:
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
+
