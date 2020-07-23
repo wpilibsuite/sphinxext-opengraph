@@ -1,5 +1,6 @@
-sphinx
+sphinx==3.1.2
 wheel==0.34.2
 pytest==5.4.3
 beautifulsoup4==4.9.1
-setuptools==47.3.1
+setuptools==49.2.0
+docutils==0.16
