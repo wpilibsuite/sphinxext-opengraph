@@ -4,7 +4,6 @@ from docutils.nodes import Node
 
 
 class OpenGraphDirective(SphinxDirective):
-
     def run(self) -> List[Node]:
         pass
 
