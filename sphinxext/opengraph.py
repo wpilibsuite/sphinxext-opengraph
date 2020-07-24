@@ -7,6 +7,7 @@ import sphinx
 from sphinx.application import Sphinx
 
 DEFAULT_DESCRIPTION_LENGTH = 200
+IMAGE_FILE_EXTENSIONS = ["jpg", "jpeg", "png"]
 
 
 class HTMLTextParser(HTMLParser):
@@ -205,10 +206,18 @@ def get_tags(
     else:
         ogp_image_alt = False
 
-    # Get first image (if enabled in config and images detected)
+    # Detect first suitable image (if enabled in config and images detected)
+    og_image = None
     if first_image_available:
-        image = mcv.images[0]
-        tags += make_tag("og:image", urljoin(page_url, image["uri"]))
+        for image_object in mcv.images:
+            if image_object["uri"][-4:].replace(".", "") in IMAGE_FILE_EXTENSIONS:
+                og_image = image_object["uri"]
+                break
+            else:
+                og_image = None
+    # Use first image, if enabled (and suitable file type)
+    if og_image:
+        tags += make_tag("og:image", urljoin(page_url, og_image))
     # Get standard image (if enabled in config)
     elif image_url:
         tags += make_tag("og:image", image_url)
