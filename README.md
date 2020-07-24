@@ -29,6 +29,8 @@ These values are placed in the conf.py of your sphinx project.
     * This is not required. Link to image to show.
 * `ogp_image_alt`
     * This is not required. Alt text for image. Defaults to using `ogp_site_name` or the document's title as alt text, if available. Set to `False` if you want to turn off alt text completely.
+* `ogp_first_image`
+    * This is not required. Set to True to use each page's first image, if available. If set to True but no image is found, Sphinx will use `ogp_image` instead. 
 * `ogp_type`
     * This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types. By default it is set to `website`, which should be fine for most use cases.
 * `ogp_custom_meta_tags`

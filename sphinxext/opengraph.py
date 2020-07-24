@@ -63,6 +63,7 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
 
         super().__init__(document)
         self.description = ""
+        self.images = []
         self.desc_len = desc_len
         self.list_level = 0
         self.known_titles = known_titles
@@ -115,6 +116,10 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
                 self.description += " "
 
             self.description += text
+
+        # Detect images
+        if isinstance(node, nodes.image):
+            self.images.append(node)
 
     def dispatch_departure(self, node: nodes.Element) -> None:
 
@@ -189,14 +194,37 @@ def get_tags(
     tags += make_tag("og:description", mcv.description)
 
     # image tag
-    # Get the image from the config
+    # Get config values
     image_url = config["ogp_image"]
-    if image_url:
+    ogp_first_image = config["ogp_first_image"]
+    # Check if first image is enabled and present
+    first_image_available = ogp_first_image and len(mcv.images) > 0
+    # ogp_image_alt only makes sense if an image is present
+    if image_url or first_image_available:
+        ogp_image_alt = config["ogp_image_alt"]
+    else:
+        ogp_image_alt = False
+
+    # Get first image (if enabled in config and images detected)
+    if first_image_available:
+        image = mcv.images[0]
+        tags += make_tag("og:image", urljoin(page_url, image["uri"]))
+    # Get standard image (if enabled in config)
+    elif image_url:
         tags += make_tag("og:image", image_url)
 
-    # Add image alt text (either provided by config or from site_name)
-    ogp_image_alt = config["ogp_image_alt"]
-    if isinstance(ogp_image_alt, str):
+    # Check wether first image is present and has an alt text
+    try:
+        first_image_alt = mcv.images[0]["alt"]
+    except (IndexError, KeyError):
+        first_image_alt = None
+
+    # image alt text:
+    # - either provided manually through first image or config
+    # - or generated automatically from site_name or htp.text
+    if ogp_first_image and first_image_alt:
+        tags += make_tag("og:image:alt", first_image_alt)
+    elif isinstance(ogp_image_alt, str):
         tags += make_tag("og:image:alt", ogp_image_alt)
     elif ogp_image_alt and site_name:
         tags += make_tag("og:image:alt", site_name)
@@ -225,6 +253,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", True, "html")
+    app.add_config_value("ogp_first_image", False, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
