@@ -12,5 +12,6 @@ def insert_tags(
 ) -> None:
     visitor = OpenGraphVisitor(doctree, 300)
     doctree.walkabout(visitor)
+    visitor.end_walkabout()
     logger.info(visitor.description)
     logger.info(len(visitor.description))

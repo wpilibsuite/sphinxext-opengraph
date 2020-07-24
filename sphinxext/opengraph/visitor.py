@@ -13,6 +13,7 @@ class OpenGraphVisitor(nodes.GenericNodeVisitor):
         self.description = ""
         self.desc_len = desc_len
         self.title_count = title_count
+        self.first_list = ""  # todo: rename
 
     def default_visit(self, node: nodes.Element):
         if len(self.description) >= self.desc_len:
@@ -31,6 +32,11 @@ class OpenGraphVisitor(nodes.GenericNodeVisitor):
                 pass
                 # raise nodes.StopTraversal
 
+        if not self.first_list and isinstance(
+            node, (nodes.bullet_list, nodes.enumerated_list)
+        ):
+            self.first_list = node.astext().replace("\n\n", ", ")
+
         logger.info(type(node))
         logger.info(node.astext())
         if isinstance(node, nodes.paragraph):
@@ -44,3 +50,8 @@ class OpenGraphVisitor(nodes.GenericNodeVisitor):
 
             if self.desc_len > 3:
                 self.description = self.description[:-3] + "..."
+
+    def end_walkabout(self):
+        if not self.description:
+            self.description = self.first_list
+        print(self.first_list)
