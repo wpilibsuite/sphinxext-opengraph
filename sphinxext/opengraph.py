@@ -210,7 +210,10 @@ def get_tags(
     og_image = None
     if first_image_available:
         for image_object in mcv.images:
-            if image_object["uri"][-4:].replace(".", "") in IMAGE_FILE_EXTENSIONS:
+            if (
+                image_object["uri"][-4:].replace(".", "").lower()
+                in IMAGE_FILE_EXTENSIONS
+            ):
                 og_image = image_object["uri"]
                 break
             else:
