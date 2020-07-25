@@ -9,4 +9,4 @@ ogp_site_name = "Example's Docs!"
 ogp_site_url = "http://example.org/"
 ogp_image = "http://example.org/image33.png"
 ogp_image_alt = "TEST"
-ogp_first_image = True
+ogp_use_first_image = True
