@@ -1,7 +1,6 @@
 from typing import Any, Dict
-from .directive import OpenGraphDirective
-from .event_handler import html_page_context
 from sphinx.application import Sphinx
+from .event_handler import html_page_context
 
 # todo: rtd option to grab READTHEDOCS_LANGUAGE and READTHEDOCS_VERSION for link
 # todo: grab first image on a page
@@ -15,8 +14,6 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
-
-    # app.add_directive("opengraph", OpenGraphDirective)
 
     app.connect("html-page-context", html_page_context)
 

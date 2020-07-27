@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from sphinx.application import Sphinx
-from docutils import nodes
+from .docutils import nodes
 from .util import insert_tags
 
 
