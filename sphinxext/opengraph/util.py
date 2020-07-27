@@ -57,15 +57,9 @@ def insert_tags(
     if image_url:
         context["metatags"] += make_tag("og:image", image_url)
 
-    # image alt text (provided by config falls back to page title, then site name)
+    # image alt text
+    # todo: change readme
     ogp_image_alt = config["ogp_image_alt"]
-    if ogp_image_alt and not isinstance(ogp_image_alt, str):
-        # replace the alt text with the page title if it exists otherwise site name
-        if html_parser.text:
-            ogp_image_alt = html_parser.text
-        else:
-            ogp_image_alt = site_name
-
     if ogp_image_alt:
         context["metatags"] += make_tag("og:image:alt", ogp_image_alt)
 
