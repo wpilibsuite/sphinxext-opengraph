@@ -3,6 +3,9 @@ from .directive import OpenGraphDirective
 from .event_handler import html_page_context
 from sphinx.application import Sphinx
 
+# todo: rtd option to grab READTHEDOCS_LANGUAGE and READTHEDOCS_VERSION for link
+# todo: grab first image on a page
+
 
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_site_url", None, "html")
