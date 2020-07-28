@@ -13,7 +13,7 @@ def html_page_context(
     context: Dict[str, Any],
     doctree: nodes.document,
 ) -> None:
-    if doctree:
+    if not doctree:
         return
     # Set length of description
     try:
