@@ -8,7 +8,7 @@ from .event_handler import html_page_context
 
 def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_site_url", None, "html")
-    app.add_config_value("ogp_description_length", 300, "html")
+    app.add_config_value("ogp_description_length", 200, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", True, "html")
     app.add_config_value("ogp_type", "website", "html")
