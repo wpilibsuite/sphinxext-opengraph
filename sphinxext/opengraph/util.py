@@ -4,8 +4,6 @@ from docutils import nodes
 from urllib.parse import urljoin
 from .visitor import OpenGraphVisitor
 from .html_parser import HTMLTextParser
-from sphinx.util import logging
-logger = logging.getLogger(__name__)
 
 
 def make_tag(property: str, content: str) -> str:
@@ -20,8 +18,6 @@ def insert_tags(
         desc_len = int(config["ogp_description_length"])
     except ValueError:
         desc_len = 200
-    logger.info(config["ogp_description_length"])
-    logger.info(desc_len)
 
     # parse out any html from the title
     html_parser = HTMLTextParser()
