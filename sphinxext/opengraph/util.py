@@ -21,9 +21,7 @@ def insert_tags(
 
     # parse out any html from the title
     html_parser = HTMLTextParser()
-    if context["title"] != "&lt;no title&gt;":
-        # only use title if its exists
-        html_parser.feed(context["title"])
+    html_parser.feed(context["title"])
     html_parser.close()
 
     # grab the description from the page
