@@ -2,7 +2,7 @@ from .html_parser import HTMLTextParser
 
 
 def make_tag(tag: str, content: str) -> str:
-    return f'<meta property="{tag}" content="{content}" />\n  '
+    return f'<meta property="og:{tag}" content="{content}" />\n  '
 
 
 def sanitize_title(title: str) -> str:
