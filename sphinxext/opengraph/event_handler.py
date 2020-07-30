@@ -2,7 +2,7 @@ from typing import Dict, Any
 from sphinx.application import Sphinx
 from docutils import nodes
 from urllib.parse import urljoin
-from .util import sanitize_title, make_tag
+from .util import sanitize_title, make_tag, add_tag_from_config
 from .visitor import OpenGraphVisitor
 
 
@@ -40,24 +40,18 @@ def html_page_context(
     context["metatags"] += make_tag("url", page_url)
 
     # site name tag
-    site_name = app.config["ogp_site_name"]
-    if site_name:
-        context["metatags"] += make_tag("site_name", site_name)
+    add_tag_from_config(context, app.config, "site_name")
 
     # description tag
     context["metatags"] += make_tag("description", visitor.description)
 
     # image tag
     # Get the image from the app.config
-    image_url = app.config["ogp_image"]
-    if image_url:
-        context["metatags"] += make_tag("image", image_url)
+    add_tag_from_config(context, app.config, "image")
 
     # image alt text
     # todo: change readme
-    ogp_image_alt = app.config["ogp_image_alt"]
-    if ogp_image_alt:
-        context["metatags"] += make_tag("image:alt", ogp_image_alt)
+    add_tag_from_config(context, app.config, "image:alt")
 
     # custom tags
     context["metatags"] += "\n".join(app.config["ogp_custom_meta_tags"])
