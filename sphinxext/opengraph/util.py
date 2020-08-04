@@ -7,7 +7,9 @@ def make_tag(tag: str, content: str) -> str:
     return f'<meta property="og:{tag}" content="{content}" />\n  '
 
 
-def add_tag_from_config(context: Dict[str, Any], config: Config, tag: str, conf_name: str = ""):
+def add_tag_from_config(
+    context: Dict[str, Any], config: Config, tag: str, conf_name: str = ""
+):
     if not conf_name:
         conf_name = tag.replace(":", "_")
 
