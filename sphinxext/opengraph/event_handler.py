@@ -25,32 +25,21 @@ def html_page_context(
     visitor = OpenGraphVisitor(doctree, desc_len)
     doctree.walkabout(visitor)
 
-    # title tag# parse out any html from the title
+    # parse out html from the page title
     page_title = sanitize_title(context["title"])
-    context["metatags"] += make_tag("title", page_title)
 
-    # type tag
-    context["metatags"] += make_tag("type", app.config["ogp_type"])
-
-    # url tag
-    # Get the url to the specific page
+    # get the page's url
     page_url = urljoin(
         app.config["ogp_site_url"], context["pagename"] + context["file_suffix"]
     )
+
+    # add all the tags which need to be added
+    context["metatags"] += make_tag("title", page_title)
+    context["metatags"] += make_tag("type", app.config["ogp_type"])
     context["metatags"] += make_tag("url", page_url)
-
-    # site name tag
     add_tag_from_config(context, app.config, "site_name")
-
-    # description tag
     context["metatags"] += make_tag("description", visitor.description)
-
-    # image tag
-    # Get the image from the app.config
     add_tag_from_config(context, app.config, "image")
-
-    # image alt text
-    # todo: change readme
     add_tag_from_config(context, app.config, "image:alt")
 
     # custom tags
