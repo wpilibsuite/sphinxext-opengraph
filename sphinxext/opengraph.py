@@ -97,6 +97,9 @@ class OGMetadataCreatorVisitor(nodes.NodeVisitor):
             if node.astext() in self.known_titles:
                 raise nodes.SkipNode
 
+        if isinstance(node, nodes.raw):
+            raise nodes.SkipNode
+
         # Only include leaf nodes in the description
         if len(node.children) == 0:
             text = node.astext().replace("\r", "").replace("\n", " ").strip()

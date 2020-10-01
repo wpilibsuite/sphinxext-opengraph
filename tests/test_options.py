@@ -100,3 +100,13 @@ def test_skip_comments(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="custom-tags")
 def test_custom_tags(og_meta_tags):
     assert get_tag_content(og_meta_tags, "ignore_canonical") == "true"
+
+
+@pytest.mark.sphinx("html", testroot="skip-raw")
+def test_skip_raw(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert "<p>" not in description
+    assert (
+        description
+        == "This text should be included. This text should also be included."
+    )
