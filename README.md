@@ -1,4 +1,4 @@
-# sphinxext-opengraph
+# sphinxext-opengraph - an amazing project
 ![Build](https://github.com/wpilibsuite/sphinxext-opengraph/workflows/Test%20and%20Deploy/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
