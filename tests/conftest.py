@@ -1,6 +1,6 @@
-from sphinx.testing.path import path
 import pytest
 from bs4 import BeautifulSoup
+from sphinx.testing.path import path
 
 pytest_plugins = "sphinx.testing.fixtures"
 
