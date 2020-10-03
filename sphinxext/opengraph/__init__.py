@@ -12,13 +12,13 @@ DEFAULT_DESCRIPTION_LENGTH = 200
 
 # A selection from https://www.iana.org/assignments/media-types/media-types.xhtml#image
 IMAGE_MIME_TYPES = {
-    "gif":  "image/gif",
+    "gif": "image/gif",
     "apng": "image/apng",
     "webp": "image/webp",
     "jpeg": "image/jpeg",
-    "jpg":  "image/jpeg",
-    "png":  "image/png",
-    "bmp":  "image/bmp",
+    "jpg": "image/jpeg",
+    "png": "image/png",
+    "bmp": "image/bmp",
     "heic": "image/heic",
     "heif": "image/heif",
     "tiff": "image/tiff",
