@@ -19,6 +19,7 @@ IMAGE_MIME_TYPES = {
     "png": "image/png",
 }
 
+
 def make_tag(property: str, content: str) -> str:
     return f'<meta property="{property}" content="{content}" />\n  '
 
@@ -68,13 +69,12 @@ def get_tags(
     image_url = config["ogp_image"]
     ogp_use_first_image = config["ogp_use_first_image"]
     ogp_image_alt = config["ogp_image_alt"]
-    
+
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
         if first_image.get("uri", None).split(".")[-1].lower() in IMAGE_MIME_TYPES:
             image_url = first_image["uri"]
             ogp_image_alt = first_image.get("alt", None)
-
 
     if image_url:
         tags += make_tag("og:image", image_url)
