@@ -8,7 +8,16 @@ from .descriptionparser import get_description
 from .titleparser import get_title
 
 DEFAULT_DESCRIPTION_LENGTH = 200
-
+IMAGE_MIME_TYPES = {
+    "gif": "image/gif",
+    "apng": "image/apng",
+    "flif": "image/flif",
+    "webp": "image/webp",
+    "mng": "image/x-mng",
+    "jpeg": "image/jpeg",
+    "jpg": "image/jpeg",
+    "png": "image/png",
+}
 
 def make_tag(property: str, content: str) -> str:
     return f'<meta property="{property}" content="{content}" />\n  '
@@ -55,19 +64,28 @@ def get_tags(
     tags += make_tag("og:description", description)
 
     # image tag
-    # Get the image from the config
+    # Get basic values from config
     image_url = config["ogp_image"]
+    ogp_use_first_image = config["ogp_use_first_image"]
+    ogp_image_alt = config["ogp_image_alt"]
+    
+    if ogp_use_first_image:
+        first_image = doctree.next_node(nodes.image)
+        if first_image.get("uri", None).split(".")[-1].lower() in IMAGE_MIME_TYPES:
+            image_url = first_image["uri"]
+            ogp_image_alt = first_image.get("alt", None)
+
+
     if image_url:
         tags += make_tag("og:image", image_url)
 
-    # Add image alt text (either provided by config or from site_name)
-    ogp_image_alt = config["ogp_image_alt"]
-    if isinstance(ogp_image_alt, str):
-        tags += make_tag("og:image:alt", ogp_image_alt)
-    elif ogp_image_alt and site_name:
-        tags += make_tag("og:image:alt", site_name)
-    elif ogp_image_alt and title:
-        tags += make_tag("og:image:alt", title)
+        # Add image alt text (either provided by config or from site_name)
+        if isinstance(ogp_image_alt, str):
+            tags += make_tag("og:image:alt", ogp_image_alt)
+        elif ogp_image_alt and site_name:
+            tags += make_tag("og:image:alt", site_name)
+        elif ogp_image_alt and title:
+            tags += make_tag("og:image:alt", title)
 
     # custom tags
     tags += "\n".join(config["ogp_custom_meta_tags"])
@@ -91,6 +109,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", True, "html")
+    app.add_config_value("ogp_use_first_image", False, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")

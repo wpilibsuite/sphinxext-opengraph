@@ -54,6 +54,12 @@ def test_site_name(og_meta_tags):
     assert get_tag_content(og_meta_tags, "site_name") == "Example's Docs!"
 
 
+@pytest.mark.sphinx("html", testroot="first-image")
+def test_first_image(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "image") == "http://example.org/image2.png"
+    assert get_tag_content(og_meta_tags, "image:alt") == "Test image alt text"
+
+
 @pytest.mark.sphinx("html", testroot="skip-admonitions")
 def test_skip_admonitions(og_meta_tags):
     assert get_tag_content(og_meta_tags, "description") == "This is text."
