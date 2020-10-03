@@ -1,5 +1,6 @@
 from typing import Any, Dict
 from urllib.parse import urljoin
+from pathlib import Path
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
@@ -72,7 +73,7 @@ def get_tags(
 
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
-        if first_image.get("uri", None).split(".")[-1].lower() in IMAGE_MIME_TYPES:
+        if Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES:
             image_url = first_image["uri"]
             ogp_image_alt = first_image.get("alt", None)
 
