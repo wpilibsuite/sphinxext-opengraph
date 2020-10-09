@@ -77,7 +77,7 @@ def get_tags(
 
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
-        if Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES:
+        if first_image and Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES:
             image_url = first_image["uri"]
             ogp_image_alt = first_image.get("alt", None)
 

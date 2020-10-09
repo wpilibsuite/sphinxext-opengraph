@@ -13,7 +13,7 @@ Just add `sphinxext.opengraph` to your extensions list in your `conf.py`
 
 ```python
 extensions = [
-   sphinxext.opengraph,
+   "sphinxext.opengraph",
 ]
 ```
 ## Options
