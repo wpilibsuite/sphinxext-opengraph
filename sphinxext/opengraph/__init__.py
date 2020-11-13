@@ -90,9 +90,9 @@ def get_tags(
         # Add image alt text (either provided by config or from site_name)
         if isinstance(ogp_image_alt, str):
             tags += make_tag("og:image:alt", ogp_image_alt)
-        elif ogp_image_alt and site_name:
+        elif ogp_image_alt is None and site_name:
             tags += make_tag("og:image:alt", site_name)
-        elif ogp_image_alt and title:
+        elif ogp_image_alt is None and title:
             tags += make_tag("og:image:alt", title)
 
     # custom tags
@@ -116,7 +116,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_site_url", None, "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
-    app.add_config_value("ogp_image_alt", True, "html")
+    app.add_config_value("ogp_image_alt", None, "html")
     app.add_config_value("ogp_use_first_image", False, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
