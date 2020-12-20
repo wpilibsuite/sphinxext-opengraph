@@ -46,6 +46,21 @@ jobs:
       - name: Run Tests for ${{ matrix.python-version }}
         run: |
           python -m pytest -vv
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          cd docs
+          pip install -r requirements.txt
+      - name: Build documentation
+        run: |
+          make html
   pypi-release:
     needs: test-extension
     runs-on: ubuntu-latest
