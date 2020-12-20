@@ -59,6 +59,7 @@ jobs:
           pip install -r requirements.txt
       - name: Build documentation
         run: |
+          cd docs
           make html
 
   pypi-release:
