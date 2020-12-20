@@ -20,7 +20,7 @@ jobs:
     - name: Black
       run: |
         pip install black
-        black --check --diff .
+        black --check --exclude /docs --diff .
 
   test-extension:
     runs-on: ubuntu-latest
