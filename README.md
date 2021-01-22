@@ -19,6 +19,8 @@ extensions = [
 ## Options
 These values are placed in the conf.py of your sphinx project.
 
+Users hosting documentation *do not* need to set any of the following unless custom configuration is wanted. The extension will automatically retrieve your site url.
+
 * `ogp_site_url`
     * This config option is very important, set it to the URL the site is being hosted on. 
 * `ogp_description_length`
