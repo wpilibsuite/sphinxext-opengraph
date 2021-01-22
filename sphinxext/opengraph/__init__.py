@@ -1,12 +1,16 @@
 from typing import Any, Dict
-from urllib.parse import urljoin
-from pathlib import Path
+from urllib.parse import urljoin, urlparse, urlunparse
+from pathlib import Path, PosixPath
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
+from sphinx.util import logger
 
 from .descriptionparser import get_description
 from .titleparser import get_title
+
+import os
+
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
@@ -53,6 +57,28 @@ def get_tags(
 
     # type tag
     tags += make_tag("og:type", config["ogp_type"])
+
+    if config["ogp_readthedocs_enable"] and os.getenv("READTHEDOCS"):
+        # readthedocs uses html_baseurl for sphinx > 1.8
+        parse_result = urlparse(config["html_baseurl"])
+
+        if parse_result is None:
+            logger.error("ReadTheDocs did not provide a canonical URL!")
+
+        print(parse_result)
+        print(parse_result.path)
+
+        # Grab root url from canonical url
+        config["ogp_site_url"] = urlunparse(
+            (
+                parse_result.scheme,
+                parse_result.netloc,
+                parse_result.path,
+                "",
+                "",
+                "",
+            )
+        )
 
     # url tag
     # Get the URL of the specific page
@@ -121,6 +147,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
+    app.add_config_value("ogp_readthedocs_enable", False, "html")
 
     app.connect("html-page-context", html_page_context)
 

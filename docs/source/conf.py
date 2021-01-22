@@ -35,6 +35,9 @@ extensions = [
     "sphinxext.opengraph",
 ]
 
+# Enable OGP ReadTheDocs defaults
+ogp_readthedocs_enable = True
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
