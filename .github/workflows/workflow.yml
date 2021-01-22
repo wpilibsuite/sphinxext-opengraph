@@ -20,7 +20,7 @@ jobs:
     - name: Black
       run: |
         pip install black
-        black --check --diff .
+        black --check --exclude /docs --diff .
 
   test-extension:
     runs-on: ubuntu-latest
@@ -46,6 +46,24 @@ jobs:
       - name: Run Tests for ${{ matrix.python-version }}
         run: |
           python -m pytest -vv
+
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Install dependencies
+        run: |
+          cd docs
+          pip install -r requirements.txt
+      - name: Build documentation
+        run: |
+          cd docs
+          make html
+
   pypi-release:
     needs: test-extension
     runs-on: ubuntu-latest
