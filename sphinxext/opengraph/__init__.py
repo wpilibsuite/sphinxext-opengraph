@@ -58,7 +58,7 @@ def get_tags(
     # type tag
     tags += make_tag("og:type", config["ogp_type"])
 
-    if config["ogp_readthedocs_enable"] and os.getenv("READTHEDOCS"):
+    if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
 
@@ -147,7 +147,6 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
-    app.add_config_value("ogp_readthedocs_enable", False, "html")
 
     app.connect("html-page-context", html_page_context)
 
