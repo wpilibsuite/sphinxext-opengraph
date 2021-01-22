@@ -65,9 +65,6 @@ def get_tags(
         if parse_result is None:
             logger.error("ReadTheDocs did not provide a canonical URL!")
 
-        print(parse_result)
-        print(parse_result.path)
-
         # Grab root url from canonical url
         config["ogp_site_url"] = urlunparse(
             (
