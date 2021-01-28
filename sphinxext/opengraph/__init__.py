@@ -34,7 +34,10 @@ def make_tag(property: str, content: str) -> str:
 
 
 def get_tags(
-    context: Dict[str, Any], doctree: nodes.document, config: Dict[str, Any]
+    app: Sphinx,
+    context: Dict[str, Any],
+    doctree: nodes.document,
+    config: Dict[str, Any],
 ) -> str:
 
     # Set length of description
@@ -57,13 +60,12 @@ def get_tags(
 
     # type tag
     tags += make_tag("og:type", config["ogp_type"])
-
     if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
 
-        if parse_result is None:
-            logger.error("ReadTheDocs did not provide a canonical URL!")
+        if not config["html_baseurl"]:
+            raise EnvironmentError("ReadTheDocs did not provide a valid canonical URL!")
 
         # Grab root url from canonical url
         config["ogp_site_url"] = urlunparse(
@@ -132,7 +134,7 @@ def html_page_context(
     doctree: nodes.document,
 ) -> None:
     if doctree:
-        context["metatags"] += get_tags(context, doctree, app.config)
+        context["metatags"] += get_tags(app, context, doctree, app.config)
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
