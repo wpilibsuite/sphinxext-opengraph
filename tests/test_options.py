@@ -157,7 +157,7 @@ def test_rtd_valid(app: Sphinx, monkeypatch):
 
 
 # use rtd-default, as we are not changing configuration, but RTD variables
-@pytest.mark.sphinx("html", testroot="rtd-default")
+@pytest.mark.sphinx("html", testroot="rtd-invalid")
 def test_rtd_invalid(app: Sphinx, monkeypatch):
     monkeypatch.setenv("READTHEDOCS", "True")
     app.config.html_baseurl = None
