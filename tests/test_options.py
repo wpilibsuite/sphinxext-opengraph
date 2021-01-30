@@ -1,4 +1,7 @@
 import pytest
+from sphinx.application import Sphinx
+import conftest
+import os
 
 
 def get_tag(tags, tag_type):
@@ -122,3 +125,36 @@ def test_skip_raw(og_meta_tags):
         description
         == "This text should be included. This text should also be included."
     )
+
+
+# use same as simple, as configuration is identical to overriden
+@pytest.mark.sphinx("html", testroot="simple")
+def test_rtd_override(app: Sphinx, monkeypatch):
+    monkeypatch.setenv("READTHEDOCS", "True")
+    app.config.html_baseurl = "https://failure.com"
+
+    app.build()
+    tags = conftest._og_meta_tags(app)
+
+    assert get_tag_content(tags, "url") == "http://example.org/index.html"
+
+
+@pytest.mark.sphinx("html", testroot="rtd-default")
+def test_rtd_valid(app: Sphinx, monkeypatch):
+    monkeypatch.setenv("READTHEDOCS", "True")
+    app.config.html_baseurl = "https://failure.com"
+
+    app.build()
+    tags = conftest._og_meta_tags(app)
+
+    assert get_tag_content(tags, "url") == "https://failure.com/index.html"
+
+
+# use rtd-default, as we are not changing configuration, but RTD variables
+@pytest.mark.sphinx("html", testroot="rtd-invalid")
+def test_rtd_invalid(app: Sphinx, monkeypatch):
+    monkeypatch.setenv("READTHEDOCS", "True")
+    app.config.html_baseurl = None
+
+    with pytest.raises(Exception):
+        app.build()

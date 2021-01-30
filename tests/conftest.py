@@ -2,6 +2,9 @@ import pytest
 from bs4 import BeautifulSoup
 from sphinx.testing.path import path
 
+from sphinx.application import Sphinx
+
+
 pytest_plugins = "sphinx.testing.fixtures"
 
 
@@ -19,6 +22,12 @@ def content(app):
 def _meta_tags(content):
     c = (content.outdir / "index.html").read_text()
     return BeautifulSoup(c, "html.parser").find_all("meta")
+
+
+def _og_meta_tags(content):
+    return [
+        tag for tag in _meta_tags(content) if tag.get("property", "").startswith("og:")
+    ]
 
 
 @pytest.fixture()
