@@ -64,7 +64,7 @@ def get_tags(
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
 
-        if not config["html_baseurl"]:
+        if config["html_baseurl"] is None:
             raise EnvironmentError("ReadTheDocs did not provide a valid canonical URL!")
 
         # Grab root url from canonical url

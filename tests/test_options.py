@@ -136,9 +136,10 @@ def test_rtd_override(app: Sphinx, monkeypatch):
     app.build()
     tags = conftest._og_meta_tags(app)
 
-    yield app
-
     assert get_tag_content(tags, "url") == "http://example.org/index.html"
+
+    app.config.html_baseurl = None
+    monkeypatch.undo()
 
 
 @pytest.mark.sphinx("html", testroot="rtd-default")
@@ -149,9 +150,10 @@ def test_rtd_valid(app: Sphinx, monkeypatch):
     app.build()
     tags = conftest._og_meta_tags(app)
 
-    yield app
-
     assert get_tag_content(tags, "url") == "https://failure.com/index.html"
+
+    app.config.html_baseurl = None
+    monkeypatch.undo()
 
 
 # use rtd-default, as we are not changing configuration, but RTD variables
@@ -162,4 +164,5 @@ def test_rtd_invalid(app: Sphinx, monkeypatch):
 
     with pytest.raises(Exception):
         app.build()
-        yield app
+
+    monkeypatch.undo()
