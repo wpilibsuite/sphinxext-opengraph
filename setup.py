@@ -29,7 +29,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/wpilibsuite/sphinxext-opengraph",
     install_requires=["sphinx>=2.0"],
-    packages=["sphinxext"],
+    packages=["sphinxext/opengraph"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Plugins",
