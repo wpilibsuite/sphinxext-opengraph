@@ -92,7 +92,8 @@ def get_tags(
         tags += make_tag("og:site_name", site_name)
 
     # description tag
-    tags += make_tag("og:description", description)
+    if description:
+        tags += make_tag("og:description", description)
 
     # image tag
     # Get basic values from config
