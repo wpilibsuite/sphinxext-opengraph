@@ -1,3 +1,5 @@
+"""Sphinx extension to generate OpenGraph metadata (https://ogp.me/)"""
+
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
 from pathlib import Path, PosixPath
@@ -11,6 +13,7 @@ from .titleparser import get_title
 
 import os
 
+__version__ = "0.4.2"
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
