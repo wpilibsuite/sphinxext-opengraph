@@ -28,6 +28,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/wpilibsuite/sphinxext-opengraph",
+    license="LICENSE.md",
     install_requires=["sphinx>=2.0"],
     packages=["sphinxext/opengraph"],
     classifiers=[

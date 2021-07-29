@@ -1,0 +1,22 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+
+[tool.flit.metadata]
+module = "sphinxext_opengraph"
+author = "Itay Ziv"
+author-email = "itay220204@gmail.com"
+home-page = "https://github.com/wpilibsuite/sphinxext-opengraph"
+description-file = "README.md"
+requires-python = ">=3.6"
+requires = ["sphinx >= 2"]
+
+# [tool.flit.metadata.requires-extra]
+# test = [
+#      "conftest.py",
+#      "roots",
+#      "test_options.py"
+
+# ]
+# doc = ["
