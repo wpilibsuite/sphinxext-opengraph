@@ -19,8 +19,11 @@ def content(app):
     yield app
 
 
-def _meta_tags(content):
-    c = (content.outdir / "index.html").read_text()
+def _meta_tags(content, subdir=None):
+    if subdir is None:
+        c = (content.outdir / "index.html").read_text()
+    else:
+        c = (content.outdir / subdir / "index.html").read_text()
     return BeautifulSoup(c, "html.parser").find_all("meta")
 
 
@@ -39,6 +42,15 @@ def meta_tags(content):
 def og_meta_tags(content):
     return [
         tag for tag in _meta_tags(content) if tag.get("property", "").startswith("og:")
+    ]
+
+
+@pytest.fixture()
+def og_meta_tags_sub(content):
+    return [
+        tag
+        for tag in _meta_tags(content, "sub")
+        if tag.get("property", "").startswith("og:")
     ]
 
 
