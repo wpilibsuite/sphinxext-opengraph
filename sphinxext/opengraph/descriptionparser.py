@@ -67,7 +67,7 @@ class DescriptionParser(nodes.NodeVisitor):
             if node.astext() in self.known_titles:
                 raise nodes.SkipNode
 
-        if isinstance(node, nodes.raw):
+        if isinstance(node, nodes.raw) or isinstance(node.parent, nodes.literal_block):
             raise nodes.SkipNode
 
         # Only include leaf nodes in the description
