@@ -1,10 +1,9 @@
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
-from pathlib import Path, PosixPath
+from pathlib import Path
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
-from sphinx.util import logger
 
 from .descriptionparser import get_description
 from .titleparser import get_title
@@ -111,6 +110,10 @@ def get_tags(
             ogp_image_alt = first_image.get("alt", None)
 
     if image_url:
+        image_url_parsed = urlparse(image_url)
+        if not image_url_parsed.scheme:
+            # Relative image path detected. Make absolute.
+            image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
         tags += make_tag("og:image", image_url)
 
         # Add image alt text (either provided by config or from site_name)
