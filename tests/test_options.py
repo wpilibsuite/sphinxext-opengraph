@@ -127,6 +127,16 @@ def test_skip_raw(og_meta_tags):
     )
 
 
+@pytest.mark.sphinx("html", testroot="skip-code-block")
+def test_skip_code_block(og_meta_tags):
+    description = get_tag_content(og_meta_tags, "description")
+    assert "<p>" not in description
+    assert (
+        description
+        == "This text should be included. This text should also be included."
+    )
+
+
 # use same as simple, as configuration is identical to overriden
 @pytest.mark.sphinx("html", testroot="simple")
 def test_rtd_override(app: Sphinx, monkeypatch):
