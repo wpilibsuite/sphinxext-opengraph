@@ -148,6 +148,7 @@ def test_skip_code_block(og_meta_tags):
         == "This text should be included. This text should also be included."
     )
 
+
 @pytest.mark.sphinx("html", testroot="quotation-marks")
 def test_quotation_marks(og_meta_tags):
     # If smart quotes are disabled and the quotes aren't properly escaped, bs4 will fail to parse the tag and the content will be a empty string
@@ -155,8 +156,9 @@ def test_quotation_marks(og_meta_tags):
 
     assert (
         description
-        == "\"This text should appear in escaped quotation marks\" This text should still appear as well \"while this is once again in quotations\""
+        == '"This text should appear in escaped quotation marks" This text should still appear as well "while this is once again in quotations"'
     )
+
 
 # use same as simple, as configuration is identical to overriden
 @pytest.mark.sphinx("html", testroot="simple")
