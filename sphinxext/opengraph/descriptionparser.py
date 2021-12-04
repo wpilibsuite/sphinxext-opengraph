@@ -124,4 +124,5 @@ def get_description(
 
     mcv = DescriptionParser(description_length, known_titles, document)
     doctree.walkabout(mcv)
-    return mcv.description
+    # Parse quotation so they won't break html tags if smart quotes are disabled
+    return mcv.description.replace("\"", "&quot;")
