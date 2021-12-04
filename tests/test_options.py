@@ -149,6 +149,17 @@ def test_skip_code_block(og_meta_tags):
     )
 
 
+@pytest.mark.sphinx("html", testroot="quotation-marks")
+def test_quotation_marks(og_meta_tags):
+    # If smart quotes are disabled and the quotes aren't properly escaped, bs4 will fail to parse the tag and the content will be a empty string
+    description = get_tag_content(og_meta_tags, "description")
+
+    assert (
+        description
+        == '"This text should appear in escaped quotation marks" This text should still appear as well "while this is once again in quotations"'
+    )
+
+
 # use same as simple, as configuration is identical to overriden
 @pytest.mark.sphinx("html", testroot="simple")
 def test_rtd_override(app: Sphinx, monkeypatch):
