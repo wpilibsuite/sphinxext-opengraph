@@ -38,10 +38,15 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
+    # Get field lists for per-poge overrides
+    fields = context["meta"]
 
     # Set length of description
     try:
-        desc_len = int(config["ogp_description_length"])
+        try:
+            desc_len = int(fields["ogp-description-length"])
+        except (ValueError, KeyError):
+            desc_len = int(config["ogp_description_length"])
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
@@ -50,7 +55,10 @@ def get_tags(
     title_excluding_html = get_title(context["title"], skip_html_tags=True)
 
     # Parse/walk doctree for metadata (tag/description)
-    description = get_description(doctree, desc_len, [title, title_excluding_html])
+    if "ogp-description" in fields:
+        description = fields["ogp-description"]
+    else:
+        description = get_description(doctree, desc_len, [title, title_excluding_html])
 
     tags = "\n  "
 
@@ -58,7 +66,11 @@ def get_tags(
     tags += make_tag("og:title", title)
 
     # type tag
-    tags += make_tag("og:type", config["ogp_type"])
+    tags += make_tag(
+        "og:type",
+        config["ogp_type"] if "ogp-type" not in fields else fields["ogp-type"],
+    )
+
     if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
@@ -86,7 +98,11 @@ def get_tags(
     tags += make_tag("og:url", page_url)
 
     # site name tag
-    site_name = config["ogp_site_name"]
+    site_name = (
+        config["ogp_site_name"]
+        if "ogp-site-name" not in fields
+        else fields["ogp-site-name"]
+    )
     if site_name:
         tags += make_tag("og:site_name", site_name)
 
@@ -96,9 +112,14 @@ def get_tags(
 
     # image tag
     # Get basic values from config
-    image_url = config["ogp_image"]
-    ogp_use_first_image = config["ogp_use_first_image"]
-    ogp_image_alt = config["ogp_image_alt"]
+    if "ogp-image" in fields:
+        image_url = fields["ogp-image"]
+        ogp_use_first_image = False
+        ogp_image_alt = fields["ogp-image-alt"] if "ogp-image-alt" in fields else None
+    else:
+        image_url = config["ogp_image"]
+        ogp_use_first_image = config["ogp_use_first_image"]
+        ogp_image_alt = config["ogp_image_alt"]
 
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
