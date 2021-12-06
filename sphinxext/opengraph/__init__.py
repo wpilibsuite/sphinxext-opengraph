@@ -65,7 +65,9 @@ def get_tags(
     tags = "\n  "
 
     # title tag
-    tags += make_tag("og:title", title)
+    tags += make_tag(
+        "og:title", title if "ogp-title" not in fields else fields["ogp-title"]
+    )
 
     # type tag
     tags += make_tag(
