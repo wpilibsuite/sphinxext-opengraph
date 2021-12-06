@@ -29,6 +29,8 @@ IMAGE_MIME_TYPES = {
 
 
 def make_tag(property: str, content: str) -> str:
+    # Parse quotation, so they won't break html tags if smart quotes are disabled
+    content = content.replace('"', "&quot;")
     return f'<meta property="{property}" content="{content}" />\n  '
 
 
