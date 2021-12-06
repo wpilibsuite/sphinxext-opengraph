@@ -42,6 +42,8 @@ def get_tags(
 ) -> str:
     # Get field lists for per-poge overrides
     fields = context["meta"]
+    if fields is None:
+        fields = {}
 
     # Set length of description
     try:
