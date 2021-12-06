@@ -37,7 +37,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types. By default it is set to `website`, which should be fine for most use cases.
 * `ogp_custom_meta_tags`
     * This is not required. List of custom html snippets to insert.
-
+    
 ## Example Config
 
 ### Simple Config
@@ -59,4 +59,33 @@ ogp_custom_meta_tags = [
     '<meta property="og:ignore_canonical" content="true" />',
 ]
 
+```
+
+## Per Page Overrides
+[Field lists](https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html) are used to allow you to override certain settings on each page.
+
+Make sure you place the fields at the very start of the document such that Sphinx will pick them up and also won't build them into the html.
+
+### Overrides
+
+* `:ogp-description-length:`
+  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`.
+* `:ogp-description:`
+  * Lets you override the description of the page.
+* `:ogp-title:`
+  * Lets you override the title of the page.
+* `:ogp-type:`
+  * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
+* `:ogp-image:`
+  * Set the image for the page.
+* `:ogp-image-alt:`
+  * Will be ignored if the image isn't set with the above field, if the image is set, sets the alt text for it.
+
+### Example
+Remember that the fields **must** be placed at the very start of the file. You can verify Sphinx has picked up the fields if they aren't shown in the final html file.
+
+```rst
+:ogp-description: New description
+:ogp-image: http://example.org/image.png
+:ogp-image-alt: Example Image
 ```
