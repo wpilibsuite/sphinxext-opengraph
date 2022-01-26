@@ -47,10 +47,7 @@ def get_tags(
 
     # Set length of description
     try:
-        try:
-            desc_len = int(fields["ogp-description-length"])
-        except (ValueError, KeyError):
-            desc_len = int(config["ogp_description_length"])
+        desc_len = int(fields.get("ogp-description-length", config["ogp_description_length"]))
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
@@ -59,23 +56,15 @@ def get_tags(
     title_excluding_html = get_title(context["title"], skip_html_tags=True)
 
     # Parse/walk doctree for metadata (tag/description)
-    if "ogp-description" in fields:
-        description = fields["ogp-description"]
-    else:
-        description = get_description(doctree, desc_len, [title, title_excluding_html])
+    description = fields.get("ogp-description", get_description(doctree, desc_len, [title, title_excluding_html]))
 
     tags = "\n  "
 
     # title tag
-    tags += make_tag(
-        "og:title", title if "ogp-title" not in fields else fields["ogp-title"]
-    )
+    tags += make_tag("og:title", fields.get("ogp-title", title))
 
     # type tag
-    tags += make_tag(
-        "og:type",
-        config["ogp_type"] if "ogp-type" not in fields else fields["ogp-type"],
-    )
+    tags += make_tag("og:type", fields.get("ogp-type", config["ogp_type"]))
 
     if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
         # readthedocs uses html_baseurl for sphinx > 1.8
@@ -104,11 +93,7 @@ def get_tags(
     tags += make_tag("og:url", page_url)
 
     # site name tag
-    site_name = (
-        config["ogp_site_name"]
-        if "ogp-site-name" not in fields
-        else fields["ogp-site-name"]
-    )
+    site_name = fields.get("ogp-site-name", config["ogp_site_name"])
     if site_name:
         tags += make_tag("og:site_name", site_name)
 
@@ -121,7 +106,7 @@ def get_tags(
     if "ogp-image" in fields:
         image_url = fields["ogp-image"]
         ogp_use_first_image = False
-        ogp_image_alt = fields["ogp-image-alt"] if "ogp-image-alt" in fields else None
+        ogp_image_alt = fields.get("ogp-image-alt")
     else:
         image_url = config["ogp_image"]
         ogp_use_first_image = config["ogp_use_first_image"]
