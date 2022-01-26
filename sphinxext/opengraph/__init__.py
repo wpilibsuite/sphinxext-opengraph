@@ -47,7 +47,9 @@ def get_tags(
 
     # Set length of description
     try:
-        desc_len = int(fields.get("ogp-description-length", config["ogp_description_length"]))
+        desc_len = int(
+            fields.get("ogp-description-length", config["ogp_description_length"])
+        )
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
@@ -56,7 +58,10 @@ def get_tags(
     title_excluding_html = get_title(context["title"], skip_html_tags=True)
 
     # Parse/walk doctree for metadata (tag/description)
-    description = fields.get("ogp-description", get_description(doctree, desc_len, [title, title_excluding_html]))
+    description = fields.get(
+        "ogp-description",
+        get_description(doctree, desc_len, [title, title_excluding_html]),
+    )
 
     tags = "\n  "
 
@@ -142,6 +147,9 @@ def get_tags(
     return tags
 
 
+from sphinx.util import logging
+
+
 def html_page_context(
     app: Sphinx,
     pagename: str,
@@ -149,6 +157,8 @@ def html_page_context(
     context: Dict[str, Any],
     doctree: nodes.document,
 ) -> None:
+    logger = logging.getLogger(__name__)
+    logger.info(context.get("meta"))
     if doctree:
         context["metatags"] += get_tags(app, context, doctree, app.config)
 
