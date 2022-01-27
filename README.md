@@ -89,3 +89,10 @@ Remember that the fields **must** be placed at the very start of the file. You c
 :ogp-image: http://example.org/image.png
 :ogp-image-alt: Example Image
 ```
+
+## Arbitrary Tags
+Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is `:og:tag: content`. For Example:
+
+```rst
+:og:video: http://example.org/video.mp4
+```
