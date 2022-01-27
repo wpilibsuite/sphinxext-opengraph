@@ -34,6 +34,15 @@ def make_tag(property: str, content: str) -> str:
     return f'<meta property="{property}" content="{content}" />\n  '
 
 
+def make_arbitrary_tags(fields: Dict[str, Any]) -> str:
+    tags = ""
+    for name, content in fields.items():
+        if name.startswith("og:"):
+            tags += make_tag(name, content)
+
+    return tags
+
+
 def get_tags(
     app: Sphinx,
     context: Dict[str, Any],
@@ -141,13 +150,13 @@ def get_tags(
         elif ogp_image_alt is None and title:
             tags += make_tag("og:image:alt", title)
 
+    # arbitrary tags
+    tags += make_arbitrary_tags(fields)
+
     # custom tags
     tags += "\n".join(config["ogp_custom_meta_tags"])
 
     return tags
-
-
-from sphinx.util import logging
 
 
 def html_page_context(
@@ -157,8 +166,6 @@ def html_page_context(
     context: Dict[str, Any],
     doctree: nodes.document,
 ) -> None:
-    logger = logging.getLogger(__name__)
-    logger.info(context.get("meta"))
     if doctree:
         context["metatags"] += get_tags(app, context, doctree, app.config)
 
