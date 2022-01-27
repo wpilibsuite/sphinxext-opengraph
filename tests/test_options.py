@@ -184,6 +184,8 @@ def test_overrides_complex(og_meta_tags):
 def test_arbitrary_tags(og_meta_tags):
     assert get_tag_content(og_meta_tags, "video") == "http://example.org/video.mp4"
     assert get_tag_content(og_meta_tags, "video:type") == "video/mp4"
+    assert get_tag_content(og_meta_tags, "url") == "http://example.org/index.html"
+    assert len([tag for tag in og_meta_tags if tag.get("property") == "og:url"]) == 1
 
 
 # use same as simple, as configuration is identical to overriden
