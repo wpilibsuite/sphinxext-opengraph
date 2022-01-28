@@ -26,16 +26,12 @@ IMAGE_MIME_TYPES = {
     "heif": "image/heif",
     "tiff": "image/tiff",
 }
-TAG_LIST = []
 
 
 def make_tag(property: str, content: str) -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
-    if property not in TAG_LIST:
-        TAG_LIST.append(property)
-        content = content.replace('"', "&quot;")
-        return f'<meta property="{property}" content="{content}" />\n  '
-    return ""
+    content = content.replace('"', "&quot;")
+    return f'<meta property="{property}" content="{content}" />\n  '
 
 
 def make_arbitrary_tags(fields: Dict[str, Any]) -> str:
@@ -53,7 +49,6 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
-    TAG_LIST.clear()
     # Get field lists for per-poge overrides
     fields = context["meta"]
     if fields is None:
