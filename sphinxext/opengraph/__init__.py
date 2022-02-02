@@ -144,8 +144,7 @@ def get_tags(
 
     return (
         "\n"
-        + "\n".join([make_tag(p, c) for p, c in tags.items()])
-        + "\n".join(config["ogp_custom_meta_tags"])
+        + "\n".join([make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"])
     )
 
 

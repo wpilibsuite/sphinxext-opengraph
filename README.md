@@ -89,11 +89,15 @@ Remember that the fields **must** be placed at the very start of the file. You c
 :og:description: New description
 :og:image: http://example.org/image.png
 :og:image:alt: Example Image
-```
+
+Page contents
+=============
 
 ### Arbitrary Tags
 Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For Example:
 
 ```rst
 :og:video: http://example.org/video.mp4
-```
+
+Page contents
+=============
