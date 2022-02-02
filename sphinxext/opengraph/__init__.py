@@ -142,9 +142,8 @@ def get_tags(
     # arbitrary tags and overrides
     tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
 
-    return (
-        "\n"
-        + "\n".join([make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"])
+    return "\n" + "\n".join(
+        [make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"]
     )
 
 
