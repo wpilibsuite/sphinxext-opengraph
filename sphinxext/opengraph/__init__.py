@@ -109,11 +109,11 @@ def get_tags(
         ogp_use_first_image = False
         ogp_image_alt = fields.get("og:image:alt")
         fields.pop("og:image", None)
-        fields.pop("og:image:alt", None)
     else:
         image_url = config["ogp_image"]
         ogp_use_first_image = config["ogp_use_first_image"]
-        ogp_image_alt = config["ogp_image_alt"]
+        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
+    fields.pop("og:image:alt", None)
 
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
