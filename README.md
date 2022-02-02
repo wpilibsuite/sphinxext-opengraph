@@ -28,7 +28,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
 * `ogp_site_name`
     * This is not required. Name of the site. This is displayed above the title.
 * `ogp_image`
-    * This is not required. Link to image to show.
+    * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output.
 * `ogp_image_alt`
     * This is not required. Alt text for image. Defaults to using `ogp_site_name` or the document's title as alt text, if available. Set to `False` if you want to turn off alt text completely.
 * `ogp_use_first_image`
@@ -78,7 +78,7 @@ These are some overrides that can be used, you can actually override any tag and
 * `:og:type:`
   * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
 * `:ogp:image:`
-  * Set the image for the page.
+  * Set the image for the page. Note: Relative file paths are ***not*** currently supported when using field lists.
 * `:ogp:image:alt:`
   * Sets the alt text. Will be ignored if there is no image set.
 
@@ -92,12 +92,16 @@ Remember that the fields **must** be placed at the very start of the file. You c
 
 Page contents
 =============
+```
 
 ### Arbitrary Tags
 Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For Example:
+
+Note: Relative file paths are ***not*** currently supported for images, videos and audio when using field lists.
 
 ```rst
 :og:video: http://example.org/video.mp4
 
 Page contents
 =============
+```
