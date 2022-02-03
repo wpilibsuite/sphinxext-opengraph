@@ -28,7 +28,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
 * `ogp_site_name`
     * This is not required. Name of the site. This is displayed above the title.
 * `ogp_image`
-    * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output.
+    * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_name.
 * `ogp_image_alt`
     * This is not required. Alt text for image. Defaults to using `ogp_site_name` or the document's title as alt text, if available. Set to `False` if you want to turn off alt text completely.
 * `ogp_use_first_image`
