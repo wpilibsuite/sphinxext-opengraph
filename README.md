@@ -78,7 +78,7 @@ These are some overrides that can be used, you can actually override any tag and
 * `:og:type:`
   * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
 * `:ogp:image:`
-  * Set the image for the page. Note: Relative file paths are ***not*** currently supported when using field lists.
+  * Set the image for the page.[^1]
 * `:ogp:image:alt:`
   * Sets the alt text. Will be ignored if there is no image set.
 
@@ -97,11 +97,11 @@ Page contents
 ### Arbitrary Tags
 Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For Example:
 
-Note: Relative file paths are ***not*** currently supported for images, videos and audio when using field lists.
-
 ```rst
 :og:video: http://example.org/video.mp4
 
 Page contents
 =============
 ```
+
+[^1]: Note: Relative file paths for images are currently converted to be relative to the root of the website as defined by `ogp_site_name` ***not*** the source reStructuredText file. Additionally, relative file paths for videos and audio are currently **not** supported please use an absolute path instead.
