@@ -40,7 +40,7 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
-    # Get field lists for per-poge overrides
+    # Get field lists for per-page overrides
     fields = context["meta"]
     if fields is None:
         fields = {}
