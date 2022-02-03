@@ -114,12 +114,6 @@ def get_tags(
         ogp_use_first_image = config["ogp_use_first_image"]
         ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
 
-        if image_url:
-            image_url_parsed = urlparse(image_url)
-            if not image_url_parsed.scheme:
-                # Relative image path detected. Make absolute.
-                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
-
     fields.pop("og:image:alt", None)
 
     if ogp_use_first_image:
@@ -132,6 +126,11 @@ def get_tags(
             ogp_image_alt = first_image.get("alt", None)
 
     if image_url:
+        if image_url:
+            image_url_parsed = urlparse(image_url)
+            if not image_url_parsed.scheme:
+                # Relative image path detected. Make absolute.
+                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
         tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
