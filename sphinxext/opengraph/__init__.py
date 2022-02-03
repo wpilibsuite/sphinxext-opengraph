@@ -126,7 +126,8 @@ def get_tags(
             ogp_image_alt = first_image.get("alt", None)
 
     if image_url:
-        if image_url:
+        # temporarily disable relative image paths with field lists
+        if image_url and "og:image" not in fields:
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
                 # Relative image path detected. Make absolute.

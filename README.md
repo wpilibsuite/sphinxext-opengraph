@@ -94,7 +94,7 @@ Page contents
 =============
 ```
 
-### Arbitrary Tags
+### Arbitrary Tags[^1]
 Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For Example:
 
 ```rst
@@ -104,4 +104,4 @@ Page contents
 =============
 ```
 
-[^1]: Note: Relative file paths for images are currently converted to be relative to the root of the website as defined by `ogp_site_name` ***not*** the source reStructuredText file. Additionally, relative file paths for videos and audio are currently **not** supported please use an absolute path instead.
+[^1]: Note: Relative file paths for images, videos and audio are currently **not** supported when using field lists. Please use an absolute path instead.
