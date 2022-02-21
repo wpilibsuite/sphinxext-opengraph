@@ -28,7 +28,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
 * `ogp_site_name`
     * This is not required. Name of the site. This is displayed above the title.
 * `ogp_image`
-    * This is not required. Link to image to show.
+    * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_name.
 * `ogp_image_alt`
     * This is not required. Alt text for image. Defaults to using `ogp_site_name` or the document's title as alt text, if available. Set to `False` if you want to turn off alt text completely.
 * `ogp_use_first_image`
@@ -37,7 +37,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types. By default it is set to `website`, which should be fine for most use cases.
 * `ogp_custom_meta_tags`
     * This is not required. List of custom html snippets to insert.
-
+    
 ## Example Config
 
 ### Simple Config
@@ -60,3 +60,48 @@ ogp_custom_meta_tags = [
 ]
 
 ```
+
+## Per Page Overrides
+[Field lists](https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html) are used to allow you to override certain settings on each page and set unsupported arbitrary OpenGraph tags.
+
+Make sure you place the fields at the very start of the document such that Sphinx will pick them up and also won't build them into the html.
+
+### Overrides
+These are some overrides that can be used, you can actually override any tag and field lists will always take priority.
+
+* `:og_description_length:`
+  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an OpenGraph tag.
+* `:og:description:`
+  * Lets you override the description of the page.
+* `:og:title:`
+  * Lets you override the title of the page.
+* `:og:type:`
+  * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
+* `:ogp:image:`
+  * Set the image for the page.[^1]
+* `:ogp:image:alt:`
+  * Sets the alt text. Will be ignored if there is no image set.
+
+### Example
+Remember that the fields **must** be placed at the very start of the file. You can verify Sphinx has picked up the fields if they aren't shown in the final html file.
+
+```rst
+:og:description: New description
+:og:image: http://example.org/image.png
+:og:image:alt: Example Image
+
+Page contents
+=============
+```
+
+### Arbitrary Tags[^1]
+Additionally, you can use field lists to add any arbitrary OpenGraph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For Example:
+
+```rst
+:og:video: http://example.org/video.mp4
+
+Page contents
+=============
+```
+
+[^1]: Note: Relative file paths for images, videos and audio are currently **not** supported when using field lists. Please use an absolute path instead.

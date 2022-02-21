@@ -160,6 +160,32 @@ def test_quotation_marks(og_meta_tags):
     )
 
 
+@pytest.mark.sphinx("html", testroot="overrides-simple")
+def test_overrides_simple(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "description") == "Overridden description"
+    assert get_tag_content(og_meta_tags, "title") == "Overridden Title"
+    assert get_tag_content(og_meta_tags, "type") == "article"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/overridden-image.png"
+    )
+    # Make sure alt text still works even when overriding the image
+    assert get_tag_content(og_meta_tags, "image:alt") == "Example's Docs!"
+
+
+@pytest.mark.sphinx("html", testroot="overrides-complex")
+def test_overrides_complex(og_meta_tags):
+    assert len(get_tag_content(og_meta_tags, "description")) == 10
+    assert get_tag_content(og_meta_tags, "image") == "http://example.org/img/sample.jpg"
+    assert get_tag_content(og_meta_tags, "image:alt") == "Overridden Alt Text"
+
+
+@pytest.mark.sphinx("html", testroot="arbitrary-tags")
+def test_arbitrary_tags(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "video") == "http://example.org/video.mp4"
+    assert get_tag_content(og_meta_tags, "video:type") == "video/mp4"
+
+
 # use same as simple, as configuration is identical to overriden
 @pytest.mark.sphinx("html", testroot="simple")
 def test_rtd_override(app: Sphinx, monkeypatch):

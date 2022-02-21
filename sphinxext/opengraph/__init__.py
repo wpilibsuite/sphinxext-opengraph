@@ -29,6 +29,8 @@ IMAGE_MIME_TYPES = {
 
 
 def make_tag(property: str, content: str) -> str:
+    # Parse quotation, so they won't break html tags if smart quotes are disabled
+    content = content.replace('"', "&quot;")
     return f'<meta property="{property}" content="{content}" />\n  '
 
 
@@ -38,10 +40,17 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
+    # Get field lists for per-page overrides
+    fields = context["meta"]
+    if fields is None:
+        fields = {}
+    tags = {}
 
     # Set length of description
     try:
-        desc_len = int(config["ogp_description_length"])
+        desc_len = int(
+            fields.get("ogp_description_length", config["ogp_description_length"])
+        )
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
@@ -52,13 +61,12 @@ def get_tags(
     # Parse/walk doctree for metadata (tag/description)
     description = get_description(doctree, desc_len, [title, title_excluding_html])
 
-    tags = "\n  "
-
     # title tag
-    tags += make_tag("og:title", title)
+    tags["og:title"] = title
 
     # type tag
-    tags += make_tag("og:type", config["ogp_type"])
+    tags["og:type"] = config["ogp_type"]
+
     if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
@@ -83,22 +91,30 @@ def get_tags(
     page_url = urljoin(
         config["ogp_site_url"], context["pagename"] + context["file_suffix"]
     )
-    tags += make_tag("og:url", page_url)
+    tags["og:url"] = page_url
 
     # site name tag
     site_name = config["ogp_site_name"]
     if site_name:
-        tags += make_tag("og:site_name", site_name)
+        tags["og:site_name"] = site_name
 
     # description tag
     if description:
-        tags += make_tag("og:description", description)
+        tags["og:description"] = description
 
     # image tag
     # Get basic values from config
-    image_url = config["ogp_image"]
-    ogp_use_first_image = config["ogp_use_first_image"]
-    ogp_image_alt = config["ogp_image_alt"]
+    if "og:image" in fields:
+        image_url = fields["og:image"]
+        ogp_use_first_image = False
+        ogp_image_alt = fields.get("og:image:alt")
+        fields.pop("og:image", None)
+    else:
+        image_url = config["ogp_image"]
+        ogp_use_first_image = config["ogp_use_first_image"]
+        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
+
+    fields.pop("og:image:alt", None)
 
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
@@ -110,24 +126,28 @@ def get_tags(
             ogp_image_alt = first_image.get("alt", None)
 
     if image_url:
-        image_url_parsed = urlparse(image_url)
-        if not image_url_parsed.scheme:
-            # Relative image path detected. Make absolute.
-            image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
-        tags += make_tag("og:image", image_url)
+        # temporarily disable relative image paths with field lists
+        if image_url and "og:image" not in fields:
+            image_url_parsed = urlparse(image_url)
+            if not image_url_parsed.scheme:
+                # Relative image path detected. Make absolute.
+                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
+        tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
         if isinstance(ogp_image_alt, str):
-            tags += make_tag("og:image:alt", ogp_image_alt)
+            tags["og:image:alt"] = ogp_image_alt
         elif ogp_image_alt is None and site_name:
-            tags += make_tag("og:image:alt", site_name)
+            tags["og:image:alt"] = site_name
         elif ogp_image_alt is None and title:
-            tags += make_tag("og:image:alt", title)
+            tags["og:image:alt"] = title
 
-    # custom tags
-    tags += "\n".join(config["ogp_custom_meta_tags"])
+    # arbitrary tags and overrides
+    tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
 
-    return tags
+    return "\n" + "\n".join(
+        [make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"]
+    )
 
 
 def html_page_context(
