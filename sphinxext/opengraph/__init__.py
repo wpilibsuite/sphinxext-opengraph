@@ -88,9 +88,12 @@ def get_tags(
 
     # url tag
     # Get the URL of the specific page
-    page_url = urljoin(
-        config["ogp_site_url"], context["pagename"] + context["file_suffix"]
-    )
+    if context["builder"] == "dirhtml":
+        page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
+    else:
+        page_url = urljoin(
+            config["ogp_site_url"], context["pagename"] + context["file_suffix"]
+        )
     tags["og:url"] = page_url
 
     # site name tag
