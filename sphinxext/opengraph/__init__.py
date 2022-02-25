@@ -4,6 +4,7 @@ from pathlib import Path
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
+from sphinx.errors import ConfigError
 
 from .descriptionparser import get_description
 from .titleparser import get_title
@@ -67,26 +68,15 @@ def get_tags(
     # type tag
     tags["og:type"] = config["ogp_type"]
 
-    if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
-        # readthedocs uses html_baseurl for sphinx > 1.8
-        parse_result = urlparse(config["html_baseurl"])
-
-        if config["html_baseurl"] is None:
-            raise EnvironmentError("ReadTheDocs did not provide a valid canonical URL!")
-
-        # Grab root url from canonical url
-        config["ogp_site_url"] = urlunparse(
-            (
-                parse_result.scheme,
-                parse_result.netloc,
-                parse_result.path,
-                "",
-                "",
-                "",
-            )
-        )
-
     # url tag
+    # Get the canonical URL if ogp_site_url is not configured
+    if config["ogp_site_url"] is None:
+        # we require that either ogp_site_url or html_baseurl be configured
+        if config["html_baseurl"] is None:
+            raise ConfigError("A URL has not been configured and is required as per the OpenGraph Specification!")
+
+        config["ogp_site_url"] = config["html_baseurl"]
+
     # Get the URL of the specific page
     if context["builder"] == "dirhtml":
         page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
