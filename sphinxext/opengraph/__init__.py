@@ -73,7 +73,9 @@ def get_tags(
     if config["ogp_site_url"] is None:
         # we require that either ogp_site_url or html_baseurl be configured
         if config["html_baseurl"] is None:
-            raise ConfigError("A URL has not been configured and is required as per the OpenGraph Specification!")
+            raise ConfigError(
+                "A URL has not been configured and is required as per the OpenGraph Specification!"
+            )
 
         config["ogp_site_url"] = config["html_baseurl"]
 
