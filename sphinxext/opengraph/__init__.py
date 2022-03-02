@@ -106,35 +106,29 @@ def get_tags(
         tags["og:description"] = description
 
     # image tag
-    # Get basic values from config
+    # Get basic values from config or field list
+    #image_url = fields.pop("og:image", config["ogp_image"])
+    #ogp_image_alt = fields.pop("og:image:alt", config["ogp_image_alt"])
     if "og:image" in fields:
-        image_url = fields["og:image"]
-        ogp_use_first_image = False
-        ogp_image_alt = fields.get("og:image:alt")
-        fields.pop("og:image", None)
+        image_url = fields.pop("og:image")
+        ogp_image_alt = fields.pop("og:image:alt", None)
     else:
         image_url = config["ogp_image"]
-        ogp_use_first_image = config["ogp_use_first_image"]
-        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
+        # if alt text isn't provided, use site_name instead
+        ogp_image_alt = config["ogp_image_alt"]
 
-    fields.pop("og:image:alt", None)
+        if fields.get("ogp_use_first_image", config["ogp_use_first_image"]):
+            first_image = doctree.next_node(nodes.image)
 
-    if ogp_use_first_image:
-        first_image = doctree.next_node(nodes.image)
-        if (
-            first_image
-            and Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES
-        ):
-            image_url = first_image["uri"]
-            ogp_image_alt = first_image.get("alt", None)
+            if first_image:
+                image_url = first_image["uri"]
+                ogp_image_alt = first_image.get("alt", None)
 
     if image_url:
-        # temporarily disable relative image paths with field lists
-        if image_url and "og:image" not in fields:
-            image_url_parsed = urlparse(image_url)
-            if not image_url_parsed.scheme:
-                # Relative image path detected. Make absolute.
-                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
+        image_url_parsed = urlparse(image_url)
+        if not image_url_parsed.scheme:
+            # Relative image path detected. Make absolute.
+            image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
         tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
