@@ -1,9 +1,11 @@
+import posixpath
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
+from sphinx.util import images
 
 from .descriptionparser import get_description
 from .titleparser import get_title
@@ -28,6 +30,14 @@ IMAGE_MIME_TYPES = {
 }
 
 
+def get_image(image_path: str, docname: str, app: Sphinx):
+    if not (image_path.startswith('/') or image_path.startswith(os.sep)):
+        image_path = str(PurePosixPath(docname).parent / image_path)
+
+    new_path = app.builder.images[image_path] = app.env.images.add_file(docname, image_path)
+    return posixpath.join(app.builder.imgpath, new_path)
+
+
 def make_tag(property: str, content: str) -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
     content = content.replace('"', "&quot;")
@@ -40,6 +50,7 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
+    docname = context["pagename"]
     # Get field lists for per-page overrides
     fields = context["meta"]
     if fields is None:
@@ -89,10 +100,10 @@ def get_tags(
     # url tag
     # Get the URL of the specific page
     if context["builder"] == "dirhtml":
-        page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
+        page_url = urljoin(config["ogp_site_url"], docname + "/")
     else:
         page_url = urljoin(
-            config["ogp_site_url"], context["pagename"] + context["file_suffix"]
+            config["ogp_site_url"], docname + context["file_suffix"]
         )
     tags["og:url"] = page_url
 
@@ -128,7 +139,7 @@ def get_tags(
         image_url_parsed = urlparse(image_url)
         if not image_url_parsed.scheme:
             # Relative image path detected. Make absolute.
-            image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
+            image_url = urljoin(config["ogp_site_url"], get_image(image_url_parsed.path, docname, app))
         tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
