@@ -7,4 +7,4 @@ html_theme = "basic"
 
 smartquotes = False
 
-ogp_site_url = "http://example.org/"
+ogp_site_url = "http://example.org/en/latest/"
