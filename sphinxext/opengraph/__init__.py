@@ -134,7 +134,9 @@ def get_tags(
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
                 # Relative image path detected. Make absolute.
-                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path.split("..")[-1])
+                image_url = urljoin(
+                    config["ogp_site_url"], image_url_parsed.path.split("../")[-1]
+                )
         tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
