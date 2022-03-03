@@ -29,7 +29,10 @@ def test_simple(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="simple")
 def test_site_url(og_meta_tags):
     # Uses the same directory as simple, because it already contains url for a minimal config
-    assert get_tag_content(og_meta_tags, "url") == "http://example.org/en/latest/index.html"
+    assert (
+        get_tag_content(og_meta_tags, "url")
+        == "http://example.org/en/latest/index.html"
+    )
 
 
 @pytest.mark.sphinx("dirhtml", testroot="simple")
@@ -39,7 +42,10 @@ def test_dirhtml_url(og_meta_tags):
 
 @pytest.mark.sphinx("html", testroot="image")
 def test_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/en/latest/image.png"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/image.png"
+    )
 
 
 @pytest.mark.sphinx("html", testroot="image")
@@ -64,13 +70,19 @@ def test_site_name(og_meta_tags):
 
 @pytest.mark.sphinx("html", testroot="first-image")
 def test_first_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/en/latest/image2.png"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/image2.png"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "Test image alt text"
 
 
 @pytest.mark.sphinx("html", testroot="first-image-no-image")
 def test_first_image_no_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/en/latest/image33.png"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/image33.png"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "TEST"
 
 
@@ -181,13 +193,19 @@ def test_overrides_simple(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="overrides-complex")
 def test_overrides_complex(og_meta_tags):
     assert len(get_tag_content(og_meta_tags, "description")) == 10
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/en/latest/img/sample.jpg"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/img/sample.jpg"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "Overridden Alt Text"
 
 
 @pytest.mark.sphinx("html", testroot="arbitrary-tags")
 def test_arbitrary_tags(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "video") == "http://example.org/en/latest/video.mp4"
+    assert (
+        get_tag_content(og_meta_tags, "video")
+        == "http://example.org/en/latest/video.mp4"
+    )
     assert get_tag_content(og_meta_tags, "video:type") == "video/mp4"
 
 
