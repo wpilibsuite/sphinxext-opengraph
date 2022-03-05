@@ -48,6 +48,14 @@ def test_image(og_meta_tags):
     )
 
 
+@pytest.mark.sphinx("html", testroot="local-image")
+def test_local_image(og_meta_tags):
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/_static/sample.jpg"
+    )
+
+
 @pytest.mark.sphinx("html", testroot="image")
 def test_image_alt(og_meta_tags):
     assert get_tag_content(og_meta_tags, "image:alt") == "Example's Docs!"

@@ -128,14 +128,19 @@ def get_tags(
             image_url = first_image["uri"]
             ogp_image_alt = first_image.get("alt", None)
 
+            image_url_parsed = urlparse(image_url)
+            if not image_url_parsed.scheme:
+                # Relative image path detected in an image node. Make absolute.
+                image_url = urljoin(page_url, image_url_parsed.path)
+
     if image_url:
         # temporarily disable relative image paths with field lists
         if image_url and "og:image" not in fields:
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
-                # Relative image path detected. Make absolute.
-                image_url = urljoin(page_url, image_url_parsed.path)
-        tags["og:image"] = image_url
+                # Relative image path detected, relative to the source. Make absolute.
+                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
+            tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
         if isinstance(ogp_image_alt, str):
