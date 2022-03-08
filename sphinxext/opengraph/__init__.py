@@ -130,12 +130,19 @@ def get_tags(
 
     if image_url:
         # temporarily disable relative image paths with field lists
-        if image_url and "og:image" not in fields:
+        if "og:image" not in fields:
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
-                # Relative image path detected. Make absolute.
-                image_url = urljoin(config["ogp_site_url"], image_url_parsed.path)
-        tags["og:image"] = image_url
+                # Relative image path detected, relative to the source. Make absolute.
+                if config["ogp_image"]:
+                    # ogp_image is defined as being relative to the site root.
+                    # This workaround is to keep that functionality from breaking.
+                    root = config["ogp_site_url"]
+                else:
+                    root = page_url
+
+                image_url = urljoin(root, image_url_parsed.path)
+            tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
         if isinstance(ogp_image_alt, str):
