@@ -5,6 +5,6 @@ exclude_patterns = ["_build"]
 
 html_theme = "basic"
 
-smartquotes = False
-
+ogp_site_name = "Example's Docs!"
 ogp_site_url = "http://example.org/en/latest/"
+ogp_image = "_static/sample.jpg"

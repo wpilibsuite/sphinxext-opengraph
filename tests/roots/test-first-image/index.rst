@@ -1,2 +1,2 @@
-.. image:: http://example.org/image2.png
+.. image:: http://example.org/en/latest/image2.png
    :alt: Test image alt text
