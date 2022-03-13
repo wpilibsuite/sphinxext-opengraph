@@ -5,11 +5,14 @@ from pathlib import Path
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
 from sphinx.errors import ConfigError
+from sphinx.util import logging
 
 from .descriptionparser import get_description
 from .titleparser import get_title
 
 import os
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_DESCRIPTION_LENGTH = 200
@@ -71,10 +74,10 @@ def get_tags(
     # url tag
     # Get the canonical URL if ogp_site_url is not configured
     if config["ogp_site_url"] is None:
-        # we require that either ogp_site_url or html_baseurl be configured
+        # either ogp_site_url or html_baseurl should be configured
         if config["html_baseurl"] is None:
-            raise ConfigError(
-                "A URL has not been configured and is required as per the OpenGraph Specification!"
+            logger.info(
+                "A URL has not been configured and is required as per the OpenGraph Specification. Can be ignored if deploying in RTD environments."
             )
 
         config["ogp_site_url"] = config["html_baseurl"]
