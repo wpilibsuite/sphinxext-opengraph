@@ -29,28 +29,30 @@ def test_simple(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="simple")
 def test_site_url(og_meta_tags):
     # Uses the same directory as simple, because it already contains url for a minimal config
-    assert get_tag_content(og_meta_tags, "url") == "http://example.org/index.html"
+    assert (
+        get_tag_content(og_meta_tags, "url")
+        == "http://example.org/en/latest/index.html"
+    )
 
 
 @pytest.mark.sphinx("dirhtml", testroot="simple")
 def test_dirhtml_url(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "url") == "http://example.org/index/"
+    assert get_tag_content(og_meta_tags, "url") == "http://example.org/en/latest/index/"
 
 
 @pytest.mark.sphinx("html", testroot="image")
 def test_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/image.png"
-
-
-@pytest.mark.sphinx("html", testroot="image-rel-paths")
-def test_image_rel_paths(og_meta_tags, og_meta_tags_sub):
     assert (
         get_tag_content(og_meta_tags, "image")
-        == "http://example.org/_images/sample.jpg"
+        == "http://example.org/en/latest/image.png"
     )
+
+
+@pytest.mark.sphinx("html", testroot="local-image")
+def test_local_image(og_meta_tags):
     assert (
-        get_tag_content(og_meta_tags_sub, "image")
-        == "http://example.org/_images/sample.jpg"
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/_static/sample.jpg"
     )
 
 
@@ -76,14 +78,32 @@ def test_site_name(og_meta_tags):
 
 @pytest.mark.sphinx("html", testroot="first-image")
 def test_first_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/image2.png"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/image2.png"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "Test image alt text"
 
 
 @pytest.mark.sphinx("html", testroot="first-image-no-image")
 def test_first_image_no_image(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/image33.png"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/image33.png"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "TEST"
+
+
+@pytest.mark.sphinx("html", testroot="image-rel-paths")
+def test_image_rel_paths(og_meta_tags, og_meta_tags_sub):
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/_images/sample.jpg"
+    )
+    assert (
+        get_tag_content(og_meta_tags_sub, "image")
+        == "http://example.org/en/latest/_images/sample.jpg"
+    )
 
 
 @pytest.mark.sphinx("html", testroot="skip-admonitions")
@@ -172,7 +192,7 @@ def test_overrides_simple(og_meta_tags):
     assert get_tag_content(og_meta_tags, "type") == "article"
     assert (
         get_tag_content(og_meta_tags, "image")
-        == "http://example.org/overridden-image.png"
+        == "http://example.org/en/latest/overridden-image.png"
     )
     # Make sure alt text still works even when overriding the image
     assert get_tag_content(og_meta_tags, "image:alt") == "Example's Docs!"
@@ -181,13 +201,19 @@ def test_overrides_simple(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="overrides-complex")
 def test_overrides_complex(og_meta_tags):
     assert len(get_tag_content(og_meta_tags, "description")) == 10
-    assert get_tag_content(og_meta_tags, "image") == "http://example.org/img/sample.jpg"
+    assert (
+        get_tag_content(og_meta_tags, "image")
+        == "http://example.org/en/latest/img/sample.jpg"
+    )
     assert get_tag_content(og_meta_tags, "image:alt") == "Overridden Alt Text"
 
 
 @pytest.mark.sphinx("html", testroot="arbitrary-tags")
 def test_arbitrary_tags(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "video") == "http://example.org/video.mp4"
+    assert (
+        get_tag_content(og_meta_tags, "video")
+        == "http://example.org/en/latest/video.mp4"
+    )
     assert get_tag_content(og_meta_tags, "video:type") == "video/mp4"
 
 
@@ -195,23 +221,23 @@ def test_arbitrary_tags(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="simple")
 def test_rtd_override(app: Sphinx, monkeypatch):
     monkeypatch.setenv("READTHEDOCS", "True")
-    app.config.html_baseurl = "https://failure.com"
+    app.config.html_baseurl = "https://failure.com/en/latest/"
 
     app.build()
     tags = conftest._og_meta_tags(app)
 
-    assert get_tag_content(tags, "url") == "http://example.org/index.html"
+    assert get_tag_content(tags, "url") == "http://example.org/en/latest/index.html"
 
 
 @pytest.mark.sphinx("html", testroot="rtd-default")
 def test_rtd_valid(app: Sphinx, monkeypatch):
     monkeypatch.setenv("READTHEDOCS", "True")
-    app.config.html_baseurl = "https://failure.com"
+    app.config.html_baseurl = "https://failure.com/en/latest/"
 
     app.build()
     tags = conftest._og_meta_tags(app)
 
-    assert get_tag_content(tags, "url") == "https://failure.com/index.html"
+    assert get_tag_content(tags, "url") == "https://failure.com/en/latest/index.html"
 
 
 # use rtd-default, as we are not changing configuration, but RTD variables

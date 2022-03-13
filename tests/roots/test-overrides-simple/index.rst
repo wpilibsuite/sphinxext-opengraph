@@ -1,7 +1,7 @@
 :og:description: Overridden description
 :og:title: Overridden Title
 :og:type: article
-:og:image: http://example.org/overridden-image.png
+:og:image: http://example.org/en/latest/overridden-image.png
 
 Lorem Ipsum
 ===========
