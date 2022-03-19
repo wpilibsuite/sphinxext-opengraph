@@ -13,18 +13,22 @@ Just add `sphinxext.opengraph` to your extensions list in your `conf.py`
 
 ```python
 extensions = [
-   "sphinxext.opengraph",
+    "sphinxext.opengraph",
 ]
 ```
 ## Options
 These values are placed in the conf.py of your sphinx project.
 
-Users hosting documentation on Read The Docs *do not* need to set any of the following unless custom configuration is wanted. The extension will automatically retrieve your site url.
+Users hosting documentation on Read The Docs *do not* need to set any of the following unless custom configuration is wanted. RTD will automatically set`html_baseurl`.
+
+* `html_baseurl`
+    * Configure the canonical url in Sphinx, this is required unless `ogp_site_url` is provided. It should be set to the canonical URL the site is being hosted on.
+
 
 * `ogp_site_url`
-    * This config option is very important, set it to the URL the site is being hosted on. 
+    * Overrides `html_baseurl` for this extension, not required. If set should be the canonical URL the site is being hosted on.
 * `ogp_description_length`
-    * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200. 
+    * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200.
 * `ogp_site_name`
     * This is not required. Name of the site. This is displayed above the title.
 * `ogp_image`
@@ -37,7 +41,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This sets the ogp type attribute, for more information on the types available please take a look at https://ogp.me/#types. By default it is set to `website`, which should be fine for most use cases.
 * `ogp_custom_meta_tags`
     * This is not required. List of custom html snippets to insert.
-    
+
 ## Example Config
 
 ### Simple Config
@@ -70,17 +74,17 @@ Make sure you place the fields at the very start of the document such that Sphin
 These are some overrides that can be used, you can actually override any tag and field lists will always take priority.
 
 * `:og_description_length:`
-  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an OpenGraph tag.
+    * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an OpenGraph tag.
 * `:og:description:`
-  * Lets you override the description of the page.
+    * Lets you override the description of the page.
 * `:og:title:`
-  * Lets you override the title of the page.
+    * Lets you override the title of the page.
 * `:og:type:`
-  * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
+    * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
 * `:ogp:image:`
-  * Set the image for the page.[^1]
+    * Set the image for the page.[^1]
 * `:ogp:image:alt:`
-  * Sets the alt text. Will be ignored if there is no image set.
+    * Sets the alt text. Will be ignored if there is no image set.
 
 ### Example
 Remember that the fields **must** be placed at the very start of the file. You can verify Sphinx has picked up the fields if they aren't shown in the final html file.
