@@ -42,7 +42,10 @@ def test_dirhtml_url(og_meta_tags):
 
 @pytest.mark.sphinx("html", testroot="override-url")
 def test_override_url(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "url") == "https://example.com/en/stable/index.html"
+    assert (
+        get_tag_content(og_meta_tags, "url")
+        == "https://example.com/en/stable/index.html"
+    )
 
 
 @pytest.mark.sphinx("html", testroot="image")
