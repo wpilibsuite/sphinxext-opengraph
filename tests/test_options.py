@@ -40,6 +40,11 @@ def test_dirhtml_url(og_meta_tags):
     assert get_tag_content(og_meta_tags, "url") == "http://example.org/en/latest/index/"
 
 
+@pytest.mark.sphinx("html", testroot="override-url")
+def test_override_url(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "url") == "https://example.com/en/stable/index.html"
+
+
 @pytest.mark.sphinx("html", testroot="image")
 def test_image(og_meta_tags):
     assert (
@@ -215,36 +220,3 @@ def test_arbitrary_tags(og_meta_tags):
         == "http://example.org/en/latest/video.mp4"
     )
     assert get_tag_content(og_meta_tags, "video:type") == "video/mp4"
-
-
-# use same as simple, as configuration is identical to overriden
-@pytest.mark.sphinx("html", testroot="simple")
-def test_rtd_override(app: Sphinx, monkeypatch):
-    monkeypatch.setenv("READTHEDOCS", "True")
-    app.config.html_baseurl = "https://failure.com/en/latest/"
-
-    app.build()
-    tags = conftest._og_meta_tags(app)
-
-    assert get_tag_content(tags, "url") == "http://example.org/en/latest/index.html"
-
-
-@pytest.mark.sphinx("html", testroot="rtd-default")
-def test_rtd_valid(app: Sphinx, monkeypatch):
-    monkeypatch.setenv("READTHEDOCS", "True")
-    app.config.html_baseurl = "https://failure.com/en/latest/"
-
-    app.build()
-    tags = conftest._og_meta_tags(app)
-
-    assert get_tag_content(tags, "url") == "https://failure.com/en/latest/index.html"
-
-
-# use rtd-default, as we are not changing configuration, but RTD variables
-@pytest.mark.sphinx("html", testroot="rtd-invalid")
-def test_rtd_invalid(app: Sphinx, monkeypatch):
-    monkeypatch.setenv("READTHEDOCS", "True")
-    app.config.html_baseurl = None
-
-    with pytest.raises(Exception):
-        app.build()
