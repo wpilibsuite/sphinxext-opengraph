@@ -77,7 +77,7 @@ def get_tags(
         # either ogp_site_url or html_baseurl should be configured
         if config["html_baseurl"] is None:
             logger.info(
-                "A URL has not been configured and is required as per the OpenGraph Specification. Can be ignored if deploying in RTD environments."
+                "sphinxext-opengrpah: A URL has not been configured and is required as per the OpenGraph Specification. Can be ignored if deploying in RTD environments."
             )
 
         config["ogp_site_url"] = config["html_baseurl"]
