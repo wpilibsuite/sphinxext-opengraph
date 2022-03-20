@@ -1,3 +1,5 @@
+import fnmatch
+import glob
 import posixpath
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
@@ -34,21 +36,30 @@ def image_abs_url(image_uri: str, docname: str, site_url: str, app: Sphinx):
     parsed_url = urlparse(image_uri)
 
     if not parsed_url.scheme:
-        # Convert relative url to absolute urls and make sure image gets copied on build
+        # Convert local url to absolute urls and make sure image gets copied on build
         return urljoin(site_url, note_image(parsed_url.path, docname, app))
 
     return image_uri
 
 
 def note_image(image_path: str, docname: str, app: Sphinx):
-    # potentially temporary solution
-    if any([PurePosixPath(image_path).match(dir + "/*") for dir in app.config["html_static_path"] + app.config["html_extra_path"]]):
-        return image_path
+    static_paths = app.config["html_static_path"] + app.config["html_extra_path"]
 
+    # ignore all images which are in static paths as they are automatically copied
+    for path in static_paths:
+        # fnmatch? Path.match?
+        # if image_path.startswith(path): ?
+        if fnmatch.fnmatch(image_path, path + "/*"):
+            return image_path
+
+    # If the image is relative, have it be relative to the source file
     if not (image_path.startswith('/') or image_path.startswith(os.sep)):
-        image_path = str(PurePosixPath(docname).parent / image_path)
+        # PurePosixPath or posixpath.dirname
+        image_path = posixpath.normpath(str(PurePosixPath(docname).parent / image_path))
 
+    # Get/Add the image to the environment's list of images and add it to the builders list of images, so it gets copied.
     new_path = app.builder.images[image_path] = app.env.images.add_file(docname, image_path)
+    # posixpath.join or PurePosixPath
     return posixpath.join(app.builder.imgpath, new_path)
 
 
