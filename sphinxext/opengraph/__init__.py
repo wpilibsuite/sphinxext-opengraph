@@ -14,7 +14,6 @@ from .titleparser import get_title
 
 import os
 
-
 DEFAULT_DESCRIPTION_LENGTH = 200
 
 # A selection from https://www.iana.org/assignments/media-types/media-types.xhtml#image
@@ -32,33 +31,41 @@ IMAGE_MIME_TYPES = {
 }
 
 
-def image_abs_url(image_uri: str, docname: str, site_url: str, app: Sphinx):
-    parsed_url = urlparse(image_uri)
+def image_abs_url(image_path: str, url: str, docname: str = None, app: Sphinx = None):
+    parsed_url = urlparse(image_path)
 
-    if not parsed_url.scheme:
-        # Convert local url to absolute urls and make sure image gets copied on build
-        return urljoin(site_url, note_image(parsed_url.path, docname, app))
+    # If image_uri is None or if it is an url (contains a scheme) leave it unchanged
+    if not image_path or parsed_url.scheme:
+        return image_path
 
-    return image_uri
+    if docname and app:
+        # Convert local image path to an absolute url and make sure image gets copied on build
+        return urljoin(url, note_image(parsed_url.path, docname, app))
+    else:
+        # If the app and docname aren't specified, assume that the path is a path relative to the output file
+        return urljoin(url, image_path)
 
 
 def note_image(image_path: str, docname: str, app: Sphinx):
+    # verify static path functionality (if html_static_path always copy into _static, url needs to be modified)
     static_paths = app.config["html_static_path"] + app.config["html_extra_path"]
 
     # ignore all images which are in static paths as they are automatically copied
     for path in static_paths:
         # fnmatch? Path.match?
         # if image_path.startswith(path): ?
-        if fnmatch.fnmatch(image_path, path + "/*"):
+        if fnmatch.fnmatch(image_path, path + "/**"):
             return image_path
 
     # If the image is relative, have it be relative to the source file
-    if not (image_path.startswith('/') or image_path.startswith(os.sep)):
+    if not (image_path.startswith("/") or image_path.startswith(os.sep)):
         # PurePosixPath or posixpath.dirname
         image_path = posixpath.normpath(str(PurePosixPath(docname).parent / image_path))
 
     # Get/Add the image to the environment's list of images and add it to the builders list of images, so it gets copied.
-    new_path = app.builder.images[image_path] = app.env.images.add_file(docname, image_path)
+    new_path = app.builder.images[image_path] = app.env.images.add_file(
+        docname, image_path
+    )
     # posixpath.join or PurePosixPath
     return posixpath.join(app.builder.imgpath, new_path)
 
@@ -127,9 +134,7 @@ def get_tags(
     if context["builder"] == "dirhtml":
         page_url = urljoin(config["ogp_site_url"], docname + "/")
     else:
-        page_url = urljoin(
-            config["ogp_site_url"], docname + context["file_suffix"]
-        )
+        page_url = urljoin(config["ogp_site_url"], docname + context["file_suffix"])
     tags["og:url"] = page_url
 
     # site name tag
@@ -143,35 +148,29 @@ def get_tags(
 
     # image tag
     # Get basic values from config or field list
-    #image_url = fields.pop("og:image", config["ogp_image"])
-    #ogp_image_alt = fields.pop("og:image:alt", config["ogp_image_alt"])
+    # image_url = fields.pop("og:image", config["ogp_image"])
+    # ogp_image_alt = fields.pop("og:image:alt", config["ogp_image_alt"])
+
     if "og:image" in fields:
-        image_url = image_abs_url(fields.pop("og:image"), docname, site_name, app)
+        image_url = image_abs_url(
+            fields.pop("og:image"), config["ogp_site_url"], docname, app
+        )
         image_alt = fields.pop("og:image:alt", None)
-    elif fields.get("ogp_use_first_image", config["ogp_use_first_image"]) and (first_image := doctree.next_node(nodes.image)):
-        image_url = first_image["uri"]
-        image_alt = first_image.get("alt", None)
+    elif fields.get("ogp_use_first_image", config["ogp_use_first_image"]) and (
+        first_image := doctree.next_node(nodes.image)
+    ):
+        # Use page url, since the image uri at this point is relative to the output page
+        image_url = image_abs_url(first_image["uri"], page_url)
+        image_alt = first_image.get("alt", fields.pop("og:image:alt", None))
     else:
-        image_url = config["ogp_image"]
-        # if alt text isn't provided, use site_name instead
+        #
+        image_url = image_abs_url(
+            config["ogp_image"], config["ogp_site_url"], docname, app
+        )
         image_alt = config["ogp_image_alt"]
 
     if image_url:
-        # temporarily disable relative image paths with field lists
-        if "og:image" not in fields:
-            image_url_parsed = urlparse(image_url)
-            if not image_url_parsed.scheme:
-                # Relative image path detected, relative to the source. Make absolute.
-                if config["ogp_image"]:
-                    # ogp_image is defined as being relative to the site root.
-                    # This workaround is to keep that functionality from breaking.
-                    root = config["ogp_site_url"]
-                else:
-                    root = page_url
-
-                image_url = urljoin(root, image_url_parsed.path)
-                # image_url = urljoin(config["ogp_site_url"], note_image(image_url_parsed.path, docname, app))
-            tags["og:image"] = image_url
+        tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
         if isinstance(image_alt, str):
