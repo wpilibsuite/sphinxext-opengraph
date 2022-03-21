@@ -201,10 +201,11 @@ def test_overrides_simple(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="overrides-complex")
 def test_overrides_complex(og_meta_tags):
     assert len(get_tag_content(og_meta_tags, "description")) == 10
-    assert (
-        get_tag_content(og_meta_tags, "image")
-        == "http://example.org/en/latest/img/sample.jpg"
-    )
+    # Temporary disable relative images (should have been disabled beforehand)
+    # assert (
+    #    get_tag_content(og_meta_tags, "image")
+    #    == "http://example.org/en/latest/img/sample.jpg"
+    # )
     assert get_tag_content(og_meta_tags, "image:alt") == "Overridden Alt Text"
 
 

@@ -1,15 +1,18 @@
+import fnmatch
+import glob
+import posixpath
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
+from sphinx.util import images
 
 from .descriptionparser import get_description
 from .titleparser import get_title
 
 import os
-
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 
@@ -28,6 +31,45 @@ IMAGE_MIME_TYPES = {
 }
 
 
+def image_abs_url(image_path: str, url: str, docname: str = None, app: Sphinx = None):
+    parsed_url = urlparse(image_path)
+
+    # If image_uri is None or if it is an url (contains a scheme) leave it unchanged
+    if not image_path or parsed_url.scheme:
+        return image_path
+
+    if docname and app:
+        # Convert local image path to an absolute url and make sure image gets copied on build
+        return urljoin(url, note_image(parsed_url.path, docname, app))
+    else:
+        # If the app and docname aren't specified, assume that the path is a path relative to the output file
+        return urljoin(url, image_path)
+
+
+def note_image(image_path: str, docname: str, app: Sphinx):
+    # verify static path functionality (if html_static_path always copy into _static, url needs to be modified)
+    static_paths = app.config["html_static_path"] + app.config["html_extra_path"]
+
+    # ignore all images which are in static paths as they are automatically copied
+    for path in static_paths:
+        # fnmatch? Path.match?
+        # if image_path.startswith(path): ?
+        if fnmatch.fnmatch(image_path, path + "/**"):
+            return image_path
+
+    # If the image is relative, have it be relative to the source file
+    if not (image_path.startswith("/") or image_path.startswith(os.sep)):
+        # PurePosixPath or posixpath.dirname
+        image_path = posixpath.normpath(str(PurePosixPath(docname).parent / image_path))
+
+    # Get/Add the image to the environment's list of images and add it to the builders list of images, so it gets copied.
+    new_path = app.builder.images[image_path] = app.env.images.add_file(
+        docname, image_path
+    )
+    # posixpath.join or PurePosixPath
+    return posixpath.join(app.builder.imgpath, new_path)
+
+
 def make_tag(property: str, content: str) -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
     content = content.replace('"', "&quot;")
@@ -40,6 +82,7 @@ def get_tags(
     doctree: nodes.document,
     config: Dict[str, Any],
 ) -> str:
+    docname = context["pagename"]
     # Get field lists for per-page overrides
     fields = context["meta"]
     if fields is None:
@@ -89,11 +132,9 @@ def get_tags(
     # url tag
     # Get the URL of the specific page
     if context["builder"] == "dirhtml":
-        page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
+        page_url = urljoin(config["ogp_site_url"], docname + "/")
     else:
-        page_url = urljoin(
-            config["ogp_site_url"], context["pagename"] + context["file_suffix"]
-        )
+        page_url = urljoin(config["ogp_site_url"], docname + context["file_suffix"])
     tags["og:url"] = page_url
 
     # site name tag
@@ -106,50 +147,37 @@ def get_tags(
         tags["og:description"] = description
 
     # image tag
-    # Get basic values from config
+    # Get basic values from config or field list
+    # image_url = fields.pop("og:image", config["ogp_image"])
+    # ogp_image_alt = fields.pop("og:image:alt", config["ogp_image_alt"])
+
     if "og:image" in fields:
-        image_url = fields["og:image"]
-        ogp_use_first_image = False
-        ogp_image_alt = fields.get("og:image:alt")
-        fields.pop("og:image", None)
+        image_url = image_abs_url(
+            fields.pop("og:image"), config["ogp_site_url"], docname, app
+        )
+        image_alt = fields.pop("og:image:alt", None)
+    elif fields.get("ogp_use_first_image", config["ogp_use_first_image"]) and (
+        first_image := doctree.next_node(nodes.image)
+    ):
+        # Use page url, since the image uri at this point is relative to the output page
+        image_url = image_abs_url(first_image["uri"], page_url)
+        image_alt = first_image.get("alt", fields.pop("og:image:alt", None))
     else:
-        image_url = config["ogp_image"]
-        ogp_use_first_image = config["ogp_use_first_image"]
-        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
-
-    fields.pop("og:image:alt", None)
-
-    if ogp_use_first_image:
-        first_image = doctree.next_node(nodes.image)
-        if (
-            first_image
-            and Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES
-        ):
-            image_url = first_image["uri"]
-            ogp_image_alt = first_image.get("alt", None)
+        #
+        image_url = image_abs_url(
+            config["ogp_image"], config["ogp_site_url"], docname, app
+        )
+        image_alt = config["ogp_image_alt"]
 
     if image_url:
-        # temporarily disable relative image paths with field lists
-        if "og:image" not in fields:
-            image_url_parsed = urlparse(image_url)
-            if not image_url_parsed.scheme:
-                # Relative image path detected, relative to the source. Make absolute.
-                if config["ogp_image"]:
-                    # ogp_image is defined as being relative to the site root.
-                    # This workaround is to keep that functionality from breaking.
-                    root = config["ogp_site_url"]
-                else:
-                    root = page_url
-
-                image_url = urljoin(root, image_url_parsed.path)
-            tags["og:image"] = image_url
+        tags["og:image"] = image_url
 
         # Add image alt text (either provided by config or from site_name)
-        if isinstance(ogp_image_alt, str):
-            tags["og:image:alt"] = ogp_image_alt
-        elif ogp_image_alt is None and site_name:
+        if isinstance(image_alt, str):
+            tags["og:image:alt"] = image_alt
+        elif image_alt is None and site_name:
             tags["og:image:alt"] = site_name
-        elif ogp_image_alt is None and title:
+        elif image_alt is None and title:
             tags["og:image:alt"] = title
 
     # arbitrary tags and overrides
