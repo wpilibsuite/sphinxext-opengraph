@@ -128,6 +128,8 @@ def get_tags(
         ):
             image_url = first_image["uri"]
             ogp_image_alt = first_image.get("alt", None)
+        else:
+            first_image = None
 
     if image_url:
         # temporarily disable relative image paths with field lists
@@ -137,7 +139,7 @@ def get_tags(
                 # Relative image path detected, relative to the source. Make absolute.
                 if first_image:
                     root = page_url
-                else:
+                else:  # ogp_image is set
                     # ogp_image is defined as being relative to the site root.
                     # This workaround is to keep that functionality from breaking.
                     root = config["ogp_site_url"]
