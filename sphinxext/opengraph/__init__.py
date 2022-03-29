@@ -119,6 +119,7 @@ def get_tags(
 
     fields.pop("og:image:alt", None)
 
+    first_image = None
     if ogp_use_first_image:
         first_image = doctree.next_node(nodes.image)
         if (
@@ -134,12 +135,12 @@ def get_tags(
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
                 # Relative image path detected, relative to the source. Make absolute.
-                if config["ogp_image"]:
+                if first_image:
+                    root = page_url
+                else:
                     # ogp_image is defined as being relative to the site root.
                     # This workaround is to keep that functionality from breaking.
                     root = config["ogp_site_url"]
-                else:
-                    root = page_url
 
                 image_url = urljoin(root, image_url_parsed.path)
             tags["og:image"] = image_url
