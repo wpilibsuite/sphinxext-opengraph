@@ -72,7 +72,7 @@ def get_tags(
         parse_result = urlparse(config["html_baseurl"])
 
         if config["html_baseurl"] is None:
-            raise EnvironmentError("ReadTheDocs did not provide a valid canonical URL!")
+            raise OSError("ReadTheDocs did not provide a valid canonical URL!")
 
         # Grab root url from canonical url
         config["ogp_site_url"] = urlunparse(
