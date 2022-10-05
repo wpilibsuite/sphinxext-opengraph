@@ -4,7 +4,7 @@ import conftest
 
 
 def get_tag(tags, tag_type):
-    return [tag for tag in tags if tag.get("property") == "og:{}".format(tag_type)][0]
+    return [tag for tag in tags if tag.get("property") == f"og:{tag_type}"][0]
 
 
 def get_tag_content(tags, tag_type):
