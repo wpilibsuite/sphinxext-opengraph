@@ -23,6 +23,7 @@ jobs:
   test-extension:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.7',  '3.8', '3.9', '3.10', '3.11-dev', 'pypy3.8']
         sphinx-version: ['>=2,<3', '>=3,<4', '>=4,<5', '>=5,<6', '==6.0.0b1']
