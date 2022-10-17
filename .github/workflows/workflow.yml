@@ -1,11 +1,9 @@
 name: Test and Deploy
 on:
   pull_request:
-    branches: 
-      - main
-  push:
     branches:
       - main
+  push:
   create:
     tags:
       - '*'
