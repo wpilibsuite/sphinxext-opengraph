@@ -44,6 +44,8 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+# Generate <meta name="description" content="..."> tags.
+enable_meta_description = True
 
 # -- Options for HTML output -------------------------------------------------
 
