@@ -1,7 +1,6 @@
 import pytest
 from sphinx.application import Sphinx
 import conftest
-import os
 
 
 def get_tag(tags, tag_type):
@@ -24,6 +23,16 @@ def test_simple(og_meta_tags):
         description
         == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at lorem ornare, fringilla massa nec, venenatis mi. Donec erat sapien, tincidunt nec rhoncus nec, scelerisque id diam. Orci vari..."
     )
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = [tag for tag in meta_tags if tag.get("name") == "description"][0].get(
+        "content", ""
+    )
+
+    assert og_description == description
 
 
 @pytest.mark.sphinx("html", testroot="simple")

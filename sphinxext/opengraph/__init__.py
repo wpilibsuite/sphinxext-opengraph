@@ -28,10 +28,10 @@ IMAGE_MIME_TYPES = {
 }
 
 
-def make_tag(property: str, content: str) -> str:
+def make_tag(property: str, content: str, type_: str = "property") -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
     content = content.replace('"', "&quot;")
-    return f'<meta property="{property}" content="{content}" />\n  '
+    return f'<meta {type_}="{property}" content="{content}" />\n  '
 
 
 def get_tags(
@@ -104,6 +104,10 @@ def get_tags(
     # description tag
     if description:
         tags["og:description"] = description
+        if config["enable_meta_description"]:
+            config["ogp_custom_meta_tags"].append(
+                make_tag("description", description, "name")
+            )
 
     # image tag
     # Get basic values from config
@@ -183,6 +187,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
+    app.add_config_value("enable_meta_description", False, "html")
 
     app.connect("html-page-context", html_page_context)
 
