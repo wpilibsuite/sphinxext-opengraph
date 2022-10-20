@@ -13,6 +13,12 @@ def get_tag_content(tags, tag_type):
     return get_tag(tags, tag_type).get("content", "")
 
 
+def get_meta_description(tags):
+    return [tag for tag in tags if tag.get("name") == "description"][0].get(
+        "content", ""
+    )
+
+
 @pytest.mark.sphinx("html", testroot="simple")
 def test_simple(og_meta_tags):
     description = get_tag_content(og_meta_tags, "description")
@@ -24,6 +30,23 @@ def test_simple(og_meta_tags):
         description
         == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at lorem ornare, fringilla massa nec, venenatis mi. Donec erat sapien, tincidunt nec rhoncus nec, scelerisque id diam. Orci vari..."
     )
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert description == og_description
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description-no-override-manual")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert description != og_description
+    assert description == "My manual description"
 
 
 @pytest.mark.sphinx("html", testroot="simple")

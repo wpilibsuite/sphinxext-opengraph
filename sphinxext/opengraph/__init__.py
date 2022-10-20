@@ -6,6 +6,7 @@ import docutils.nodes as nodes
 from sphinx.application import Sphinx
 
 from .descriptionparser import get_description
+from .metaparser import get_meta_description
 from .titleparser import get_title
 
 import os
@@ -28,7 +29,7 @@ IMAGE_MIME_TYPES = {
 }
 
 
-def make_tag(property: str, content: str) -> str:
+def make_tag(property: str, content: str, type_: str = "property") -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
     content = content.replace('"', "&quot;")
     return f'<meta property="{property}" content="{content}" />'
@@ -45,6 +46,7 @@ def get_tags(
     if fields is None:
         fields = {}
     tags = {}
+    meta_tags = {}  # For non-og meta tags
 
     # Set length of description
     try:
@@ -105,6 +107,11 @@ def get_tags(
     if description:
         tags["og:description"] = description
 
+        if config["ogp_enable_meta_description"] and not get_meta_description(
+            context["metatags"]
+        ):
+            meta_tags["description"] = description
+
     # image tag
     # Get basic values from config
     if "og:image" in fields:
@@ -160,7 +167,9 @@ def get_tags(
 
     return (
         "\n".join(
-            [make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"]
+            [make_tag(p, c) for p, c in tags.items()]
+            + [make_tag(p, c, "name") for p, c in meta_tags.items()]
+            + config["ogp_custom_meta_tags"]
         )
         + "\n"
     )
@@ -186,6 +195,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
+    app.add_config_value("ogp_enable_meta_description", False, "html")
 
     app.connect("html-page-context", html_page_context)
 
