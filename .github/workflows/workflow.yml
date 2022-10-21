@@ -54,7 +54,7 @@ jobs:
           name: my-wheel
           path: dist/*.whl
 
-  test-extension:
+  test:
     needs: build-wheel
     runs-on: ${{ matrix.os }}
     strategy:
