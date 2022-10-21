@@ -7,8 +7,7 @@ import setuptools
 try:
     ret = subprocess.run(
         "git describe --tags --abbrev=0",
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         check=True,
         shell=True,
     )
@@ -16,7 +15,7 @@ try:
 except:
     version = "main"
 
-with open("README.md", "r", encoding="utf-8") as readme:
+with open("README.md", encoding="utf-8") as readme:
     long_description = readme.read()
 
 setuptools.setup(
@@ -29,7 +28,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/wpilibsuite/sphinxext-opengraph",
     license="LICENSE.md",
-    install_requires=["sphinx>=2.0"],
+    install_requires=["sphinx>=4.0"],
     packages=["sphinxext/opengraph"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
@@ -40,10 +39,11 @@ setuptools.setup(
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python",
         "Topic :: Documentation :: Sphinx",
         "Topic :: Documentation",
@@ -51,5 +51,5 @@ setuptools.setup(
         "Topic :: Text Processing",
         "Topic :: Utilities",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
 )
