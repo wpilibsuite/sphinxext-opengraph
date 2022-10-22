@@ -31,7 +31,7 @@ IMAGE_MIME_TYPES = {
 def make_tag(property: str, content: str) -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
     content = content.replace('"', "&quot;")
-    return f'<meta property="{property}" content="{content}" />\n  '
+    return f'<meta property="{property}" content="{content}" />'
 
 
 def get_tags(
@@ -158,8 +158,11 @@ def get_tags(
     # arbitrary tags and overrides
     tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
 
-    return "\n" + "\n".join(
-        [make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"]
+    return (
+        "\n".join(
+            [make_tag(p, c) for p, c in tags.items()] + config["ogp_custom_meta_tags"]
+        )
+        + "\n"
     )
 
 
