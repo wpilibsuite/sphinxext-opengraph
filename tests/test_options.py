@@ -1,7 +1,6 @@
 import pytest
 from sphinx.application import Sphinx
 import conftest
-import os
 
 
 def get_tag(tags, tag_type):
@@ -40,13 +39,22 @@ def test_meta_name_description(meta_tags):
     assert description == og_description
 
 
-@pytest.mark.sphinx("html", testroot="meta-name-description-no-override-manual")
+@pytest.mark.sphinx("html", testroot="meta-name-description-manual-description")
 def test_meta_name_description(meta_tags):
     og_description = get_tag_content(meta_tags, "description")
     description = get_meta_description(meta_tags)
 
     assert description != og_description
     assert description == "My manual description"
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description-manual-og-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert og_description != description
+    assert og_description == "My manual og:description"
 
 
 @pytest.mark.sphinx("html", testroot="simple")
