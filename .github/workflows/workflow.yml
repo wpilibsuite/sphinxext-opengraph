@@ -4,6 +4,8 @@ on:
     branches:
       - main
   push:
+    branches:
+      - main
   create:
     tags:
       - '*'
@@ -116,7 +118,7 @@ jobs:
           make html
 
   pypi-release:
-    needs: test-extension
+    needs: test
     runs-on: ubuntu-latest
     if: contains(github.ref, 'refs/tags/') && github.repository_owner == 'wpilibsuite'
     steps:
