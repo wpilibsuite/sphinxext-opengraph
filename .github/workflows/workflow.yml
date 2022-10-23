@@ -122,22 +122,12 @@ jobs:
     runs-on: ubuntu-latest
     if: contains(github.ref, 'refs/tags/') && github.repository_owner == 'wpilibsuite'
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-          cache: pip
-          cache-dependency-path: dev-requirements.txt
       - name: Download wheel artifact
         uses: actions/download-artifact@v3
         with:
           name: my-wheel
           path: dist
       - name: Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@master
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
           password: ${{ secrets.pypi_password }}
