@@ -195,7 +195,7 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
-    app.add_config_value("ogp_enable_meta_description", False, "html")
+    app.add_config_value("ogp_enable_meta_description", True, "html")
 
     app.connect("html-page-context", html_page_context)
 
