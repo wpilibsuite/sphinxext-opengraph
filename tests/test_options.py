@@ -1,7 +1,6 @@
 import pytest
 from sphinx.application import Sphinx
 import conftest
-import os
 
 
 def get_tag(tags, tag_type):
@@ -11,6 +10,12 @@ def get_tag(tags, tag_type):
 def get_tag_content(tags, tag_type):
     # Gets the content of a specific ogp tag
     return get_tag(tags, tag_type).get("content", "")
+
+
+def get_meta_description(tags):
+    return [tag for tag in tags if tag.get("name") == "description"][0].get(
+        "content", ""
+    )
 
 
 @pytest.mark.sphinx("html", testroot="simple")
@@ -24,6 +29,32 @@ def test_simple(og_meta_tags):
         description
         == "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse at lorem ornare, fringilla massa nec, venenatis mi. Donec erat sapien, tincidunt nec rhoncus nec, scelerisque id diam. Orci vari..."
     )
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert description == og_description
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description-manual-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert description != og_description
+    assert description == "My manual description"
+
+
+@pytest.mark.sphinx("html", testroot="meta-name-description-manual-og-description")
+def test_meta_name_description(meta_tags):
+    og_description = get_tag_content(meta_tags, "description")
+    description = get_meta_description(meta_tags)
+
+    assert og_description != description
+    assert og_description == "My manual og:description"
 
 
 @pytest.mark.sphinx("html", testroot="simple")
