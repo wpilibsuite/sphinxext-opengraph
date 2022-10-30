@@ -68,7 +68,7 @@ def test_site_url(og_meta_tags):
 
 @pytest.mark.sphinx("dirhtml", testroot="simple")
 def test_dirhtml_url(og_meta_tags):
-    assert get_tag_content(og_meta_tags, "url") == "http://example.org/en/latest/index/"
+    assert get_tag_content(og_meta_tags, "url") == "http://example.org/en/latest/"
 
 
 @pytest.mark.sphinx("html", testroot="image")
