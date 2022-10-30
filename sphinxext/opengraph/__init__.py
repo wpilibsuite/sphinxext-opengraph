@@ -93,6 +93,9 @@ def get_tags(
     if context["builder"] == "dirhtml":
         if context["pagename"] == "index":
             page_url = config["ogp_site_url"]
+        elif context["pagename"].endswith("/index"):
+            relative = context["pagename"].rsplit("/", 1)[0]
+            page_url = urljoin(config["ogp_site_url"], relative + "/")
         else:
             page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
     else:
