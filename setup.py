@@ -1,26 +1,12 @@
-import subprocess
-
 import setuptools
-
-# This will fail if something happens or if not in a git repository.
-# This is intentional.
-try:
-    ret = subprocess.run(
-        "git describe --tags --abbrev=0",
-        capture_output=True,
-        check=True,
-        shell=True,
-    )
-    version = ret.stdout.decode("utf-8").strip()
-except:
-    version = "main"
 
 with open("README.md", encoding="utf-8") as readme:
     long_description = readme.read()
 
 setuptools.setup(
     name="sphinxext-opengraph",
-    version=version,
+    use_scm_version=True,
+    setup_requires=["setuptools_scm"],
     author="Itay Ziv",
     author_email="itay220204@gmail.com",
     description="Sphinx Extension to enable OGP support",
