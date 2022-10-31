@@ -91,7 +91,13 @@ def get_tags(
     # url tag
     # Get the URL of the specific page
     if context["builder"] == "dirhtml":
-        page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
+        if context["pagename"] == "index":
+            page_url = config["ogp_site_url"]
+        elif context["pagename"].endswith("/index"):
+            relative = context["pagename"].rsplit("/", 1)[0]
+            page_url = urljoin(config["ogp_site_url"], relative + "/")
+        else:
+            page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
     else:
         page_url = urljoin(
             config["ogp_site_url"], context["pagename"] + context["file_suffix"]
