@@ -69,7 +69,7 @@ def get_tags(
     # type tag
     tags["og:type"] = config["ogp_type"]
 
-    if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
+    if os.getenv("READTHEDOCS") and not config["ogp_site_url"]:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
 
