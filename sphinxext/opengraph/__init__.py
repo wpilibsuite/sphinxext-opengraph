@@ -108,6 +108,9 @@ def get_tags(
     site_name = config["ogp_site_name"]
     if site_name:
         tags["og:site_name"] = site_name
+    elif config["project"]:
+        site_name = config["project"]
+        tags["og:site_name"] = config["project"]
 
     # description tag
     if description:

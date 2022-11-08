@@ -106,6 +106,10 @@ def test_description_length(og_meta_tags):
 def test_site_name(og_meta_tags):
     assert get_tag_content(og_meta_tags, "site_name") == "Example's Docs!"
 
+@pytest.mark.sphinx("html", testroot="sitename-from-project")
+def test_site_name_project(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "site_name") == "Project name"
+
 
 @pytest.mark.sphinx("html", testroot="first-image")
 def test_first_image(og_meta_tags):
