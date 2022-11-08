@@ -76,7 +76,9 @@ Make sure you place the fields at the very start of the document such that Sphin
 These are some overrides that can be used on individual pages, you can actually override any tag and field lists will always take priority.
 
 * `:ogp_description_length:`
-  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an Open Graph tag.
+  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`.[^2]
+* `:ogp_disable:`
+  * Disables all Open Graph tags on the page.[^2]
 * `:og:description:`
   * Lets you override the description of the page.
 * `:description:` or `.. meta::\n :description:`
@@ -113,3 +115,4 @@ Page contents
 ```
 
 [^1]: Note: Relative file paths for images, videos and audio are currently **not** supported when using field lists. Please use an absolute path instead.
+[^2]: Note the slightly different syntax because this isn't directly an Open Graph tag.
