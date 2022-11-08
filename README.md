@@ -75,7 +75,7 @@ Make sure you place the fields at the very start of the document such that Sphin
 ### Overrides
 These are some overrides that can be used on individual pages, you can actually override any tag and field lists will always take priority.
 
-* `:og_description_length:`
+* `:ogp_description_length:`
   * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an Open Graph tag.
 * `:og:description:`
   * Lets you override the description of the page.
@@ -85,9 +85,9 @@ These are some overrides that can be used on individual pages, you can actually 
   * Lets you override the title of the page.
 * `:og:type:`
   * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
-* `:ogp:image:`
+* `:og:image:`
   * Set the image for the page.[^1]
-* `:ogp:image:alt:`
+* `:og:image:alt:`
   * Sets the alt text. Will be ignored if there is no image set.
 
 ### Example
