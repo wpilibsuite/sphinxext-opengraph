@@ -193,7 +193,9 @@ def html_page_context(
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
-    app.add_config_value("ogp_site_url", None, "html")
+    # ogp_site_url="" allows relative by default, even though it's not
+    # officially supported by OGP.
+    app.add_config_value("ogp_site_url", "", "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", None, "html")
