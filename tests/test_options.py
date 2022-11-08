@@ -239,6 +239,11 @@ def test_overrides_complex(og_meta_tags):
     assert get_tag_content(og_meta_tags, "image:alt") == "Overridden Alt Text"
 
 
+@pytest.mark.sphinx("html", testroot="overrides-disable")
+def test_overrides_disable(og_meta_tags):
+    assert len(og_meta_tags) == 0
+
+
 @pytest.mark.sphinx("html", testroot="arbitrary-tags")
 def test_arbitrary_tags(og_meta_tags):
     assert (
