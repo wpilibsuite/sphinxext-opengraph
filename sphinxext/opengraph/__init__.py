@@ -104,13 +104,16 @@ def get_tags(
         )
     tags["og:url"] = page_url
 
-    # site name tag
-    site_name = config["ogp_site_name"]
+    # site name tag, False disables, default to project if ogp_site_name not
+    # set.
+    if config["ogp_site_name"] is False:
+        site_name = None
+    elif config["ogp_site_name"] is None:
+        site_name = config["project"]
+    else:
+        site_name = config["ogp_site_name"]
     if site_name:
         tags["og:site_name"] = site_name
-    elif config["project"]:
-        site_name = config["project"]
-        tags["og:site_name"] = config["project"]
 
     # description tag
     if description:
