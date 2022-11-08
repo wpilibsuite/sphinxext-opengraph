@@ -78,7 +78,7 @@ These are some overrides that can be used on individual pages, you can actually 
 * `:ogp_description_length:`
   * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`.[^1]
 * `:ogp_disable:`
-  * Disables all Open Graph tags on the page.[^1]
+  * Disables generation of Open Graph tags on the page.[^1]
 * `:og:description:`
   * Lets you override the description of the page.
 * `:description:` or `.. meta::\n :description:`
