@@ -29,7 +29,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
 * `ogp_description_length`
     * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200. 
 * `ogp_site_name`
-    * This is not required. Name of the site. This is displayed above the title. Defaults to the Sphinx `project` config value.
+    * This is not required. Name of the site. This is displayed above the title. Defaults to the Sphinx [`project`](https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-project) config value.  Set to `False` to unset and use no default.
 * `ogp_image`
     * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_url`.
 * `ogp_image_alt`
