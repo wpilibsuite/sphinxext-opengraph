@@ -279,3 +279,15 @@ def test_rtd_invalid(app: Sphinx, monkeypatch):
 
     with pytest.raises(Exception):
         app.build()
+
+
+# Test no breakage with no configuration
+@pytest.mark.sphinx("html", testroot="rtd-default")
+def test_no_configuration_html(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "type") == "website"
+
+
+# Test no breakage with no configuration
+@pytest.mark.sphinx("dirhtml", testroot="rtd-default")
+def test_no_configuration_dirhtml(og_meta_tags):
+    assert get_tag_content(og_meta_tags, "type") == "website"

@@ -69,7 +69,7 @@ def get_tags(
     # type tag
     tags["og:type"] = config["ogp_type"]
 
-    if os.getenv("READTHEDOCS") and config["ogp_site_url"] is None:
+    if os.getenv("READTHEDOCS") and not config["ogp_site_url"]:
         # readthedocs uses html_baseurl for sphinx > 1.8
         parse_result = urlparse(config["html_baseurl"])
 
@@ -193,7 +193,9 @@ def html_page_context(
 
 
 def setup(app: Sphinx) -> Dict[str, Any]:
-    app.add_config_value("ogp_site_url", None, "html")
+    # ogp_site_url="" allows relative by default, even though it's not
+    # officially supported by OGP.
+    app.add_config_value("ogp_site_url", "", "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", None, "html")
