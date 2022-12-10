@@ -1,6 +1,7 @@
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
 from pathlib import Path
+import hashlib
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
@@ -8,11 +9,14 @@ from sphinx.application import Sphinx
 from .descriptionparser import get_description
 from .metaparser import get_meta_description
 from .titleparser import get_title
+from .socialcards import setup_social_card_matplotlib_objects, render_social_card
 
 import os
 
 
 DEFAULT_DESCRIPTION_LENGTH = 200
+DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS = 160
+DEFAULT_PAGE_LENGTH_SOCIAL_CARDS = 80
 
 # A selection from https://www.iana.org/assignments/media-types/media-types.xhtml#image
 IMAGE_MIME_TYPES = {
@@ -47,6 +51,9 @@ def get_tags(
         fields = {}
     tags = {}
     meta_tags = {}  # For non-og meta tags
+
+    # Social card preview configuration for later use
+    config_social = app.env.ogp_social_cards_config
 
     # Set length of description
     try:
@@ -122,6 +129,46 @@ def get_tags(
         ogp_use_first_image = False
         ogp_image_alt = fields.get("og:image:alt")
         fields.pop("og:image", None)
+    elif app.env.ogp_social_cards_config["enable"] is True:
+        # Description
+        description_max_length = config_social.get(
+            "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
+        )
+        if len(description) > description_max_length:
+            description = description[:description_max_length].strip() + "..."
+
+        # Page title
+        pagetitle = title
+        if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
+            pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
+
+        # Site URL
+        site_url = config_social.get("site_url", True)
+        if site_url is True:
+            url_text = app.config.ogp_site_url.split("://")[-1]
+        elif isinstance(site_url, str):
+            url_text = site_url
+
+        # Render the card in a `_static` folder using the matplotlib objects
+        image_path = render_social_card(
+            app,
+            site_name,
+            pagetitle,
+            description,
+            url_text,
+            context["pagename"]
+        )
+        ogp_image_alt = description
+        ogp_use_first_image = False
+
+        # Link the image in our page metadata
+        url = app.config.ogp_site_url.strip("/")
+
+        # Add a hash to the image based on metadata to bust caches
+        # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images  # noqa
+        hash = hashlib.sha1((site_name + pagetitle + description).encode()).hexdigest()
+        image_url = f"{url}/{image_path}?{hash}"
+
     else:
         image_url = config["ogp_image"]
         ogp_use_first_image = config["ogp_use_first_image"]
@@ -131,6 +178,7 @@ def get_tags(
 
     first_image = None
     if ogp_use_first_image:
+        # Use the first image that is defined in the current page
         first_image = doctree.next_node(nodes.image)
         if (
             first_image
@@ -164,6 +212,12 @@ def get_tags(
             tags["og:image:alt"] = site_name
         elif ogp_image_alt is None and title:
             tags["og:image:alt"] = title
+
+        if "ogp_social_card_tags" in context:
+            # Add social media metadata if we've activated preview cards
+            tags["og:image:width"] = meta["width"]
+            tags["og:image:height"] = meta["height"]
+            meta_tags["twitter:card"] = "summary_large_image"
 
     # arbitrary tags and overrides
     tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
@@ -199,9 +253,14 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_use_first_image", False, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
+    app.add_config_value("ogp_social_cards", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
     app.add_config_value("ogp_enable_meta_description", True, "html")
 
+    # Social media card images
+    app.connect("builder-inited", setup_social_card_matplotlib_objects)
+
+    # Main Sphinx OpenGraph linking
     app.connect("html-page-context", html_page_context)
 
     return {

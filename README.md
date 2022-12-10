@@ -3,7 +3,7 @@
 [![Build](https://github.com/wpilibsuite/sphinxext-opengraph/workflows/Test%20and%20Deploy/badge.svg)](https://github.com/wpilibsuite/sphinxext-opengraph/actions)
 [![Code style: Black](https://img.shields.io/badge/code%20style-Black-000000.svg)](https://github.com/psf/black)
 
-Sphinx extension to generate [Open Graph metadata](https://ogp.me/).
+Sphinx extension to generate [Open Graph metadata](https://ogp.me/) for each page of your documentation.
 
 ## Installation
 
@@ -30,6 +30,9 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * Configure the amount of characters taken from a page. The default of 200 is probably good for most people. If something other than a number is used, it defaults back to 200. 
 * `ogp_site_name`
     * This is not required. Name of the site. This is displayed above the title. Defaults to the Sphinx [`project`](https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-project) config value.  Set to `False` to unset and use no default.
+* `ogp_social_cards`
+    * Configuration for automatically creating social media card PNGs for each page.
+      For more information, see [the social media cards docs](docs/source/socialcards.md).
 * `ogp_image`
     * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_url`.
 * `ogp_image_alt`

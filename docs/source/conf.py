@@ -49,4 +49,19 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+html_title = "sphinxext-opengraph"
+html_logo = "_static/og-logo.png"
 html_theme = "furo"
+
+
+# -- Configuration for this theme --------------------------------------------
+
+ogp_site_url = "https://sphinxext-opengraph.readthedocs.io/en/latest/"
+
+# Configuration for testing but generally we use the defaults
+# Uncomment lines to see their effect.
+ogp_social_cards = {
+    "site_url": "sphinxext-opengraph.readthedocs.io",
+    # "image": "TODO: add another image to test",
+    # "line_color": "#4078c0",
+}
