@@ -90,18 +90,9 @@ def get_tags(
 
     # url tag
     # Get the URL of the specific page
-    if context["builder"] == "dirhtml":
-        if context["pagename"] == "index":
-            page_url = config["ogp_site_url"]
-        elif context["pagename"].endswith("/index"):
-            relative = context["pagename"].rsplit("/", 1)[0]
-            page_url = urljoin(config["ogp_site_url"], relative + "/")
-        else:
-            page_url = urljoin(config["ogp_site_url"], context["pagename"] + "/")
-    else:
-        page_url = urljoin(
-            config["ogp_site_url"], context["pagename"] + context["file_suffix"]
-        )
+    page_url = urljoin(
+        config["ogp_site_url"], app.builder.get_target_uri(context["pagename"])
+    )
     tags["og:url"] = page_url
 
     # site name tag, False disables, default to project if ogp_site_name not
