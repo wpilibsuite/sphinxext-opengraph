@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from subprocess import run
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -33,6 +34,7 @@ release = "1.0"
 # ones.
 extensions = [
     "myst_parser",
+    "sphinx_design",
     "sphinxext.opengraph",
 ]
 
@@ -65,3 +67,7 @@ ogp_social_cards = {
     # "image": "TODO: add another image to test",
     # "line_color": "#4078c0",
 }
+
+# Generate sample social media preview images
+path_script = os.path.abspath("../script/generate_social_card_previews.py")
+run(f"python {path_script}", shell=True)

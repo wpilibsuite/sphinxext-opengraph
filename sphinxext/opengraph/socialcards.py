@@ -4,17 +4,26 @@ from pathlib import Path
 import matplotlib
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
-from sphinx.util import logging
 
 matplotlib.use("agg")
 
 
 HERE = Path(__file__).parent
-MAX_CHAR_PAGETITLE = 80
-MAX_CHAR_DESCRIPTION = 160
+MAX_CHAR_PAGE_TITLE = 75
+MAX_CHAR_DESCRIPTION = 175
 
 # Default configuration for this functionality
-DEFAULT_CONFIG = {
+DEFAULT_SOCIAL_CONFIG = {
+    "enable": True,
+    "site_url": True,
+    "site_title": True,
+    "page_title": True,
+    "description": True,
+}
+
+
+# Default configuration for the figure style
+DEFAULT_KWARGS_FIG = {
     "enable": True,
     "site_url": True,
 }
@@ -24,71 +33,109 @@ DEFAULT_CONFIG = {
 # They must be defined here otherwise Sphinx errors when trying to pickle them.
 # They are dependent on the `multiple` variable defined when the figure is created.
 # Because they are depending on the figure size and renderer used to generate them.
-def _set_pagetitle_line_width():
-    return 850
+def _set_page_title_line_width():
+    return 825
 
 
 def _set_description_line_width():
     return 1000
 
 
-def setup_social_card_matplotlib_objects(app):
-    """Create matplotlib objects for saving social preview cards.
+def create_social_card(app, config_social, site_name, page_title, description, url_text, page_path):
+    """Create a social preview card according to page metadata.
 
-    This plots the final objects that are consistent across all pages.
-    For example, site logo, shadow logo, line at the bottom.
-
-    It plots placeholder text for text values because they change on each page.
+    This uses page metadata and calls a render function to generate the image.
+    It also passes configuration through to the rendering function.
+    If Matplotlib objects are present in the `app` environment, it reuses them.
     """
-    config_social = DEFAULT_CONFIG.copy()
-    config_social.update(app.config.ogp_social_cards)
-    app.env.ogp_social_cards_config = config_social
 
-    # If no social preview configuration, then just skip this
-    if config_social.get("enable") is False:
+    # Add a hash to the image path based on metadata to bust caches
+    # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images  # noqa
+    hash = hashlib.sha1((site_name + page_title + description + str(config_social)).encode()).hexdigest()[:8]
+
+    # Define the file path we'll use for this image
+    path_images_relative = Path("_images/social_previews")
+    filename_image = f"summary_{page_path.replace('/', '_')}_{hash}.png"
+
+    # Absolute path used to save the image
+    path_images_absolute = Path(app.builder.outdir) / path_images_relative
+    path_images_absolute.mkdir(exist_ok=True, parents=True)
+    path_image = path_images_absolute / filename_image
+
+    # If the image already exists then we can just skip creating a new one.
+    # This is because we hash the values of the text + images in the social card.
+    # If the hash doesn't change, it means the output should be the same.
+    if path_image.exists():
         return
 
-    kwargs = {}
-    if config_social.get("image"):
-        kwargs["image"] = Path(app.builder.srcdir) / config_social.get("image")
-    elif app.config.html_logo:
-        kwargs["image"] = Path(app.builder.srcdir) / app.config.html_logo
+    # These kwargs are used to generate the base figure image
+    kwargs_fig = {}
 
-    # Grab the image shadow PNG for plotting
-    if config_social.get("image_shadow"):
-        kwargs["image_shadow"] = Path(app.builder.srcdir) / config_social.get(
-            "image_shadow"
+    # Large image to the top right
+    if config_social.get("image"):
+        kwargs_fig["image"] = Path(app.builder.srcdir) / config_social.get("image")
+    elif app.config.html_logo:
+        kwargs_fig["image"] = Path(app.builder.srcdir) / app.config.html_logo
+
+    # Mini image to the bottom right
+    if config_social.get("image_mini"):
+        kwargs_fig["image_mini"] = Path(app.builder.srcdir) / config_social.get(
+            "image_mini"
         )
     else:
-        kwargs["image_shadow"] = Path(__file__).parent / "_static/sphinx-logo-shadow.png"
+        kwargs_fig["image_mini"] = Path(__file__).parent / "_static/sphinx-logo-shadow.png"
 
+    # These are passed directly from the user configuration to our plotting function
     pass_through_config = ["text_color", "line_color", "background_color", "font"]
     for config in pass_through_config:
         if config_social.get(config):
-            kwargs[config] = config_social.get(config)
+            kwargs_fig[config] = config_social.get(config)
 
-    # Create the figure objects with placeholder text
-    # Store in the Sphinx environment for re-use later
-    fig, txt_site, txt_page, txt_description, txt_url = create_social_card_objects(
-        **kwargs
-    )
-    app.env.social_card_plot_objects = [
-        fig,
-        txt_site,
-        txt_page,
-        txt_description,
-        txt_url,
-    ]
+    # Generate the image and store the matplotlib objects so that we can re-use them
+    if hasattr(app.env, "ogp_social_card_objects"):
+        plt_objects = app.env.ogp_social_card_plt_objects
+    else:
+        plt_objects = None
+    plt_objects = render_social_card(path_image, site_name, page_title, description, url_text, plt_objects, kwargs_fig)
+    app.env.ogp_social_card_plt_objects = plt_objects
+
+    # Path relative to build folder will be what we use for linking the URL
+    path_relative_to_build = path_images_relative / filename_image
+    return path_relative_to_build
+
+
+def render_social_card(path, site_title=None, page_title=None, description=None, siteurl=None, plt_objects=None, kwargs_fig=None):
+    """Render a social preview card with Matplotlib and write to disk."""
+    # If objects is None it means this is the first time plotting.
+    # Create the figure objects and return them so that we re-use them later.
+    if plt_objects is None:
+        fig, txt_site_title, txt_page_title, txt_description, txt_url = create_social_card_objects(**kwargs_fig)
+    else:
+        fig, txt_site_title, txt_page_title, txt_description, txt_url = plt_objects
+
+    # Update the matplotlib text objects with new text from this page
+    txt_site_title.set_text(site_title)
+    txt_page_title.set_text(page_title)
+    txt_description.set_text(description)
+    txt_url.set_text(siteurl)
+
+    # Save the image
+    fig.savefig(path, facecolor=None)
+    return fig, txt_site_title, txt_page_title, txt_description, txt_url
 
 
 def create_social_card_objects(
     image=None,
-    image_shadow=None,
-    text_color="#4a4a4a",
+    image_mini=None,
+    page_title_color="#2f363d",
+    description_color="#585e63",
+    site_title_color="#585e63",
+    site_url_color="#2f363d",
     background_color="white",
     line_color="#5A626B",
     font="Roboto",
 ):
+    """Create the Matplotlib objects for the first time."""
     # Load the Roboto font
     # TODO: Currently the `font` parameter above does nothing
     #   Should instead make it possible to load remote fonts or local fonts
@@ -110,55 +157,57 @@ def create_social_card_objects(
     axtext = fig.add_axes((0, 0, 1, 1))
 
     # Image axis
-    ax_x, ax_y, ax_w, ax_h = (0.69, 0.7, 0.25, 0.25)
+    ax_x, ax_y, ax_w, ax_h = (0.65, 0.65, 0.3, 0.3)
     axim_logo = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor="NE")
 
-    # Image shadow axis
+    # Image mini axis
     ax_x, ax_y, ax_w, ax_h = (0.82, 0.1, 0.1, 0.1)
-    axim_shadow = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor="NE")
+    axim_mini = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor="NE")
 
     # Line at the bottom axis
     axline = fig.add_axes((-0.1, -0.04, 1.2, 0.1))
 
     # Axes configuration
     left_margin = 0.05
-    with plt.rc_context({"font.family": font.name, "text.color": text_color}):
+    with plt.rc_context({"font.family": font.name}):
         # Site title
         # Smaller font, just above page title
-        site_title_y_offset = 0.9
+        site_title_y_offset = 0.87
         txt_site = axtext.text(
             left_margin,
             site_title_y_offset,
             "Test site title",
             {
-                "size": 26,
+                "size": 24,
             },
             ha="left",
             va="top",
             wrap=True,
+            c=site_title_color,
         )
 
         # Page title
         # A larger font for more visibility
-        page_title_y_offset = 0.8
+        page_title_y_offset = 0.77
 
         txt_page = axtext.text(
             left_margin,
             page_title_y_offset,
             "Test page title, a bit longer to demo",
-            {"size": 42, "color": "k", "fontweight": "bold"},
+            {"size": 46, "color": "k", "fontweight": "bold"},
             ha="left",
             va="top",
             wrap=True,
+            c=page_title_color,
         )
 
-        txt_page._get_wrap_line_width = _set_pagetitle_line_width
+        txt_page._get_wrap_line_width = _set_page_title_line_width
 
         # description
         # Just below site title, smallest font and many lines.
         # Our target length is 160 characters, so it should be
         # two lines at full width with some room to spare at this length.
-        description_y_offset = 0.22
+        description_y_offset = 0.2
         txt_description = axtext.text(
             left_margin,
             description_y_offset,
@@ -166,15 +215,16 @@ def create_social_card_objects(
                 "A longer description that we use to ,"
                 "show off what the descriptions look like."
             ),
-            {"size": 16},
+            {"size": 17},
             ha="left",
             va="bottom",
             wrap=True,
+            c=description_color,
         )
         txt_description._get_wrap_line_width = _set_description_line_width
 
         # url
-        # Aligned to the left of the shadow image
+        # Aligned to the left of the mini image
         url_y_axis_ofset = 0.12
         txt_url = axtext.text(
             left_margin,
@@ -184,54 +234,32 @@ def create_social_card_objects(
             ha="left",
             va="bottom",
             fontweight="bold",
+            c=site_url_color,
         )
 
-    if image_shadow:
-        img = mpimg.imread(image_shadow)
-        axim_shadow.imshow(img)
+    if image_mini:
+        img = mpimg.imread(image_mini)
+        axim_mini.imshow(img)
 
     # Put the logo in the top right if it exists
     if image:
         img = mpimg.imread(image)
-        axim_logo.imshow(img)
+        yw, xw = img.shape[:2]
+
+        # Axis is square and width is longest image axis
+        longest = max([yw, xw])
+        axim_logo.set_xlim([0, longest])
+        axim_logo.set_ylim([longest, 0])
+
+        # Center it on the non-long axis
+        xdiff = (longest - xw) / 2
+        ydiff = (longest - yw) / 2
+        axim_logo.imshow(img, extent=[xdiff, xw + xdiff, yw + ydiff, ydiff])
 
     # Put a colored line at the bottom of the figure
-    axline.hlines(0, 0, 1, lw=16, color=line_color)
+    axline.hlines(0, 0, 1, lw=25, color=line_color)
 
     # Remove the ticks and borders from all axes for a clean look
     for ax in fig.axes:
         ax.set_axis_off()
     return fig, txt_site, txt_page, txt_description, txt_url
-
-
-def render_social_card(app, sitetitle, pagetitle, description, siteurl, pagepath):
-    """Create a social preview card using page metadata."""
-
-    # Grab the card creation objects from Sphinx environment
-    # We just update them in order to save time
-    (
-        fig,
-        txt_sitetitle,
-        txt_pagetitle,
-        txt_description,
-        txt_url,
-    ) = app.env.social_card_plot_objects
-
-    # Update the matplotlib text objects with new text from this page
-    txt_sitetitle.set_text(sitetitle)
-    txt_pagetitle.set_text(pagetitle)
-    txt_description.set_text(description)
-    txt_url.set_text(siteurl)
-
-    # Save the image to a static directory
-    path_images_relative = Path("_images/social_previews")
-    filename_image = f"summary_{pagepath.replace('/', '_')}.png"
-
-    # Absolute path used to save the image
-    path_images_absolute = Path(app.builder.outdir) / path_images_relative
-    path_images_absolute.mkdir(exist_ok=True, parents=True)
-    fig.savefig(path_images_absolute / filename_image, facecolor=None)
-
-    # Path relative to build folder will be what we use for linking the URL
-    path_relative_to_build = path_images_relative / filename_image
-    return path_relative_to_build

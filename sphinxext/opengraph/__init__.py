@@ -9,7 +9,7 @@ from sphinx.application import Sphinx
 from .descriptionparser import get_description
 from .metaparser import get_meta_description
 from .titleparser import get_title
-from .socialcards import setup_social_card_matplotlib_objects, render_social_card
+from .socialcards import create_social_card, DEFAULT_SOCIAL_CONFIG
 
 import os
 
@@ -51,9 +51,6 @@ def get_tags(
         fields = {}
     tags = {}
     meta_tags = {}  # For non-og meta tags
-
-    # Social card preview configuration for later use
-    config_social = app.env.ogp_social_cards_config
 
     # Set length of description
     try:
@@ -129,7 +126,12 @@ def get_tags(
         ogp_use_first_image = False
         ogp_image_alt = fields.get("og:image:alt")
         fields.pop("og:image", None)
-    elif app.env.ogp_social_cards_config["enable"] is True:
+    # This will only be False if the user explicitly sets it
+    elif app.config.ogp_social_cards.get("enable") is not False:
+        # Set up our configuration and update it with new information
+        config_social = DEFAULT_SOCIAL_CONFIG.copy()
+        config_social.update(app.config.ogp_social_cards)
+
         # Description
         description_max_length = config_social.get(
             "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
@@ -149,9 +151,10 @@ def get_tags(
         elif isinstance(site_url, str):
             url_text = site_url
 
-        # Render the card in a `_static` folder using the matplotlib objects
-        image_path = render_social_card(
+        # Plot an image with the given metadata to the output path
+        image_path = create_social_card(
             app,
+            config_social,
             site_name,
             pagetitle,
             description,
@@ -163,12 +166,7 @@ def get_tags(
 
         # Link the image in our page metadata
         url = app.config.ogp_site_url.strip("/")
-
-        # Add a hash to the image based on metadata to bust caches
-        # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images  # noqa
-        hash = hashlib.sha1((site_name + pagetitle + description).encode()).hexdigest()
-        image_url = f"{url}/{image_path}?{hash}"
-
+        image_url = f"{url}/{image_path}"
     else:
         image_url = config["ogp_image"]
         ogp_use_first_image = config["ogp_use_first_image"]
@@ -256,9 +254,6 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_social_cards", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
     app.add_config_value("ogp_enable_meta_description", True, "html")
-
-    # Social media card images
-    app.connect("builder-inited", setup_social_card_matplotlib_objects)
 
     # Main Sphinx OpenGraph linking
     app.connect("html-page-context", html_page_context)

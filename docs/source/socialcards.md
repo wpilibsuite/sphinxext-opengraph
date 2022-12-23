@@ -6,10 +6,8 @@ These cards display metadata about the page that you link to, and are meant to c
 See [the opengraph.xyz website](https://www.opengraph.xyz/) for a way to preview what your social media cards look like.
 Here's an example of what the card for this page looks like:
 
-% This causes an *expected* warning because the image doesn't exist relative
-%   to the source file, but it does exist relative to the built HTML file.
-%   So we expect Sphinx to say the image doesn't exist but it'll look correct in HTML.
-```{image} /_images/social_previews/summary_socialcards.png
+% This is auto-generated at build time
+```{image} ../tmp//num_0.png
 :width: 500
 ```
 
@@ -34,3 +32,10 @@ Below is a summary of these options.
 - **`image`**: Over-ride the top-right image (by default, `html_logo` is used).
 - **`line_color`**: Color of the border line at the bottom of the card, in hex format.
 % TODO: add an over-ride for each part of the card.
+
+## Example social cards
+
+Below are several social cards to give an idea for how this extension behaves with different length and size of text.
+
+```{include} ../tmp/embed.txt
+```
