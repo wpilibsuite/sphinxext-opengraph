@@ -101,7 +101,7 @@ class DescriptionParser(nodes.NodeVisitor):
 
         # Separate end of list from text
         if isinstance(node, nodes.Sequential):
-            if self.description[-1] == ",":
+            if self.description and self.description[-1] == ",":
                 self.description = self.description[:-1]
             self.description += "."
             self.list_level -= 1
