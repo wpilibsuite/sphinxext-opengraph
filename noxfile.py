@@ -6,6 +6,7 @@ nox.options.reuse_existing_virtualenvs = True
 
 @nox.session
 def docs(session):
+    """Build the documentation. Use `-- live` to build with a live server."""
     session.install("-e", ".")
     session.install("-r", "docs/requirements.txt")
     if "live" in session.posargs:
@@ -14,3 +15,10 @@ def docs(session):
         session.run(*split("sphinx-autobuild -b html docs/source docs/build/html"))
     else:
         session.run(*split("sphinx-build -nW --keep-going -b html docs/source docs/build/html"))
+
+
+@nox.session
+def test(session):
+    """Run the test suite."""
+    session.install("-e", ".")
+    session.run(*(["pytest"] + session.posargs))

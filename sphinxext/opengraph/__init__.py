@@ -125,13 +125,21 @@ def get_tags(
         image_url = fields["og:image"]
         ogp_use_first_image = False
         ogp_image_alt = fields.get("og:image:alt")
-        fields.pop("og:image", None)
-    # This will only be False if the user explicitly sets it
-    elif app.config.ogp_social_cards.get("enable") is not False:
-        # Set up our configuration and update it with new information
-        config_social = DEFAULT_SOCIAL_CONFIG.copy()
-        config_social.update(app.config.ogp_social_cards)
+        fields.pop("og:image", None)  
+    else:
+        image_url = config["ogp_image"]
+        ogp_use_first_image = config["ogp_use_first_image"]
+        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
 
+    # Decide whether to add social media card images for each page.
+    # Only do this as a fallback if the user hasn't given any configuration
+    # to add other images.
+    config_social = DEFAULT_SOCIAL_CONFIG.copy()
+    social_card_user_options = app.config.ogp_social_cards or {}
+    config_social.update(social_card_user_options)
+
+    # This will only be False if the user explicitly sets it
+    if not (image_url or ogp_use_first_image) and config_social.get("enable") is not False:
         # Description
         description_max_length = config_social.get(
             "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
@@ -161,16 +169,17 @@ def get_tags(
             url_text,
             context["pagename"]
         )
-        ogp_image_alt = description
         ogp_use_first_image = False
+
+        # Alt text is taken from description unless given
+        if "og:image:alt" in fields:
+            ogp_image_alt = fields.get("og:image:alt")
+        else:
+            ogp_image_alt = description
 
         # Link the image in our page metadata
         url = app.config.ogp_site_url.strip("/")
         image_url = f"{url}/{image_path}"
-    else:
-        image_url = config["ogp_image"]
-        ogp_use_first_image = config["ogp_use_first_image"]
-        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
 
     fields.pop("og:image:alt", None)
 

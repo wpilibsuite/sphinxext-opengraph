@@ -7,6 +7,3 @@
 :hidden:
 socialcards
 ```
-<!-- 
-```{image} _static/images/
-``` -->
