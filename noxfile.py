@@ -32,5 +32,5 @@ def docs(session):
 @nox.session
 def test(session):
     """Run the test suite."""
-    session.install("-e", ".")
+    session.install(".")
     session.run(*(["pytest"] + session.posargs))
