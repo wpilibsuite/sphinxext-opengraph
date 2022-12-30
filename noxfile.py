@@ -1,3 +1,15 @@
+"""
+Configuration to automatically run jobs and tests via `nox`.
+For example, to build the documentation with a live server:
+
+  nox -s docs -- live
+
+List available jobs:
+
+  nox -l
+
+ref: https://nox.thea.codes/
+"""
 import nox
 from shlex import split
 
