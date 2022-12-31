@@ -92,7 +92,7 @@ def create_social_card(app, config_social, site_name, page_title, description, u
             kwargs_fig[config] = config_social.get(config)
 
     # Generate the image and store the matplotlib objects so that we can re-use them
-    if hasattr(app.env, "ogp_social_card_objects"):
+    if hasattr(app.env, "ogp_social_card_plt_objects"):
         plt_objects = app.env.ogp_social_card_plt_objects
     else:
         plt_objects = None
