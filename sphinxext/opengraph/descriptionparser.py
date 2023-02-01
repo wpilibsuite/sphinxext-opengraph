@@ -15,7 +15,6 @@ class DescriptionParser(nodes.NodeVisitor):
         known_titles: Iterable[str] = None,
         document: nodes.document = None,
     ):
-
         # Hack to prevent requirement for the doctree to be passed in.
         # It's only used by doctree.walk(...) to print debug messages.
         if document is None:
@@ -43,7 +42,6 @@ class DescriptionParser(nodes.NodeVisitor):
         self.stop = False
 
     def dispatch_visit(self, node: nodes.Element) -> None:
-
         if self.stop:
             raise nodes.StopTraversal
 
@@ -90,7 +88,6 @@ class DescriptionParser(nodes.NodeVisitor):
             self.description += text
 
     def dispatch_departure(self, node: nodes.Element) -> None:
-
         # Separate title from text
         if isinstance(node, nodes.title):
             self.description += ":"
@@ -121,7 +118,6 @@ def get_description(
     known_titles: Iterable[str] = None,
     document: nodes.document = None,
 ):
-
     mcv = DescriptionParser(description_length, known_titles, document)
     doctree.walkabout(mcv)
     return mcv.description
