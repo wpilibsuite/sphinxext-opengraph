@@ -1,7 +1,6 @@
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlunparse
 from pathlib import Path
-import hashlib
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
@@ -181,8 +180,9 @@ def get_tags(
             ogp_image_alt = description
 
         # Link the image in our page metadata
-        url = app.config.ogp_site_url.strip("/")
-        image_url = f"{url}/{image_path}"
+        # We use os.path.sep to standardize behavior acros *nix and Windows
+        url = app.config.ogp_site_url.strip(os.path.sep)
+        image_url = f"{url}/{image_path}".replace(os.path.sep, "/")
 
     fields.pop("og:image:alt", None)
 
