@@ -7,7 +7,11 @@ I should remove this when I'm happy with the result.
 
 from pathlib import Path
 from textwrap import dedent
-from sphinxext.opengraph.socialcards import render_social_card, MAX_CHAR_PAGE_TITLE, MAX_CHAR_DESCRIPTION
+from sphinxext.opengraph.socialcards import (
+    render_social_card,
+    MAX_CHAR_PAGE_TITLE,
+    MAX_CHAR_DESCRIPTION,
+)
 import random
 
 here = Path(__file__).parent
@@ -46,7 +50,7 @@ for perm in range(20):
         description=desc,
         siteurl="sphinxext-opengraph.readthedocs.io",
         plt_objects=plt_objects,
-        kwargs_fig=kwargs_fig
+        kwargs_fig=kwargs_fig,
     )
 
     path_examples_page_folder = here / ".."

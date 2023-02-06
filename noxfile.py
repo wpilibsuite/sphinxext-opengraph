@@ -26,7 +26,9 @@ def docs(session):
         session.install("sphinx-autobuild")
         session.run(*split("sphinx-autobuild -b html docs/source docs/build/html"))
     else:
-        session.run(*split("sphinx-build -nW --keep-going -b html docs/source docs/build/html"))
+        session.run(
+            *split("sphinx-build -nW --keep-going -b html docs/source docs/build/html")
+        )
 
 
 @nox.session

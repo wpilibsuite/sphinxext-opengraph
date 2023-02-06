@@ -97,14 +97,15 @@ def test_image_social_cards(og_meta_tags):
     """Social cards should automatically be added if no og:image is given."""
     # Asserting `in` instead of `==` because of the hash that is generated
     assert (
-        "http://example.org/en/latest/_images/social_previews/summary_index" in
-        get_tag_content(og_meta_tags, "image")
+        "http://example.org/en/latest/_images/social_previews/summary_index"
+        in get_tag_content(og_meta_tags, "image")
     )
     # Image alt text should be taken from page content.
     assert (
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit." in
-        get_tag_content(og_meta_tags, "image:alt")
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        in get_tag_content(og_meta_tags, "image:alt")
     )
+
 
 @pytest.mark.sphinx("html", testroot="type")
 def test_type(og_meta_tags):
