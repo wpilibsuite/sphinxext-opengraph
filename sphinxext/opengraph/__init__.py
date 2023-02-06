@@ -125,7 +125,7 @@ def get_tags(
         image_url = fields["og:image"]
         ogp_use_first_image = False
         ogp_image_alt = fields.get("og:image:alt")
-        fields.pop("og:image", None)  
+        fields.pop("og:image", None)
     else:
         image_url = config["ogp_image"]
         ogp_use_first_image = config["ogp_use_first_image"]
@@ -139,7 +139,10 @@ def get_tags(
     config_social.update(social_card_user_options)
 
     # This will only be False if the user explicitly sets it
-    if not (image_url or ogp_use_first_image) and config_social.get("enable") is not False:
+    if (
+        not (image_url or ogp_use_first_image)
+        and config_social.get("enable") is not False
+    ):
         # Description
         description_max_length = config_social.get(
             "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
@@ -167,7 +170,7 @@ def get_tags(
             pagetitle,
             description,
             url_text,
-            context["pagename"]
+            context["pagename"],
         )
         ogp_use_first_image = False
 

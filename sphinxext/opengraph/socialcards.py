@@ -41,7 +41,9 @@ def _set_description_line_width():
     return 1000
 
 
-def create_social_card(app, config_social, site_name, page_title, description, url_text, page_path):
+def create_social_card(
+    app, config_social, site_name, page_title, description, url_text, page_path
+):
     """Create a social preview card according to page metadata.
 
     This uses page metadata and calls a render function to generate the image.
@@ -51,7 +53,9 @@ def create_social_card(app, config_social, site_name, page_title, description, u
 
     # Add a hash to the image path based on metadata to bust caches
     # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images  # noqa
-    hash = hashlib.sha1((site_name + page_title + description + str(config_social)).encode()).hexdigest()[:8]
+    hash = hashlib.sha1(
+        (site_name + page_title + description + str(config_social)).encode()
+    ).hexdigest()[:8]
 
     # Define the file path we'll use for this image
     path_images_relative = Path("_images/social_previews")
@@ -83,7 +87,9 @@ def create_social_card(app, config_social, site_name, page_title, description, u
             "image_mini"
         )
     else:
-        kwargs_fig["image_mini"] = Path(__file__).parent / "_static/sphinx-logo-shadow.png"
+        kwargs_fig["image_mini"] = (
+            Path(__file__).parent / "_static/sphinx-logo-shadow.png"
+        )
 
     # These are passed directly from the user configuration to our plotting function
     pass_through_config = ["text_color", "line_color", "background_color", "font"]
@@ -96,7 +102,15 @@ def create_social_card(app, config_social, site_name, page_title, description, u
         plt_objects = app.env.ogp_social_card_plt_objects
     else:
         plt_objects = None
-    plt_objects = render_social_card(path_image, site_name, page_title, description, url_text, plt_objects, kwargs_fig)
+    plt_objects = render_social_card(
+        path_image,
+        site_name,
+        page_title,
+        description,
+        url_text,
+        plt_objects,
+        kwargs_fig,
+    )
     app.env.ogp_social_card_plt_objects = plt_objects
 
     # Path relative to build folder will be what we use for linking the URL
@@ -104,12 +118,26 @@ def create_social_card(app, config_social, site_name, page_title, description, u
     return path_relative_to_build
 
 
-def render_social_card(path, site_title=None, page_title=None, description=None, siteurl=None, plt_objects=None, kwargs_fig=None):
+def render_social_card(
+    path,
+    site_title=None,
+    page_title=None,
+    description=None,
+    siteurl=None,
+    plt_objects=None,
+    kwargs_fig=None,
+):
     """Render a social preview card with Matplotlib and write to disk."""
     # If objects is None it means this is the first time plotting.
     # Create the figure objects and return them so that we re-use them later.
     if plt_objects is None:
-        fig, txt_site_title, txt_page_title, txt_description, txt_url = create_social_card_objects(**kwargs_fig)
+        (
+            fig,
+            txt_site_title,
+            txt_page_title,
+            txt_description,
+            txt_url,
+        ) = create_social_card_objects(**kwargs_fig)
     else:
         fig, txt_site_title, txt_page_title, txt_description, txt_url = plt_objects
 
