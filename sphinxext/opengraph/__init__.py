@@ -181,7 +181,7 @@ def get_tags(
 
         # Link the image in our page metadata
         # We use os.path.sep to standardize behavior acros *nix and Windows
-        url = app.config.ogp_site_url
+        url = app.config.ogp_site_url.strip("/")
         image_path = str(image_path).replace(os.path.sep, "/").strip("/")
         image_url = f"{url}/{image_path}"
 
