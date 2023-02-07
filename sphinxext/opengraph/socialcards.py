@@ -265,7 +265,7 @@ def create_social_card_objects(
             c=site_url_color,
         )
 
-    if image_mini:
+    if image_mini and not str(image_mini).endswith("svg"):
         img = mpimg.imread(image_mini)
         axim_mini.imshow(img)
 
