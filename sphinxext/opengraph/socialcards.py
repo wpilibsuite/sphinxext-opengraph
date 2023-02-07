@@ -265,12 +265,12 @@ def create_social_card_objects(
             c=site_url_color,
         )
 
-    if image_mini and not str(image_mini).endswith("svg"):
+    if image_mini and not str(image_mini).lower().endswith("svg"):
         img = mpimg.imread(image_mini)
         axim_mini.imshow(img)
 
     # Put the logo in the top right if it exists
-    if image and not str(image).endswith("svg"):
+    if image and not str(image).lower().endswith("svg"):
         img = mpimg.imread(image)
         yw, xw = img.shape[:2]
 
