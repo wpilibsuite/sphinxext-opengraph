@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from subprocess import run
 
 sys.path.insert(0, os.path.abspath("../.."))
 
@@ -33,6 +34,7 @@ release = "1.0"
 # ones.
 extensions = [
     "myst_parser",
+    "sphinx_design",
     "sphinxext.opengraph",
 ]
 
@@ -49,4 +51,23 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+html_title = "sphinxext-opengraph"
+html_logo = "_static/og-logo.png"
 html_theme = "furo"
+
+
+# -- Configuration for this theme --------------------------------------------
+
+ogp_site_url = "https://sphinxext-opengraph.readthedocs.io/en/latest/"
+
+# Configuration for testing but generally we use the defaults
+# Uncomment lines to see their effect.
+ogp_social_cards = {
+    "site_url": "sphinxext-opengraph.readthedocs.io",
+    # "image": "TODO: add another image to test",
+    # "line_color": "#4078c0",
+}
+
+# Generate sample social media preview images
+path_script = os.path.abspath("../script/generate_social_card_previews.py")
+run(f"python {path_script}", shell=True)

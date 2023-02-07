@@ -1,4 +1,5 @@
 sphinx
+matplotlib
 wheel==0.37.1
 pytest==7.1.3
 beautifulsoup4==4.11.1

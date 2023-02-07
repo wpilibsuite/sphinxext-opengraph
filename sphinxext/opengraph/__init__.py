@@ -8,11 +8,14 @@ from sphinx.application import Sphinx
 from .descriptionparser import get_description
 from .metaparser import get_meta_description
 from .titleparser import get_title
+from .socialcards import create_social_card, DEFAULT_SOCIAL_CONFIG
 
 import os
 
 
 DEFAULT_DESCRIPTION_LENGTH = 200
+DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS = 160
+DEFAULT_PAGE_LENGTH_SOCIAL_CARDS = 80
 
 # A selection from https://www.iana.org/assignments/media-types/media-types.xhtml#image
 IMAGE_MIME_TYPES = {
@@ -127,10 +130,66 @@ def get_tags(
         ogp_use_first_image = config["ogp_use_first_image"]
         ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
 
+    # Decide whether to add social media card images for each page.
+    # Only do this as a fallback if the user hasn't given any configuration
+    # to add other images.
+    config_social = DEFAULT_SOCIAL_CONFIG.copy()
+    social_card_user_options = app.config.ogp_social_cards or {}
+    config_social.update(social_card_user_options)
+
+    # This will only be False if the user explicitly sets it
+    if (
+        not (image_url or ogp_use_first_image)
+        and config_social.get("enable") is not False
+    ):
+        # Description
+        description_max_length = config_social.get(
+            "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
+        )
+        if len(description) > description_max_length:
+            description = description[:description_max_length].strip() + "..."
+
+        # Page title
+        pagetitle = title
+        if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
+            pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
+
+        # Site URL
+        site_url = config_social.get("site_url", True)
+        if site_url is True:
+            url_text = app.config.ogp_site_url.split("://")[-1]
+        elif isinstance(site_url, str):
+            url_text = site_url
+
+        # Plot an image with the given metadata to the output path
+        image_path = create_social_card(
+            app,
+            config_social,
+            site_name,
+            pagetitle,
+            description,
+            url_text,
+            context["pagename"],
+        )
+        ogp_use_first_image = False
+
+        # Alt text is taken from description unless given
+        if "og:image:alt" in fields:
+            ogp_image_alt = fields.get("og:image:alt")
+        else:
+            ogp_image_alt = description
+
+        # Link the image in our page metadata
+        # We use os.path.sep to standardize behavior acros *nix and Windows
+        url = app.config.ogp_site_url.strip("/")
+        image_path = str(image_path).replace(os.path.sep, "/").strip("/")
+        image_url = f"{url}/{image_path}"
+
     fields.pop("og:image:alt", None)
 
     first_image = None
     if ogp_use_first_image:
+        # Use the first image that is defined in the current page
         first_image = doctree.next_node(nodes.image)
         if (
             first_image
@@ -164,6 +223,12 @@ def get_tags(
             tags["og:image:alt"] = site_name
         elif ogp_image_alt is None and title:
             tags["og:image:alt"] = title
+
+        if "ogp_social_card_tags" in context:
+            # Add social media metadata if we've activated preview cards
+            tags["og:image:width"] = meta["width"]
+            tags["og:image:height"] = meta["height"]
+            meta_tags["twitter:card"] = "summary_large_image"
 
     # arbitrary tags and overrides
     tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
@@ -199,9 +264,11 @@ def setup(app: Sphinx) -> Dict[str, Any]:
     app.add_config_value("ogp_use_first_image", False, "html")
     app.add_config_value("ogp_type", "website", "html")
     app.add_config_value("ogp_site_name", None, "html")
+    app.add_config_value("ogp_social_cards", None, "html")
     app.add_config_value("ogp_custom_meta_tags", [], "html")
     app.add_config_value("ogp_enable_meta_description", True, "html")
 
+    # Main Sphinx OpenGraph linking
     app.connect("html-page-context", html_page_context)
 
     return {

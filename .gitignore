@@ -287,3 +287,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,python,pycharm,visualstudiocode
+
+# Assets that are built by sphinx
+docs/tmp
