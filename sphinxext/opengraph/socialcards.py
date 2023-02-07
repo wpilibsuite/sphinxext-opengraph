@@ -270,7 +270,7 @@ def create_social_card_objects(
         axim_mini.imshow(img)
 
     # Put the logo in the top right if it exists
-    if image:
+    if image and not image.endswith("svg"):
         img = mpimg.imread(image)
         yw, xw = img.shape[:2]
 
