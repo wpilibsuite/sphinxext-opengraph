@@ -95,12 +95,12 @@ def create_social_card(
     # Validation on the images
     for img in ["image_mini", "image"]:
         impath = kwargs_fig.get(img)
-        
+
         # If image is an SVG replace it with None
         if impath.suffix.lower() == ".svg":
             LOGGER.warn(f"[Social card] {img} cannot be an SVG image, skipping...")
             kwargs_fig[img] = None
-        
+
         # If image doesn't exist, throw a warning and replace with none
         if not impath.exists():
             LOGGER.warn(f"[Social card]: {img} file doesn't exist, skipping...")
