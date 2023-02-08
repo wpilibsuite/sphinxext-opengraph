@@ -95,6 +95,8 @@ def create_social_card(
     # Validation on the images
     for img in ["image_mini", "image"]:
         impath = kwargs_fig.get(img)
+        if not impath:
+            continue
 
         # If image is an SVG replace it with None
         if impath.suffix.lower() == ".svg":
