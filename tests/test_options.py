@@ -87,6 +87,12 @@ def test_local_image(og_meta_tags):
     )
 
 
+@pytest.mark.sphinx("html", testroot="social-cards-svg")
+def test_social_cards_svg(app: Sphinx, og_meta_tags):
+    """If the social cards image is an SVG, it should not be in the social card."""
+    assert app.statuscode == 0
+
+
 @pytest.mark.sphinx("html", testroot="image")
 def test_image_alt(og_meta_tags):
     assert get_tag_content(og_meta_tags, "image:alt") == "Example's Docs!"
