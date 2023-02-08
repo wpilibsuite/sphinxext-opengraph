@@ -102,7 +102,7 @@ def create_social_card(
             kwargs_fig[img] = None
         
         # If image doesn't exist, throw a warning and replace with none
-        if not img.exists():
+        if not impath.exists():
             LOGGER.warn(f"[Social card]: {img} file doesn't exist, skipping...")
             kwargs_fig[img] = None
 
