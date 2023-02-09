@@ -4,10 +4,11 @@ from pathlib import Path
 import matplotlib
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
+from sphinx.util import logging
 
 matplotlib.use("agg")
 
-
+LOGGER = logging.getLogger(__name__)
 HERE = Path(__file__).parent
 MAX_CHAR_PAGE_TITLE = 75
 MAX_CHAR_DESCRIPTION = 175
@@ -90,6 +91,22 @@ def create_social_card(
         kwargs_fig["image_mini"] = (
             Path(__file__).parent / "_static/sphinx-logo-shadow.png"
         )
+
+    # Validation on the images
+    for img in ["image_mini", "image"]:
+        impath = kwargs_fig.get(img)
+        if not impath:
+            continue
+
+        # If image is an SVG replace it with None
+        if impath.suffix.lower() == ".svg":
+            LOGGER.warn(f"[Social card] {img} cannot be an SVG image, skipping...")
+            kwargs_fig[img] = None
+
+        # If image doesn't exist, throw a warning and replace with none
+        if not impath.exists():
+            LOGGER.warn(f"[Social card]: {img} file doesn't exist, skipping...")
+            kwargs_fig[img] = None
 
     # These are passed directly from the user configuration to our plotting function
     pass_through_config = ["text_color", "line_color", "background_color", "font"]
@@ -265,12 +282,12 @@ def create_social_card_objects(
             c=site_url_color,
         )
 
-    if image_mini:
+    if isinstance(image_mini, Path):
         img = mpimg.imread(image_mini)
         axim_mini.imshow(img)
 
     # Put the logo in the top right if it exists
-    if image:
+    if isinstance(image, Path):
         img = mpimg.imread(image)
         yw, xw = img.shape[:2]
 

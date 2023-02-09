@@ -23,13 +23,31 @@ ogp_social_cards = {
 }
 ```
 
+## Update the top-right image
+
+By default the top-right image will use the image specified by `html_logo` if it exists.
+To update it, specify another path in the **`image`** key like so:
+
+```{code-block} python
+:caption: conf.py
+
+ogp_social_cards = {
+    "image": "path/to/image.png",
+}
+```
+
+```{admonition} The image cannot be an SVG
+:class: warning
+
+Matplotlib does not support easy plotting of SVG images, so ensure that your image is a PNG or JPEG file, not SVG.
+```
+
 ## Customize the card
 
 There are several customization options to change the text and look of the social media preview card.
 Below is a summary of these options.
 
 - **`site_url`**: Set a custom site URL.
-- **`image`**: Over-ride the top-right image (by default, `html_logo` is used).
 - **`line_color`**: Color of the border line at the bottom of the card, in hex format.
 % TODO: add an over-ride for each part of the card.
 
