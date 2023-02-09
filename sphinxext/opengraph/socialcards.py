@@ -100,12 +100,12 @@ def create_social_card(
 
         # If image is an SVG replace it with None
         if impath.suffix.lower() == ".svg":
-            LOGGER.warn(f"[Social card] {img} cannot be an SVG image, skipping...")
+            LOGGER.warning(f"[Social card] %s cannot be an SVG image, skipping...", img)
             kwargs_fig[img] = None
 
         # If image doesn't exist, throw a warning and replace with none
         if not impath.exists():
-            LOGGER.warn(f"[Social card]: {img} file doesn't exist, skipping...")
+            LOGGER.warning(f"[Social card]: %s file doesn't exist, skipping...", img)
             kwargs_fig[img] = None
 
     # These are passed directly from the user configuration to our plotting function
