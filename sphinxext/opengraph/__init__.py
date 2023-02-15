@@ -136,8 +136,6 @@ def get_tags(
     config_social = DEFAULT_SOCIAL_CONFIG.copy()
     social_card_user_options = app.config.ogp_social_cards or {}
     config_social.update(social_card_user_options)
-
-    # This will only be False if the user explicitly sets it
     if (
         not (image_url or ogp_use_first_image)
         and config_social.get("enable") is not False
@@ -185,6 +183,13 @@ def get_tags(
         image_path = str(image_path).replace(os.path.sep, "/").strip("/")
         image_url = f"{url}/{image_path}"
 
+        # If the social card objects have been added we add special metadata for them
+        # These are the dimensions *in pixels* of the card
+        # They were chosen by looking at the image pixel dimensions on disk
+        tags["og:image:width"] = "1146"
+        tags["og:image:height"] = "600"
+        meta_tags["twitter:card"] = "summary_large_image"
+
     fields.pop("og:image:alt", None)
 
     first_image = None
@@ -223,12 +228,6 @@ def get_tags(
             tags["og:image:alt"] = site_name
         elif ogp_image_alt is None and title:
             tags["og:image:alt"] = title
-
-        if "ogp_social_card_tags" in context:
-            # Add social media metadata if we've activated preview cards
-            tags["og:image:width"] = meta["width"]
-            tags["og:image:height"] = meta["height"]
-            meta_tags["twitter:card"] = "summary_large_image"
 
     # arbitrary tags and overrides
     tags.update({k: v for k, v in fields.items() if k.startswith("og:")})

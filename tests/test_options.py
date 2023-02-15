@@ -3,13 +3,13 @@ from sphinx.application import Sphinx
 import conftest
 
 
-def get_tag(tags, tag_type):
-    return [tag for tag in tags if tag.get("property") == f"og:{tag_type}"][0]
+def get_tag(tags, tag_type, kind="property", prefix="og"):
+    return [tag for tag in tags if tag.get(kind) == f"{prefix}:{tag_type}"][0]
 
 
-def get_tag_content(tags, tag_type):
+def get_tag_content(tags, tag_type, kind="property", prefix="og"):
     # Gets the content of a specific ogp tag
-    return get_tag(tags, tag_type).get("content", "")
+    return get_tag(tags, tag_type, kind, prefix).get("content", "")
 
 
 def get_meta_description(tags):
@@ -99,17 +99,21 @@ def test_image_alt(og_meta_tags):
 
 
 @pytest.mark.sphinx("html", testroot="simple")
-def test_image_social_cards(og_meta_tags):
+def test_image_social_cards(meta_tags):
     """Social cards should automatically be added if no og:image is given."""
     # Asserting `in` instead of `==` because of the hash that is generated
     assert (
         "http://example.org/en/latest/_images/social_previews/summary_index"
-        in get_tag_content(og_meta_tags, "image")
+        in get_tag_content(meta_tags, "image")
     )
     # Image alt text should be taken from page content.
     assert (
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        in get_tag_content(og_meta_tags, "image:alt")
+        in get_tag_content(meta_tags, "image:alt")
+    )
+    # Make sure the extra tags are in the HTML
+    assert "summary_large_image" in get_tag_content(
+        meta_tags, "card", kind="name", prefix="twitter"
     )
 
 
