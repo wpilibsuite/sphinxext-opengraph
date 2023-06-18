@@ -8,7 +8,15 @@ from sphinx.application import Sphinx
 from .descriptionparser import get_description
 from .metaparser import get_meta_description
 from .titleparser import get_title
-from .socialcards import create_social_card, DEFAULT_SOCIAL_CONFIG
+
+try:
+    import matplotlib
+except ImportError:
+    print("matplotlib is not installed, social cards will not be generated")
+    create_social_card = None
+    DEFAULT_SOCIAL_CONFIG = {}
+else:
+    from .socialcards import create_social_card, DEFAULT_SOCIAL_CONFIG
 
 import os
 
@@ -139,6 +147,7 @@ def get_tags(
     if (
         not (image_url or ogp_use_first_image)
         and config_social.get("enable") is not False
+        and create_social_card is not None
     ):
         # Description
         description_max_length = config_social.get(
