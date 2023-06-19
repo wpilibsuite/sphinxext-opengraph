@@ -40,7 +40,7 @@ def test_meta_name_description(meta_tags):
 
 
 @pytest.mark.sphinx("html", testroot="meta-name-description-manual-description")
-def test_meta_name_description(meta_tags):
+def test_meta_name_manual_description(meta_tags):
     og_description = get_tag_content(meta_tags, "description")
     description = get_meta_description(meta_tags)
 
@@ -49,7 +49,7 @@ def test_meta_name_description(meta_tags):
 
 
 @pytest.mark.sphinx("html", testroot="meta-name-description-manual-og-description")
-def test_meta_name_description(meta_tags):
+def test_meta_name_manual_og_description(meta_tags):
     og_description = get_tag_content(meta_tags, "description")
     description = get_meta_description(meta_tags)
 
@@ -101,6 +101,7 @@ def test_image_alt(og_meta_tags):
 @pytest.mark.sphinx("html", testroot="simple")
 def test_image_social_cards(meta_tags):
     """Social cards should automatically be added if no og:image is given."""
+    pytest.importorskip("matplotlib")
     # Asserting `in` instead of `==` because of the hash that is generated
     assert (
         "http://example.org/en/latest/_images/social_previews/summary_index"
