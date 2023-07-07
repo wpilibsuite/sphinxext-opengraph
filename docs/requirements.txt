@@ -3,3 +3,4 @@ furo==2022.9.29
 sphinx==5.2.3
 sphinx-design
 ./
+matplotlib
