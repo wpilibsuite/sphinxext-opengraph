@@ -37,7 +37,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.7"
+          python-version: "3.8"
           cache: pip
           cache-dependency-path: |
             .github/workflows/workflow.yml
@@ -68,12 +68,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7',  '3.8', '3.9', '3.10', '3.11', 'pypy3.8']
+        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11']
         sphinx-version: ['>=4,<5', '>=5,<6', '>=6a0,<7']
         os: [windows-latest, macos-latest, ubuntu-latest]
-        exclude:
-          # Sphinx 6 supports 3.8+
-          - { python-version: '3.7', sphinx-version: '>=6a0,<7' }
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
