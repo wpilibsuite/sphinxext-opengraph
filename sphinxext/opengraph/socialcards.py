@@ -184,7 +184,9 @@ def create_social_card_objects(
     # If no font specified, load the Roboto Flex font as a fallback
     if font is None:
         path_font = Path(__file__).parent / "_static/Roboto-flex.ttf"
-        roboto_font = matplotlib.font_manager.FontEntry(fname=str(path_font), name="Roboto")
+        roboto_font = matplotlib.font_manager.FontEntry(
+            fname=str(path_font), name="Roboto"
+        )
         matplotlib.font_manager.fontManager.ttflist.append(roboto_font)
         font = roboto_font.name
 
