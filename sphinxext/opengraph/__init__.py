@@ -56,6 +56,10 @@ def get_tags(
     fields = context["meta"]
     if fields is None:
         fields = {}
+
+    if "ogp_disable" in fields:
+        return ""
+
     tags = {}
     meta_tags = {}  # For non-og meta tags
 

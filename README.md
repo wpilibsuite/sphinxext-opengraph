@@ -79,7 +79,9 @@ Make sure you place the fields at the very start of the document such that Sphin
 These are some overrides that can be used on individual pages, you can actually override any tag and field lists will always take priority.
 
 * `:ogp_description_length:`
-  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`. Note the slightly different syntax because this isn't directly an Open Graph tag.
+  * Configure the amount of characters to grab for the description of the page. If the value isn't a number it will fall back to `ogp_description_length`.[^1]
+* `:ogp_disable:`
+  * Disables generation of Open Graph tags on the page.[^1]
 * `:og:description:`
   * Lets you override the description of the page.
 * `:description:` or `.. meta::\n :description:`
@@ -89,7 +91,7 @@ These are some overrides that can be used on individual pages, you can actually 
 * `:og:type:`
   * Override the type of the page, for the list of available types take a look at https://ogp.me/#types.
 * `:og:image:`
-  * Set the image for the page.[^1]
+  * Set the image for the page.[^2]
 * `:og:image:alt:`
   * Sets the alt text. Will be ignored if there is no image set.
 
@@ -105,7 +107,7 @@ Page contents
 =============
 ```
 
-### Arbitrary Tags[^1]
+### Arbitrary Tags[^2]
 Additionally, you can use field lists to add any arbitrary Open Graph tag not supported by the extension. The syntax for arbitrary tags is the same with `:og:tag: content`. For example:
 
 ```rst
@@ -115,4 +117,5 @@ Page contents
 =============
 ```
 
-[^1]: Note: Relative file paths for images, videos and audio are currently **not** supported when using field lists. Please use an absolute path instead.
+[^1]: Note the slightly different syntax because this isn't directly an Open Graph tag.
+[^2]: Note: Relative file paths for images, videos and audio are currently **not** supported when using field lists. Please use an absolute path instead.
