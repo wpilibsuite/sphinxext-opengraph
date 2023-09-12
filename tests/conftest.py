@@ -1,6 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
-from sphinx.testing.path import path
+from pathlib import Path
 
 from sphinx.application import Sphinx
 
@@ -10,7 +10,7 @@ pytest_plugins = "sphinx.testing.fixtures"
 
 @pytest.fixture(scope="session")
 def rootdir():
-    return path(__file__).parent.abspath() / "roots"
+    return Path(__file__).parent.absolute() / "roots"
 
 
 @pytest.fixture()
