@@ -7,6 +7,7 @@ See [the opengraph.xyz website](https://www.opengraph.xyz/) for a way to preview
 Here's an example of what the card for this page looks like:
 
 % This is auto-generated at build time
+
 ```{image} ../tmp//num_0.png
 :width: 500
 ```
@@ -42,6 +43,25 @@ ogp_social_cards = {
 Matplotlib does not support easy plotting of SVG images, so ensure that your image is a PNG or JPEG file, not SVG.
 ```
 
+## Customize the text font
+
+By default, the Roboto Flex font is used to render the card text.
+
+You can specify the other font name via ``font`` key:
+
+```{code-block} python
+:caption: conf.py
+
+ogp_social_cards = {
+    "font": "Noto Sans CJK JP",
+}
+```
+
+You might need to install an additional font package on your environment. Also, note that the font name needs to be
+discoverable by Matplotlib FontManager.
+See [Matplotlib documentation](https://matplotlib.org/stable/tutorials/text/text_props.html#default-font)
+for the information about FontManager.
+
 ## Customize the card
 
 There are several customization options to change the text and look of the social media preview card.
@@ -49,7 +69,7 @@ Below is a summary of these options.
 
 - **`site_url`**: Set a custom site URL.
 - **`line_color`**: Color of the border line at the bottom of the card, in hex format.
-% TODO: add an over-ride for each part of the card.
+  % TODO: add an over-ride for each part of the card.
 
 ## Example social cards
 

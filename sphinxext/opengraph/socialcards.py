@@ -178,16 +178,17 @@ def create_social_card_objects(
     site_url_color="#2f363d",
     background_color="white",
     line_color="#5A626B",
-    font="Roboto",
+    font=None,
 ):
     """Create the Matplotlib objects for the first time."""
-    # Load the Roboto font
-    # TODO: Currently the `font` parameter above does nothing
-    #   Should instead make it possible to load remote fonts or local fonts
-    #   if a user specifies.
-    path_font = Path(__file__).parent / "_static/Roboto-flex.ttf"
-    font = matplotlib.font_manager.FontEntry(fname=str(path_font), name="Roboto")
-    matplotlib.font_manager.fontManager.ttflist.append(font)
+    # If no font specified, load the Roboto Flex font as a fallback
+    if font is None:
+        path_font = Path(__file__).parent / "_static/Roboto-flex.ttf"
+        roboto_font = matplotlib.font_manager.FontEntry(
+            fname=str(path_font), name="Roboto"
+        )
+        matplotlib.font_manager.fontManager.ttflist.append(roboto_font)
+        font = roboto_font.name
 
     # Because Matplotlib doesn't let you specify figures in pixels, only inches
     # This `multiple` results in a scale of about 1146px by 600px
@@ -214,7 +215,7 @@ def create_social_card_objects(
 
     # Axes configuration
     left_margin = 0.05
-    with plt.rc_context({"font.family": font.name}):
+    with plt.rc_context({"font.family": font}):
         # Site title
         # Smaller font, just above page title
         site_title_y_offset = 0.87
