@@ -69,7 +69,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11']
-        sphinx-version: ['>=4,<5', '>=5,<6', '>=6a0,<7']
+        sphinx-version: ['>=4,<5', '>=5,<6', '>=6a0,<7', '>=7,<8']
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v3
