@@ -39,4 +39,7 @@ setuptools.setup(
         "Topic :: Utilities",
     ],
     python_requires=">=3.8",
+    extras_require = {
+        'social_cards':  ["matplotlib"]
+    }
 )

@@ -11,6 +11,11 @@ Sphinx extension to generate [Open Graph metadata](https://ogp.me/) for each pag
 python -m pip install sphinxext-opengraph
 ```
 
+If you want social media cards
+```sh
+python -m pip install sphinxext-opengraph[social_cards]
+```
+
 ## Usage
 Just add `sphinxext.opengraph` to your extensions list in your `conf.py`
 
