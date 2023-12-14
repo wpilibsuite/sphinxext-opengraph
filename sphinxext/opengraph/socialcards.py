@@ -183,11 +183,11 @@ def create_social_card_objects(
     """Create the Matplotlib objects for the first time."""
     # If no font specified, load the Roboto Flex font as a fallback
     if font is None:
-        path_font = Path(__file__).parent / "_static/Roboto-flex.ttf"
+        path_font = Path(__file__).parent / "_static/Roboto-Flex.ttf"
         roboto_font = matplotlib.font_manager.FontEntry(
-            fname=str(path_font), name="Roboto"
+            fname=str(path_font), name="Roboto Flex"
         )
-        matplotlib.font_manager.fontManager.ttflist.append(roboto_font)
+        matplotlib.font_manager.fontManager.addfont(path_font)
         font = roboto_font.name
 
     # Because Matplotlib doesn't let you specify figures in pixels, only inches
