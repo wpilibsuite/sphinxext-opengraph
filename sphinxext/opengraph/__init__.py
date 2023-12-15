@@ -161,7 +161,8 @@ def get_tags(
             description = description[:description_max_length].strip() + "..."
 
         # Page title
-        pagetitle = title
+        pagetitle = fields.get("og:title", title)
+
         if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
             pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
 
