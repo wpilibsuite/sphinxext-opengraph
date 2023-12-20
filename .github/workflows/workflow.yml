@@ -17,7 +17,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
@@ -31,7 +31,7 @@ jobs:
   build-wheel:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up Python
@@ -68,11 +68,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11', '3.12']
         sphinx-version: ['>=4,<5', '>=5,<6', '>=6a0,<7', '>=7,<8']
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -109,7 +109,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup Python
