@@ -1,3 +1,4 @@
+import html
 import string
 from typing import Iterable
 
@@ -71,6 +72,9 @@ class DescriptionParser(nodes.NodeVisitor):
         # Only include leaf nodes in the description
         if len(node.children) == 0:
             text = node.astext().replace("\r", "").replace("\n", " ").strip()
+
+            # Ensure string contains HTML-safe characters
+            text = html.escape(text, True)
 
             # Remove double spaces
             while text.find("  ") != -1:
