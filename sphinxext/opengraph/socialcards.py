@@ -1,4 +1,5 @@
 """Build a PNG card for each page meant for social media."""
+
 import hashlib
 from pathlib import Path
 import matplotlib
