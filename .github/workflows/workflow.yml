@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
         cache: pip
@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.8"
           cache: pip
@@ -57,7 +57,7 @@ jobs:
           python -m pip install build
           python -m build
       - name: Upload sdist and wheel artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: my-dist
           path: dist/*
@@ -74,7 +74,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -89,7 +89,7 @@ jobs:
           python -m pip install -r dev-requirements.txt
           python -m pip install "sphinx${{ matrix.sphinx-version }}"
       - name: Download sdist and wheel artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: my-dist
           path: dist
@@ -113,7 +113,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
           cache: pip
@@ -132,7 +132,7 @@ jobs:
     if: contains(github.ref, 'refs/tags/') && github.repository_owner == 'wpilibsuite'
     steps:
       - name: Download sdist and wheel artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: my-dist
           path: dist
