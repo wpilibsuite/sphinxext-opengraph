@@ -76,7 +76,8 @@ def get_tags(
     title_excluding_html = get_title(context["title"], skip_html_tags=True)
 
     # Parse/walk doctree for metadata (tag/description)
-    description = get_description(doctree, desc_len, [title, title_excluding_html])
+    description_body = get_description(doctree, desc_len, [title, title_excluding_html])
+    description = fields.get("og:description", description_body)
 
     # title tag
     tags["og:title"] = title
@@ -161,7 +162,8 @@ def get_tags(
             description = description[:description_max_length].strip() + "..."
 
         # Page title
-        pagetitle = title
+        pagetitle = fields.get("og:title", title)
+
         if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
             pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
 
