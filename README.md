@@ -32,7 +32,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This is not required. Name of the site. This is displayed above the title. Defaults to the Sphinx [`project`](https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-project) config value.  Set to `False` to unset and use no default.
 * `ogp_social_cards`
     * Configuration for automatically creating social media card PNGs for each page.
-      For more information, see [the social media cards docs](docs/source/socialcards.md).
+      For more information, see [the social media cards docs](https://github.com/wpilibsuite/sphinxext-opengraph/blob/main/docs/source/socialcards.md).
 * `ogp_image`
     * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_url`.
 * `ogp_image_alt`
