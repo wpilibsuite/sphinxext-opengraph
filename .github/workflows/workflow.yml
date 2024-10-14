@@ -78,6 +78,8 @@ jobs:
             sphinx-version: '>=8,<9'
           - python-version: 'pypy3.9'
             sphinx-version: '>=8,<9'
+          - python-version: '3.13'
+            sphinx-version: '>=5,<6'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
