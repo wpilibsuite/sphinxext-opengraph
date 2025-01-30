@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     from typing import Any
 
     from sphinx.application import Sphinx
+    from sphinx.config import Config
+    from sphinx.environment import BuildEnvironment
     from sphinx.util.typing import ExtensionMetadata
 
 try:
@@ -165,34 +167,16 @@ def get_tags(
         and config_social.get("enable") is not False
         and create_social_card is not None
     ):
-        # Description
-        description_max_length = config_social.get(
-            "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
-        )
-        if len(description) > description_max_length:
-            description = description[:description_max_length].strip() + "..."
-
-        # Page title
-        pagetitle = title
-        if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
-            pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
-
-        # Site URL
-        site_url = config_social.get("site_url", True)
-        if site_url is True:
-            url_text = app.config.ogp_site_url.split("://")[-1]
-        elif isinstance(site_url, str):
-            url_text = site_url
-
-        # Plot an image with the given metadata to the output path
-        image_path = create_social_card(
-            app,
-            config_social,
-            site_name,
-            pagetitle,
-            description,
-            url_text,
-            context["pagename"],
+        image_url = social_card_for_page(
+            config_social=config_social,
+            site_name=site_name,
+            title=title,
+            description=description,
+            pagename=context["pagename"],
+            srcdir=app.srcdir,
+            outdir=app.outdir,
+            config=app.config,
+            env=app.env,
         )
         ogp_use_first_image = False
 
@@ -201,12 +185,6 @@ def get_tags(
             ogp_image_alt = fields.get("og:image:alt")
         else:
             ogp_image_alt = description
-
-        # Link the image in our page metadata
-        # We use os.path.sep to standardize behavior acros *nix and Windows
-        url = app.config.ogp_site_url.strip("/")
-        image_path = str(image_path).replace(os.path.sep, "/").strip("/")
-        image_url = f"{url}/{image_path}"
 
         # If the social card objects have been added we add special metadata for them
         # These are the dimensions *in pixels* of the card
@@ -265,6 +243,59 @@ def get_tags(
         )
         + "\n"
     )
+
+
+def social_card_for_page(
+    config_social: dict[str, bool | str],
+    site_name: str,
+    title: str,
+    description: str,
+    pagename: str,
+    *,
+    srcdir: str | Path,
+    outdir: str | Path,
+    config: Config,
+    env: BuildEnvironment,
+):
+    # Description
+    description_max_length = config_social.get(
+        "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
+    )
+    if len(description) > description_max_length:
+        description = description[:description_max_length].strip() + "..."
+
+    # Page title
+    pagetitle = title
+    if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
+        pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
+
+    # Site URL
+    site_url = config_social.get("site_url", True)
+    if site_url is True:
+        url_text = config.ogp_site_url.split("://")[-1]
+    elif isinstance(site_url, str):
+        url_text = site_url
+
+    # Plot an image with the given metadata to the output path
+    image_path = create_social_card(
+        config_social,
+        site_name,
+        pagetitle,
+        description,
+        url_text,
+        pagename,
+        srcdir=srcdir,
+        outdir=outdir,
+        config=config,
+        env=env,
+    )
+
+    # Link the image in our page metadata
+    # We use os.path.sep to standardize behavior acros *nix and Windows
+    url = config.ogp_site_url.strip("/")
+    image_path = str(image_path).replace(os.path.sep, "/").strip("/")
+    image_url = f"{url}/{image_path}"
+    return image_url
 
 
 def html_page_context(
