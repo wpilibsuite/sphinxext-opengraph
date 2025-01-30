@@ -74,8 +74,7 @@ def get_tags(
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
     # Get the title and parse any html in it
-    title = get_title(context["title"], skip_html_tags=False)
-    title_excluding_html = get_title(context["title"], skip_html_tags=True)
+    title, title_excluding_html = get_title(context["title"])
 
     # Parse/walk doctree for metadata (tag/description)
     description = get_description(doctree, desc_len, [title, title_excluding_html])

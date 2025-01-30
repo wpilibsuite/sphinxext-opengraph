@@ -26,12 +26,9 @@ class HTMLTextParser(HTMLParser):
             self.text_outside_tags += data
 
 
-def get_title(title: str, skip_html_tags: bool = False):
+def get_title(title: str):
     htp = HTMLTextParser()
     htp.feed(title)
     htp.close()
 
-    if skip_html_tags:
-        return htp.text_outside_tags
-    else:
-        return htp.text
+    return htp.text, htp.text_outside_tags
