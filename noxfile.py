@@ -11,6 +11,8 @@ List available jobs:
 ref: https://nox.thea.codes/
 """
 
+from __future__ import annotations
+
 from shlex import split
 
 import nox

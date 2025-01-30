@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import conftest
 import pytest
 from sphinx.application import Sphinx

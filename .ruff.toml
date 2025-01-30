@@ -1,0 +1,42 @@
+target-version = "py39"  # Pin Ruff to Python 3.9
+line-length = 88
+output-format = "full"
+
+[format]
+quote-style = "double"
+docstring-code-format = true
+
+[lint]
+select = [
+#    "C4",    # flake8-comprehensions
+#    "B",     # flake8-bugbear
+    "E",     # pycodestyle
+#    "F",     # pyflakes
+    "FA",    # flake8-future-annotations
+    "FLY",   # flynt
+    "FURB",  # refurb
+#    "G",     # flake8-logging-format
+    "I",     # isort
+    "LOG",   # flake8-logging
+    "PERF",  # perflint
+#    "PGH",   # pygrep-hooks
+#    "PT",    # flake8-pytest-style
+#    "TC",    # flake8-type-checking
+#    "UP",    # pyupgrade
+    "W",     # pycodestyle
+]
+ignore = [
+    "E501",  # Ignore line length errors (we use auto-formatting)
+]
+
+[lint.flake8-type-checking]
+exempt-modules = []
+strict = true
+
+[lint.isort]
+forced-separate = [
+    "tests",
+]
+required-imports = [
+    "from __future__ import annotations",
+]

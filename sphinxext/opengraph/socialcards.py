@@ -1,5 +1,7 @@
 """Build a PNG card for each page meant for social media."""
 
+from __future__ import annotations
+
 import hashlib
 from pathlib import Path
 

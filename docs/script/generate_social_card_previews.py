@@ -6,6 +6,8 @@ I should remove this when I'm happy with the result.
 # %load_ext autoreload
 # %autoreload 2
 
+from __future__ import annotations
+
 import random
 from pathlib import Path
 from textwrap import dedent
