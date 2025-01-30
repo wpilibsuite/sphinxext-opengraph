@@ -6,14 +6,15 @@ I should remove this when I'm happy with the result.
 # %load_ext autoreload
 # %autoreload 2
 
+import random
 from pathlib import Path
 from textwrap import dedent
+
 from sphinxext.opengraph.socialcards import (
-    render_social_card,
-    MAX_CHAR_PAGE_TITLE,
     MAX_CHAR_DESCRIPTION,
+    MAX_CHAR_PAGE_TITLE,
+    render_social_card,
 )
-import random
 
 here = Path(__file__).parent
 

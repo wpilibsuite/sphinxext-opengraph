@@ -11,8 +11,9 @@ List available jobs:
 ref: https://nox.thea.codes/
 """
 
-import nox
 from shlex import split
+
+import nox
 
 nox.options.reuse_existing_virtualenvs = True
 

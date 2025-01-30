@@ -1,13 +1,14 @@
+import os
+from pathlib import Path
 from typing import Any, Dict
 from urllib.parse import urljoin, urlparse, urlsplit, urlunparse
-from pathlib import Path
 
 import docutils.nodes as nodes
 from sphinx.application import Sphinx
 
-from .descriptionparser import get_description
-from .metaparser import get_meta_description
-from .titleparser import get_title
+from sphinxext.opengraph.descriptionparser import get_description
+from sphinxext.opengraph.metaparser import get_meta_description
+from sphinxext.opengraph.titleparser import get_title
 
 try:
     import matplotlib
@@ -16,9 +17,10 @@ except ImportError:
     create_social_card = None
     DEFAULT_SOCIAL_CONFIG = {}
 else:
-    from .socialcards import create_social_card, DEFAULT_SOCIAL_CONFIG
-
-import os
+    from sphinxext.opengraph.socialcards import (
+        DEFAULT_SOCIAL_CONFIG,
+        create_social_card,
+    )
 
 __version__ = "0.9.1"
 version_info = (0, 9, 1)
