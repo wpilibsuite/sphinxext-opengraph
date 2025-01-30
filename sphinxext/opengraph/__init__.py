@@ -20,6 +20,8 @@ else:
 
 import os
 
+__version__ = "0.9.1"
+version_info = (0, 9, 1)
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS = 160

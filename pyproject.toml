@@ -1,43 +1,65 @@
-import setuptools
+[build-system]
+requires = ["flit_core>=3.7"]
+build-backend = "flit_core.buildapi"
 
-with open("README.md", encoding="utf-8") as readme:
-    long_description = readme.read()
+# project metadata
+[project]
+name = "sphinxext-opengraph"
+description = "Sphinx Extension to enable OGP support"
+readme = "README.md"
+urls.Code = "https://github.com/wpilibsuite/sphinxext-opengraph/"
+urls.Documentation = "https://sphinxext-opengraph.readthedocs.io/"
+urls.Download = "https://pypi.org/project/sphinxext-opengraph/"
+urls.Homepage = "https://github.com/wpilibsuite/sphinxext-opengraph/"
+urls."Issue tracker" = "https://github.com/wpilibsuite/sphinxext-opengraph/issues"
+license.text = "BSD-3-Clause"
+requires-python = ">=3.8"
 
-setuptools.setup(
-    name="sphinxext-opengraph",
-    use_scm_version=True,
-    setup_requires=["setuptools_scm"],
-    author="Itay Ziv",
-    author_email="itay220204@gmail.com",
-    description="Sphinx Extension to enable OGP support",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/wpilibsuite/sphinxext-opengraph",
-    license="LICENSE.md",
-    install_requires=["sphinx>=5.0"],
-    packages=["sphinxext/opengraph"],
-    include_package_data=True,
-    package_data={"sphinxext.opengraph": ["sphinxext/opengraph/_static/*"]},
-    classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Environment :: Plugins",
-        "Environment :: Web Environment",
-        "Framework :: Sphinx :: Extension",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: BSD License",
-        "Natural Language :: English",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-        "Programming Language :: Python :: 3.12",
-        "Programming Language :: Python",
-        "Topic :: Documentation :: Sphinx",
-        "Topic :: Documentation",
-        "Topic :: Software Development :: Documentation",
-        "Topic :: Text Processing",
-        "Topic :: Utilities",
-    ],
-    python_requires=">=3.8",
-)
+# Classifiers list: https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Plugins",
+    "Environment :: Web Environment",
+    "Framework :: Sphinx :: Extension",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python",
+    "Topic :: Documentation :: Sphinx",
+    "Topic :: Documentation",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Text Processing",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "Sphinx>=5.0",
+]
+dynamic = ["version"]
+
+[[project.authors]]
+name = "Itay Ziv"
+email = "itay220204@gmail.com"
+
+[tool.flit.module]
+name = "sphinxext.opengraph"
+
+[tool.flit.sdist]
+include = [
+    "LICENSE.md",
+    # Documentation
+    "docs/",
+    # Resources
+    "sphinxext/opengraph/_static/",
+    # Tests
+    "tests/",
+    "noxfile.py",
+]
+exclude = [
+    "doc/_build",
+]
