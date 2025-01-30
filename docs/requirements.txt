@@ -1,6 +1,6 @@
-myst-parser==0.18.1
-furo==2022.9.29
-sphinx==5.2.3
+myst-parser>=4
+furo>=2024
+sphinx~=8.1.0
 sphinx-design
 ./
 matplotlib
