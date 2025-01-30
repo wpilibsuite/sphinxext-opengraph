@@ -1,6 +1,6 @@
+import conftest
 import pytest
 from sphinx.application import Sphinx
-import conftest
 
 
 def get_tag(tags, tag_type, kind="property", prefix="og"):

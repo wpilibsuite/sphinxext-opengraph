@@ -2,9 +2,10 @@
 
 import hashlib
 from pathlib import Path
+
 import matplotlib
-from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
+from matplotlib import pyplot as plt
 from sphinx.util import logging
 
 matplotlib.use("agg")
