@@ -8,21 +8,21 @@ docstring-code-format = true
 
 [lint]
 select = [
-#    "C4",    # flake8-comprehensions
-#    "B",     # flake8-bugbear
+    "C4",    # flake8-comprehensions
+    "B",     # flake8-bugbear
     "E",     # pycodestyle
-#    "F",     # pyflakes
+    "F",     # pyflakes
     "FA",    # flake8-future-annotations
     "FLY",   # flynt
     "FURB",  # refurb
-#    "G",     # flake8-logging-format
+    "G",     # flake8-logging-format
     "I",     # isort
     "LOG",   # flake8-logging
     "PERF",  # perflint
-#    "PGH",   # pygrep-hooks
-#    "PT",    # flake8-pytest-style
-#    "TC",    # flake8-type-checking
-#    "UP",    # pyupgrade
+    "PGH",   # pygrep-hooks
+    "PT",    # flake8-pytest-style
+    "TC",    # flake8-type-checking
+    "UP",    # pyupgrade
     "W",     # pycodestyle
 ]
 ignore = [

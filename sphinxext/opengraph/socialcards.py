@@ -57,7 +57,7 @@ def create_social_card(
     """
 
     # Add a hash to the image path based on metadata to bust caches
-    # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images  # noqa
+    # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images
     hash = hashlib.sha1(
         (site_name + page_title + description + str(config_social)).encode()
     ).hexdigest()[:8]
@@ -104,12 +104,12 @@ def create_social_card(
 
         # If image is an SVG replace it with None
         if impath.suffix.lower() == ".svg":
-            LOGGER.warning(f"[Social card] %s cannot be an SVG image, skipping...", img)
+            LOGGER.warning("[Social card] %s cannot be an SVG image, skipping...", img)
             kwargs_fig[img] = None
 
         # If image doesn't exist, throw a warning and replace with none
         if not impath.exists():
-            LOGGER.warning(f"[Social card]: %s file doesn't exist, skipping...", img)
+            LOGGER.warning("[Social card]: %s file doesn't exist, skipping...", img)
             kwargs_fig[img] = None
 
     # These are passed directly from the user configuration to our plotting function

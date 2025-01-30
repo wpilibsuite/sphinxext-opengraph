@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import conftest
 import pytest
-from sphinx.application import Sphinx
+from sphinx.errors import ExtensionError
+
+if TYPE_CHECKING:
+    from sphinx.application import Sphinx
 
 
 def get_tag(tags, tag_type, kind="property", prefix="og"):
@@ -315,7 +320,7 @@ def test_rtd_invalid(app: Sphinx, monkeypatch):
     monkeypatch.setenv("READTHEDOCS", "True")
     app.config.html_baseurl = None
 
-    with pytest.raises(Exception):
+    with pytest.raises(ExtensionError, match="did not provide a valid canonical URL"):
         app.build()
 
 
