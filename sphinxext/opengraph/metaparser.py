@@ -8,11 +8,11 @@ class HTMLTextParser(HTMLParser):
     Parse HTML into text
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.meta_description = None
 
-    def handle_starttag(self, tag, attrs) -> None:
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         # For example:
         # attrs = [("content", "My manual description"), ("name", "description")]
         if ("name", "description") in attrs:

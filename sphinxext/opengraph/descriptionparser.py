@@ -20,7 +20,7 @@ class DescriptionParser(nodes.NodeVisitor):
         *,
         desc_len: int,
         known_titles: Set[str] = frozenset(),
-    ):
+    ) -> None:
         super().__init__(document)
         self.description = ""
         self.desc_len = desc_len
@@ -36,12 +36,8 @@ class DescriptionParser(nodes.NodeVisitor):
         if self.stop:
             raise nodes.StopTraversal
 
-        # Skip comments
-        if isinstance(node, nodes.Invisible):
-            raise nodes.SkipNode
-
-        # Skip all admonitions
-        if isinstance(node, nodes.Admonition):
+        # Skip comments & all admonitions
+        if isinstance(node, (nodes.Admonition, nodes.Invisible)):
             raise nodes.SkipNode
 
         # Mark start of nested lists
@@ -107,7 +103,7 @@ def get_description(
     doctree: nodes.document,
     description_length: int,
     known_titles: Set[str] = frozenset(),
-):
+) -> str:
     mcv = DescriptionParser(
         doctree, desc_len=description_length, known_titles=known_titles
     )

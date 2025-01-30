@@ -15,6 +15,7 @@ from textwrap import dedent
 from sphinxext.opengraph.socialcards import (
     MAX_CHAR_DESCRIPTION,
     MAX_CHAR_PAGE_TITLE,
+    create_social_card_objects,
     render_social_card,
 )
 
@@ -31,7 +32,7 @@ kwargs_fig = {
 }
 
 print("Generating previews of social media cards...")
-plt_objects = None
+plt_objects = create_social_card_objects(**kwargs_fig)
 embed_text = []
 for perm in range(20):
     # Create dummy text description and pagetitle for this iteration
@@ -54,7 +55,6 @@ for perm in range(20):
         description=desc,
         siteurl="sphinxext-opengraph.readthedocs.io",
         plt_objects=plt_objects,
-        kwargs_fig=kwargs_fig,
     )
 
     path_examples_page_folder = PROJECT_ROOT / "docs"
