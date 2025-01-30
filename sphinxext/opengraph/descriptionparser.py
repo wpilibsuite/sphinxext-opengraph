@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import string
-from collections.abc import Set
+from typing import TYPE_CHECKING
 
 import docutils.nodes as nodes
+
+if TYPE_CHECKING:
+    from collections.abc import Set
 
 
 class DescriptionParser(nodes.NodeVisitor):

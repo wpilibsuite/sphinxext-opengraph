@@ -2,27 +2,29 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Dict
+from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse, urlsplit, urlunparse
 
 import docutils.nodes as nodes
-from sphinx.application import Sphinx
 
 from sphinxext.opengraph.descriptionparser import get_description
 from sphinxext.opengraph.metaparser import get_meta_description
 from sphinxext.opengraph.titleparser import get_title
 
+if TYPE_CHECKING:
+    from typing import Any
+
+    from sphinx.application import Sphinx
+
 try:
-    import matplotlib
-except ImportError:
-    print("matplotlib is not installed, social cards will not be generated")
-    create_social_card = None
-    DEFAULT_SOCIAL_CONFIG = {}
-else:
     from sphinxext.opengraph.socialcards import (
         DEFAULT_SOCIAL_CONFIG,
         create_social_card,
     )
+except ImportError:
+    print("matplotlib is not installed, social cards will not be generated")
+    create_social_card = None
+    DEFAULT_SOCIAL_CONFIG = {}
 
 __version__ = "0.9.1"
 version_info = (0, 9, 1)
@@ -54,9 +56,9 @@ def make_tag(property: str, content: str, type_: str = "property") -> str:
 
 def get_tags(
     app: Sphinx,
-    context: Dict[str, Any],
+    context: dict[str, Any],
     doctree: nodes.document,
-    config: Dict[str, Any],
+    config: dict[str, Any],
 ) -> str:
     # Get field lists for per-page overrides
     fields = context["meta"]
@@ -268,14 +270,14 @@ def html_page_context(
     app: Sphinx,
     pagename: str,
     templatename: str,
-    context: Dict[str, Any],
+    context: dict[str, Any],
     doctree: nodes.document,
 ) -> None:
     if doctree:
         context["metatags"] += get_tags(app, context, doctree, app.config)
 
 
-def setup(app: Sphinx) -> Dict[str, Any]:
+def setup(app: Sphinx) -> dict[str, Any]:
     # ogp_site_url="" allows relative by default, even though it's not
     # officially supported by OGP.
     app.add_config_value("ogp_site_url", "", "html")

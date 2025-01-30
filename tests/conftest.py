@@ -19,10 +19,10 @@ def rootdir():
         return path(__file__).parent.abspath() / "roots"
 
 
-@pytest.fixture()
+@pytest.fixture
 def content(app):
     app.build(force_all=True)
-    yield app
+    return app
 
 
 def _meta_tags(content, subdir=None):
@@ -39,19 +39,19 @@ def _og_meta_tags(content):
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def meta_tags(content):
     return _meta_tags(content)
 
 
-@pytest.fixture()
+@pytest.fixture
 def og_meta_tags(content):
     return [
         tag for tag in _meta_tags(content) if tag.get("property", "").startswith("og:")
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def og_meta_tags_sub(content):
     return [
         tag
