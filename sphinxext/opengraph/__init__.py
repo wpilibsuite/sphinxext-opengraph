@@ -61,7 +61,7 @@ def get_tags(
     app: Sphinx,
     context: dict[str, Any],
     doctree: nodes.document,
-    config: dict[str, Any],
+    config: Config,
 ) -> str:
     # Get field lists for per-page overrides
     fields = context["meta"]
@@ -77,7 +77,7 @@ def get_tags(
     # Set length of description
     try:
         desc_len = int(
-            fields.get("ogp_description_length", config["ogp_description_length"])
+            fields.get("ogp_description_length", config.ogp_description_length)
         )
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
@@ -92,12 +92,12 @@ def get_tags(
     tags["og:title"] = title
 
     # type tag
-    tags["og:type"] = config["ogp_type"]
+    tags["og:type"] = config.ogp_type
 
-    if not config["ogp_site_url"] and os.getenv("READTHEDOCS"):
-        if config["html_baseurl"] is not None:
+    if not config.ogp_site_url and os.getenv("READTHEDOCS"):
+        if config.html_baseurl is not None:
             # readthedocs uses ``html_baseurl`` for Sphinx > 1.8
-            parse_result = urlsplit(config["html_baseurl"])
+            parse_result = urlsplit(config.html_baseurl)
         else:
             # readthedocs addons no longer configures ``html_baseurl``
             if rtd_canonical_url := os.getenv("READTHEDOCS_CANONICAL_URL"):
@@ -106,7 +106,7 @@ def get_tags(
                 raise OSError("ReadTheDocs did not provide a valid canonical URL!")
 
         # Grab root url from canonical url
-        config["ogp_site_url"] = urlunparse(
+        config.ogp_site_url = urlunparse(
             (
                 parse_result.scheme,
                 parse_result.netloc,
@@ -120,18 +120,18 @@ def get_tags(
     # url tag
     # Get the URL of the specific page
     page_url = urljoin(
-        config["ogp_site_url"], app.builder.get_target_uri(context["pagename"])
+        config.ogp_site_url, app.builder.get_target_uri(context["pagename"])
     )
     tags["og:url"] = page_url
 
     # site name tag, False disables, default to project if ogp_site_name not
     # set.
-    if config["ogp_site_name"] is False:
+    if config.ogp_site_name is False:
         site_name = None
-    elif config["ogp_site_name"] is None:
-        site_name = config["project"]
+    elif config.ogp_site_name is None:
+        site_name = config.project
     else:
-        site_name = config["ogp_site_name"]
+        site_name = config.ogp_site_name
     if site_name:
         tags["og:site_name"] = site_name
 
@@ -139,7 +139,7 @@ def get_tags(
     if description:
         tags["og:description"] = description
 
-        if config["ogp_enable_meta_description"] and not get_meta_description(
+        if config.ogp_enable_meta_description and not get_meta_description(
             context["metatags"]
         ):
             meta_tags["description"] = description
@@ -152,15 +152,15 @@ def get_tags(
         ogp_image_alt = fields.get("og:image:alt")
         fields.pop("og:image", None)
     else:
-        image_url = config["ogp_image"]
-        ogp_use_first_image = config["ogp_use_first_image"]
-        ogp_image_alt = fields.get("og:image:alt", config["ogp_image_alt"])
+        image_url = config.ogp_image
+        ogp_use_first_image = config.ogp_use_first_image
+        ogp_image_alt = fields.get("og:image:alt", config.ogp_image_alt)
 
     # Decide whether to add social media card images for each page.
     # Only do this as a fallback if the user hasn't given any configuration
     # to add other images.
     config_social = DEFAULT_SOCIAL_CONFIG.copy()
-    social_card_user_options = app.config.ogp_social_cards or {}
+    social_card_user_options = config.ogp_social_cards or {}
     config_social.update(social_card_user_options)
     if (
         not (image_url or ogp_use_first_image)
@@ -175,7 +175,7 @@ def get_tags(
             pagename=context["pagename"],
             srcdir=app.srcdir,
             outdir=app.outdir,
-            config=app.config,
+            config=config,
             env=app.env,
         )
         ogp_use_first_image = False
@@ -219,7 +219,7 @@ def get_tags(
                 else:  # ogp_image is set
                     # ogp_image is defined as being relative to the site root.
                     # This workaround is to keep that functionality from breaking.
-                    root = config["ogp_site_url"]
+                    root = config.ogp_site_url
 
                 image_url = urljoin(root, image_url_parsed.path)
             tags["og:image"] = image_url
@@ -239,7 +239,7 @@ def get_tags(
         "\n".join(
             [make_tag(p, c) for p, c in tags.items()]
             + [make_tag(p, c, "name") for p, c in meta_tags.items()]
-            + config["ogp_custom_meta_tags"]
+            + config.ogp_custom_meta_tags
         )
         + "\n"
     )
