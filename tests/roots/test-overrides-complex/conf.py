@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 extensions = ["sphinxext.opengraph"]
 
 master_doc = "index"
