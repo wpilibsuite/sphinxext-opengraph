@@ -1,5 +1,5 @@
 import string
-from typing import Iterable
+from collections.abc import Set
 
 import docutils.nodes as nodes
 
@@ -11,25 +11,11 @@ class DescriptionParser(nodes.NodeVisitor):
 
     def __init__(
         self,
+        document: nodes.document,
+        *,
         desc_len: int,
-        known_titles: Iterable[str] = None,
-        document: nodes.document = None,
+        known_titles: Set[str] = frozenset(),
     ):
-        # Hack to prevent requirement for the doctree to be passed in.
-        # It's only used by doctree.walk(...) to print debug messages.
-        if document is None:
-
-            class document_cls:
-                class reporter:
-                    @staticmethod
-                    def debug(*args, **kwaargs):
-                        pass
-
-            document = document_cls()
-
-        if known_titles == None:
-            known_titles = []
-
         super().__init__(document)
         self.description = ""
         self.desc_len = desc_len
@@ -115,9 +101,10 @@ class DescriptionParser(nodes.NodeVisitor):
 def get_description(
     doctree: nodes.document,
     description_length: int,
-    known_titles: Iterable[str] = None,
-    document: nodes.document = None,
+    known_titles: Set[str] = frozenset(),
 ):
-    mcv = DescriptionParser(description_length, known_titles, document)
+    mcv = DescriptionParser(
+        doctree, desc_len=description_length, known_titles=known_titles
+    )
     doctree.walkabout(mcv)
     return mcv.description

@@ -79,7 +79,7 @@ def get_tags(
     title, title_excluding_html = get_title(context["title"])
 
     # Parse/walk doctree for metadata (tag/description)
-    description = get_description(doctree, desc_len, [title, title_excluding_html])
+    description = get_description(doctree, desc_len, {title, title_excluding_html})
 
     # title tag
     tags["og:title"] = title
