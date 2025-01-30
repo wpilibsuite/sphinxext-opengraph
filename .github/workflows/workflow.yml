@@ -62,13 +62,14 @@ jobs:
           name: my-dist
           path: dist/*
 
+
   test:
     needs: build-wheel
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
         sphinx-version: ['>=5,<6', '>=6a0,<7', '>=7,<8', '>=8,<9']
         os: [windows-latest, macos-latest, ubuntu-latest]
         exclude:
@@ -78,6 +79,8 @@ jobs:
             sphinx-version: '>=8,<9'
           - python-version: 'pypy3.9'
             sphinx-version: '>=8,<9'
+          - python-version: '3.13'
+            sphinx-version: '>=5,<6'
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
