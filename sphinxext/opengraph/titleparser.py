@@ -8,7 +8,7 @@ class HTMLTextParser(HTMLParser):
     Parse HTML into text
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         # All text found
         self.text = ""
@@ -16,19 +16,19 @@ class HTMLTextParser(HTMLParser):
         self.text_outside_tags = ""
         self.level = 0
 
-    def handle_starttag(self, tag, attrs) -> None:
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         self.level += 1
 
-    def handle_endtag(self, tag) -> None:
+    def handle_endtag(self, tag: str) -> None:
         self.level -= 1
 
-    def handle_data(self, data) -> None:
+    def handle_data(self, data: str) -> None:
         self.text += data
         if self.level == 0:
             self.text_outside_tags += data
 
 
-def get_title(title: str):
+def get_title(title: str) -> tuple[str, str]:
     htp = HTMLTextParser()
     htp.feed(title)
     htp.close()

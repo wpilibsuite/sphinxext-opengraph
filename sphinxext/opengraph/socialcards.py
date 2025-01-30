@@ -4,11 +4,22 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import matplotlib
+import matplotlib.font_manager
 import matplotlib.image as mpimg
 from matplotlib import pyplot as plt
 from sphinx.util import logging
+
+if TYPE_CHECKING:
+    from typing import TypeAlias
+
+    from matplotlib.figure import Figure
+    from matplotlib.text import Text
+    from sphinx.application import Sphinx
+
+    PltObjects: TypeAlias = tuple[Figure, Text, Text, Text, Text]
 
 matplotlib.use("agg")
 
@@ -38,17 +49,23 @@ DEFAULT_KWARGS_FIG = {
 # They must be defined here otherwise Sphinx errors when trying to pickle them.
 # They are dependent on the `multiple` variable defined when the figure is created.
 # Because they are depending on the figure size and renderer used to generate them.
-def _set_page_title_line_width():
+def _set_page_title_line_width() -> int:
     return 825
 
 
-def _set_description_line_width():
+def _set_description_line_width() -> int:
     return 1000
 
 
 def create_social_card(
-    app, config_social, site_name, page_title, description, url_text, page_path
-):
+    app: Sphinx,
+    config_social: dict[str, bool | str],
+    site_name: str,
+    page_title: str,
+    description: str,
+    url_text: str,
+    page_path: str,
+) -> Path:
     """Create a social preview card according to page metadata.
 
     This uses page metadata and calls a render function to generate the image.
@@ -75,22 +92,20 @@ def create_social_card(
     # This is because we hash the values of the text + images in the social card.
     # If the hash doesn't change, it means the output should be the same.
     if path_image.exists():
-        return
+        return path_images_relative / filename_image
 
     # These kwargs are used to generate the base figure image
-    kwargs_fig = {}
+    kwargs_fig: dict[str, str | Path | None] = {}
 
     # Large image to the top right
-    if config_social.get("image"):
-        kwargs_fig["image"] = Path(app.builder.srcdir) / config_social.get("image")
+    if cs_image := config_social.get("image"):
+        kwargs_fig["image"] = Path(app.builder.srcdir) / cs_image
     elif app.config.html_logo:
         kwargs_fig["image"] = Path(app.builder.srcdir) / app.config.html_logo
 
     # Mini image to the bottom right
-    if config_social.get("image_mini"):
-        kwargs_fig["image_mini"] = Path(app.builder.srcdir) / config_social.get(
-            "image_mini"
-        )
+    if cs_image_mini := config_social.get("image_mini"):
+        kwargs_fig["image_mini"] = Path(app.builder.srcdir) / cs_image_mini
     else:
         kwargs_fig["image_mini"] = (
             Path(__file__).parent / "_static/sphinx-logo-shadow.png"
@@ -119,10 +134,12 @@ def create_social_card(
             kwargs_fig[config] = config_social.get(config)
 
     # Generate the image and store the matplotlib objects so that we can re-use them
-    if hasattr(app.env, "ogp_social_card_plt_objects"):
+    try:
         plt_objects = app.env.ogp_social_card_plt_objects
-    else:
-        plt_objects = None
+    except AttributeError:
+        # If objects is None it means this is the first time plotting.
+        # Create the figure objects and return them so that we re-use them later.
+        plt_objects = create_social_card_objects(**kwargs_fig)
     plt_objects = render_social_card(
         path_image,
         site_name,
@@ -130,7 +147,6 @@ def create_social_card(
         description,
         url_text,
         plt_objects,
-        kwargs_fig,
     )
     app.env.ogp_social_card_plt_objects = plt_objects
 
@@ -140,27 +156,15 @@ def create_social_card(
 
 
 def render_social_card(
-    path,
-    site_title=None,
-    page_title=None,
-    description=None,
-    siteurl=None,
-    plt_objects=None,
-    kwargs_fig=None,
-):
+    path: Path,
+    site_title: str,
+    page_title: str,
+    description: str,
+    siteurl: str,
+    plt_objects: PltObjects,
+) -> PltObjects:
     """Render a social preview card with Matplotlib and write to disk."""
-    # If objects is None it means this is the first time plotting.
-    # Create the figure objects and return them so that we re-use them later.
-    if plt_objects is None:
-        (
-            fig,
-            txt_site_title,
-            txt_page_title,
-            txt_description,
-            txt_url,
-        ) = create_social_card_objects(**kwargs_fig)
-    else:
-        fig, txt_site_title, txt_page_title, txt_description, txt_url = plt_objects
+    fig, txt_site_title, txt_page_title, txt_description, txt_url = plt_objects
 
     # Update the matplotlib text objects with new text from this page
     txt_site_title.set_text(site_title)
@@ -174,16 +178,16 @@ def render_social_card(
 
 
 def create_social_card_objects(
-    image=None,
-    image_mini=None,
-    page_title_color="#2f363d",
-    description_color="#585e63",
-    site_title_color="#585e63",
-    site_url_color="#2f363d",
-    background_color="white",
-    line_color="#5A626B",
-    font=None,
-):
+    image: Path | None = None,
+    image_mini: Path | None = None,
+    page_title_color: str = "#2f363d",
+    description_color: str = "#585e63",
+    site_title_color: str = "#585e63",
+    site_url_color: str = "#2f363d",
+    background_color: str = "white",
+    line_color: str = "#5A626B",
+    font: str | None = None,
+) -> PltObjects:
     """Create the Matplotlib objects for the first time."""
     # If no font specified, load the Roboto Flex font as a fallback
     if font is None:

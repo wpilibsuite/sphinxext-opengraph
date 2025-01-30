@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from typing import Any
 
     from sphinx.application import Sphinx
+    from sphinx.util.typing import ExtensionMetadata
 
 try:
     from sphinxext.opengraph.socialcards import (
@@ -277,7 +278,7 @@ def html_page_context(
         context["metatags"] += get_tags(app, context, doctree, app.config)
 
 
-def setup(app: Sphinx) -> dict[str, Any]:
+def setup(app: Sphinx) -> ExtensionMetadata:
     # ogp_site_url="" allows relative by default, even though it's not
     # officially supported by OGP.
     app.add_config_value("ogp_site_url", "", "html")
@@ -295,6 +296,8 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("html-page-context", html_page_context)
 
     return {
+        "version": __version__,
+        "env_version": 1,
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
