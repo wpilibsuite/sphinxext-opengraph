@@ -11,6 +11,12 @@ Sphinx extension to generate [Open Graph metadata](https://ogp.me/) for each pag
 python -m pip install sphinxext-opengraph
 ```
 
+The `matplotlib` package is required to generate social cards:
+
+```sh
+python -m pip install sphinxext-opengraph[social_cards]
+```
+
 ## Usage
 Just add `sphinxext.opengraph` to your extensions list in your `conf.py`
 
@@ -19,6 +25,8 @@ extensions = [
    "sphinxext.opengraph",
 ]
 ```
+
+
 ## Options
 These values are placed in the `conf.py` of your Sphinx project.
 

@@ -43,6 +43,11 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.optional-dependencies]
+social_cards = [
+    "matplotlib>=3",
+]
+
 [[project.authors]]
 name = "Itay Ziv"
 email = "itay220204@gmail.com"
