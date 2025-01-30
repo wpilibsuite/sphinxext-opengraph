@@ -17,7 +17,8 @@ if TYPE_CHECKING:
 
     from matplotlib.figure import Figure
     from matplotlib.text import Text
-    from sphinx.application import Sphinx
+    from sphinx.config import Config
+    from sphinx.environment import BuildEnvironment
 
     PltObjects: TypeAlias = tuple[Figure, Text, Text, Text, Text]
 
@@ -58,13 +59,17 @@ def _set_description_line_width() -> int:
 
 
 def create_social_card(
-    app: Sphinx,
     config_social: dict[str, bool | str],
     site_name: str,
     page_title: str,
     description: str,
     url_text: str,
     page_path: str,
+    *,
+    srcdir: str | Path,
+    outdir: str | Path,
+    config: Config,
+    env: BuildEnvironment,
 ) -> Path:
     """Create a social preview card according to page metadata.
 
@@ -84,7 +89,7 @@ def create_social_card(
     filename_image = f"summary_{page_path.replace('/', '_')}_{hash}.png"
 
     # Absolute path used to save the image
-    path_images_absolute = Path(app.builder.outdir) / path_images_relative
+    path_images_absolute = Path(outdir) / path_images_relative
     path_images_absolute.mkdir(exist_ok=True, parents=True)
     path_image = path_images_absolute / filename_image
 
@@ -99,13 +104,13 @@ def create_social_card(
 
     # Large image to the top right
     if cs_image := config_social.get("image"):
-        kwargs_fig["image"] = Path(app.builder.srcdir) / cs_image
-    elif app.config.html_logo:
-        kwargs_fig["image"] = Path(app.builder.srcdir) / app.config.html_logo
+        kwargs_fig["image"] = Path(srcdir) / cs_image
+    elif config.html_logo:
+        kwargs_fig["image"] = Path(srcdir) / config.html_logo
 
     # Mini image to the bottom right
     if cs_image_mini := config_social.get("image_mini"):
-        kwargs_fig["image_mini"] = Path(app.builder.srcdir) / cs_image_mini
+        kwargs_fig["image_mini"] = Path(srcdir) / cs_image_mini
     else:
         kwargs_fig["image_mini"] = (
             Path(__file__).parent / "_static/sphinx-logo-shadow.png"
@@ -135,7 +140,7 @@ def create_social_card(
 
     # Generate the image and store the matplotlib objects so that we can re-use them
     try:
-        plt_objects = app.env.ogp_social_card_plt_objects
+        plt_objects = env.ogp_social_card_plt_objects
     except AttributeError:
         # If objects is None it means this is the first time plotting.
         # Create the figure objects and return them so that we re-use them later.
@@ -148,7 +153,7 @@ def create_social_card(
         url_text,
         plt_objects,
     )
-    app.env.ogp_social_card_plt_objects = plt_objects
+    env.ogp_social_card_plt_objects = plt_objects
 
     # Path relative to build folder will be what we use for linking the URL
     path_relative_to_build = path_images_relative / filename_image
