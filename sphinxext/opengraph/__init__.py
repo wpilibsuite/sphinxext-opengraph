@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import urljoin, urlparse, urlsplit, urlunparse
 from pathlib import Path
 
 import docutils.nodes as nodes
@@ -86,12 +86,16 @@ def get_tags(
     # type tag
     tags["og:type"] = config["ogp_type"]
 
-    if os.getenv("READTHEDOCS") and not config["ogp_site_url"]:
-        # readthedocs uses html_baseurl for sphinx > 1.8
-        parse_result = urlparse(config["html_baseurl"])
-
-        if config["html_baseurl"] is None:
-            raise OSError("ReadTheDocs did not provide a valid canonical URL!")
+    if not config["ogp_site_url"] and os.getenv("READTHEDOCS"):
+        if config["html_baseurl"] is not None:
+            # readthedocs uses ``html_baseurl`` for Sphinx > 1.8
+            parse_result = urlsplit(config["html_baseurl"])
+        else:
+            # readthedocs addons no longer configures ``html_baseurl``
+            if rtd_canonical_url := os.getenv("READTHEDOCS_CANONICAL_URL"):
+                parse_result = urlsplit(rtd_canonical_url)
+            else:
+                raise OSError("ReadTheDocs did not provide a valid canonical URL!")
 
         # Grab root url from canonical url
         config["ogp_site_url"] = urlunparse(
