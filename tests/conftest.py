@@ -1,21 +1,25 @@
+from pathlib import Path
+
 import pytest
+import sphinx
 from bs4 import BeautifulSoup
-from sphinx.testing.path import path
 
-from sphinx.application import Sphinx
-
-
-pytest_plugins = "sphinx.testing.fixtures"
+pytest_plugins = ["sphinx.testing.fixtures"]
 
 
 @pytest.fixture(scope="session")
 def rootdir():
-    return path(__file__).parent.abspath() / "roots"
+    if sphinx.version_info[:2] >= (7, 0):
+        return Path(__file__).parent.resolve() / "roots"
+    else:
+        from sphinx.testing.path import path
+
+        return path(__file__).parent.abspath() / "roots"
 
 
 @pytest.fixture()
 def content(app):
-    app.build()
+    app.build(force_all=True)
     yield app
 
 
