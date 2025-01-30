@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from typing import Any
 
     from sphinx.application import Sphinx
+    from sphinx.builders import Builder
     from sphinx.config import Config
     from sphinx.environment import BuildEnvironment
     from sphinx.util.typing import ExtensionMetadata
@@ -58,10 +59,14 @@ def make_tag(property: str, content: str, type_: str = "property") -> str:
 
 
 def get_tags(
-    app: Sphinx,
     context: dict[str, Any],
     doctree: nodes.document,
+    *,
+    srcdir: str | Path,
+    outdir: str | Path,
     config: Config,
+    builder: Builder,
+    env: BuildEnvironment,
 ) -> str:
     # Get field lists for per-page overrides
     fields = context["meta"]
@@ -119,9 +124,7 @@ def get_tags(
 
     # url tag
     # Get the URL of the specific page
-    page_url = urljoin(
-        config.ogp_site_url, app.builder.get_target_uri(context["pagename"])
-    )
+    page_url = urljoin(config.ogp_site_url, builder.get_target_uri(context["pagename"]))
     tags["og:url"] = page_url
 
     # site name tag, False disables, default to project if ogp_site_name not
@@ -173,10 +176,10 @@ def get_tags(
             title=title,
             description=description,
             pagename=context["pagename"],
-            srcdir=app.srcdir,
-            outdir=app.outdir,
+            srcdir=srcdir,
+            outdir=outdir,
             config=config,
-            env=app.env,
+            env=env,
         )
         ogp_use_first_image = False
 
@@ -306,7 +309,15 @@ def html_page_context(
     doctree: nodes.document,
 ) -> None:
     if doctree:
-        context["metatags"] += get_tags(app, context, doctree, app.config)
+        context["metatags"] += get_tags(
+            context,
+            doctree,
+            srcdir=app.srcdir,
+            outdir=app.outdir,
+            config=app.config,
+            builder=app.builder,
+            env=app.env,
+        )
 
 
 def setup(app: Sphinx) -> ExtensionMetadata:
