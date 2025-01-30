@@ -1,12 +1,10 @@
 name: Test and Deploy
 on:
   pull_request:
-    branches:
-      - main
   push:
 
 env:
-  FORCE_COLOR: 1
+  FORCE_COLOR: "1"
 
 jobs:
   check:
@@ -20,7 +18,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.x'
+        python-version: "3"
         cache: pip
         cache-dependency-path: .github/workflows/workflow.yml
     - name: Black
@@ -37,7 +35,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: "3.9"
           cache: pip
           cache-dependency-path: |
             .github/workflows/workflow.yml
@@ -69,18 +67,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['pypy3.9', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
-        sphinx-version: ['>=5,<6', '>=6a0,<7', '>=7,<8', '>=8,<9']
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        python-version:
+          - "pypy3.9"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+        sphinx-version:
+          - ">=5,<6"
+          - ">=6a0,<7"
+          - ">=7,<8"
+          - ">=8,<9"
+        os:
+          - windows-latest
+          - macos-latest
+          - ubuntu-latest
         exclude:
-          - python-version: '3.8'
-            sphinx-version: '>=8,<9'
-          - python-version: '3.9'
-            sphinx-version: '>=8,<9'
-          - python-version: 'pypy3.9'
-            sphinx-version: '>=8,<9'
-          - python-version: '3.13'
-            sphinx-version: '>=5,<6'
+          - python-version: "3.9"
+            sphinx-version: ">=8,<9"
+          - python-version: "pypy3.9"
+            sphinx-version: ">=6,<7"
+            os: "macos-latest"
+          - python-version: "pypy3.9"
+            sphinx-version: ">=7,<8"
+            os: "macos-latest"
+          - python-version: "pypy3.9"
+            sphinx-version: ">=8,<9"
+          - python-version: "3.13"
+            sphinx-version: ">=5,<6"
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -111,7 +126,7 @@ jobs:
           python -m pytest -vv
       - name: Install matplotlib
         run: |
-          python -m pip install matplotlib
+          python -m pip install --only-binary :all: matplotlib
       - name: Run tests with matplotlib for ${{ matrix.python-version }}
         run: |
           python -m pytest -vv
@@ -125,7 +140,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3"
           cache: pip
           cache-dependency-path: docs/requirements.txt
       - name: Install dependencies
