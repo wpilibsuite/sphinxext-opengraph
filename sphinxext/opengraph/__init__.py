@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 from typing import TYPE_CHECKING
-from urllib.parse import urljoin, urlparse, urlsplit, urlunparse
+from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit
 
 import docutils.nodes as nodes
 
@@ -100,27 +100,7 @@ def get_tags(
     tags["og:type"] = config.ogp_type
 
     if not config.ogp_site_url and os.getenv("READTHEDOCS"):
-        if config.html_baseurl is not None:
-            # readthedocs uses ``html_baseurl`` for Sphinx > 1.8
-            parse_result = urlsplit(config.html_baseurl)
-        else:
-            # readthedocs addons no longer configures ``html_baseurl``
-            if rtd_canonical_url := os.getenv("READTHEDOCS_CANONICAL_URL"):
-                parse_result = urlsplit(rtd_canonical_url)
-            else:
-                raise OSError("ReadTheDocs did not provide a valid canonical URL!")
-
-        # Grab root url from canonical url
-        config.ogp_site_url = urlunparse(
-            (
-                parse_result.scheme,
-                parse_result.netloc,
-                parse_result.path,
-                "",
-                "",
-                "",
-            )
-        )
+        config.ogp_site_url = read_the_docs_site_url(config.html_baseurl)
 
     # url tag
     # Get the URL of the specific page
@@ -245,6 +225,23 @@ def get_tags(
             + config.ogp_custom_meta_tags
         )
         + "\n"
+    )
+
+
+def read_the_docs_site_url(html_baseurl: str | None) -> str:
+    # readthedocs addons sets the READTHEDOCS_CANONICAL_URL variable,
+    # or defines the ``html_baseurl`` variable in conf.py
+    if rtd_canonical_url := os.getenv("READTHEDOCS_CANONICAL_URL"):
+        parse_result = urlsplit(rtd_canonical_url)
+    elif html_baseurl is not None:
+        parse_result = urlsplit(html_baseurl)
+    else:
+        msg = "ReadTheDocs did not provide a valid canonical URL!"
+        raise RuntimeError(msg)
+
+    # Grab root url from canonical url
+    return urlunsplit(
+        (parse_result.scheme, parse_result.netloc, parse_result.path, "", "")
     )
 
 
