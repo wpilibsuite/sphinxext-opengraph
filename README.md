@@ -53,6 +53,12 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This is not required. List of custom html snippets to insert.
 * `ogp_enable_meta_description`
     * This is not required. When `True`, generates `<meta name="description" content="...">` from the page.
+* `ogp_canonical_url`
+    * This is not required. This option can be used to override the "canonical" URL for the page,
+      and is used for `og:url` and the URL text in generated social media preview cards.
+      It is most useful with versioned documentation, where you intend to set the "stable"
+      or "latest" version as the canonical location of each page, similarly to `rel="canonical"`.
+      If not set, the option defaults to the value of `ogp_site_url`. 
 
 ## Example Config
 

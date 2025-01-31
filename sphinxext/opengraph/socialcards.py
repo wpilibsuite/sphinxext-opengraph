@@ -17,7 +17,6 @@ if TYPE_CHECKING:
 
     from matplotlib.figure import Figure
     from matplotlib.text import Text
-    from sphinx.config import Config
     from sphinx.environment import BuildEnvironment
 
     PltObjects: TypeAlias = tuple[Figure, Text, Text, Text, Text]
@@ -68,8 +67,8 @@ def create_social_card(
     *,
     srcdir: str | Path,
     outdir: str | Path,
-    config: Config,
     env: BuildEnvironment,
+    html_logo: str | None = None,
 ) -> Path:
     """Create a social preview card according to page metadata.
 
@@ -105,8 +104,8 @@ def create_social_card(
     # Large image to the top right
     if cs_image := config_social.get("image"):
         kwargs_fig["image"] = Path(srcdir) / cs_image
-    elif config.html_logo:
-        kwargs_fig["image"] = Path(srcdir) / config.html_logo
+    elif html_logo:
+        kwargs_fig["image"] = Path(srcdir) / html_logo
 
     # Mini image to the bottom right
     if cs_image_mini := config_social.get("image_mini"):
@@ -133,10 +132,10 @@ def create_social_card(
             kwargs_fig[img] = None
 
     # These are passed directly from the user configuration to our plotting function
-    pass_through_config = ["text_color", "line_color", "background_color", "font"]
+    pass_through_config = ("text_color", "line_color", "background_color", "font")
     for config in pass_through_config:
-        if config_social.get(config):
-            kwargs_fig[config] = config_social.get(config)
+        if cs_config := config_social.get(config):
+            kwargs_fig[config] = cs_config
 
     # Generate the image and store the matplotlib objects so that we can re-use them
     try:
