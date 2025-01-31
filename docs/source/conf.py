@@ -4,21 +4,15 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-
 from __future__ import annotations
 
-import os
 import sys
+from pathlib import Path
 from subprocess import run
 
-sys.path.insert(0, os.path.abspath("../.."))
+# -- Path setup --------------------------------------------------------------
 
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # -- Project information -----------------------------------------------------
 
@@ -72,5 +66,7 @@ ogp_social_cards = {
 }
 
 # Generate sample social media preview images
-path_script = os.path.abspath("../script/generate_social_card_previews.py")
-run(f"python {path_script}", shell=True)
+path_script = Path(
+    __file__, "..", "..", "script", "generate_social_card_previews.py"
+).resolve()
+run(("python", path_script), check=False)  # NoQA: S603

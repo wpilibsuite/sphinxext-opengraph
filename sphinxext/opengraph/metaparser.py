@@ -4,9 +4,7 @@ from html.parser import HTMLParser
 
 
 class HTMLTextParser(HTMLParser):
-    """
-    Parse HTML into text
-    """
+    """Parse HTML into text."""
 
     def __init__(self) -> None:
         super().__init__()
