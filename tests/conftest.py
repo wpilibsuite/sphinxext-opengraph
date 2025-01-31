@@ -11,12 +11,12 @@ pytest_plugins = ["sphinx.testing.fixtures"]
 
 @pytest.fixture(scope="session")
 def rootdir():
-    if sphinx.version_info[:2] >= (7, 0):
-        return Path(__file__).parent.resolve() / "roots"
-    else:
+    if sphinx.version_info[:2] < (7, 2):
         from sphinx.testing.path import path
 
         return path(__file__).parent.abspath() / "roots"
+
+    return Path(__file__).parent.resolve() / "roots"
 
 
 @pytest.fixture

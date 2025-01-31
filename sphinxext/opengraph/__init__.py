@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit
 
-import docutils.nodes as nodes
+from docutils import nodes
 
 from sphinxext.opengraph.descriptionparser import get_description
 from sphinxext.opengraph.metaparser import get_meta_description
@@ -197,7 +197,7 @@ def get_tags(
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
                 # Relative image path detected, relative to the source. Make absolute.
-                if first_image:
+                if first_image:  # NoQA: SIM108
                     root = page_url
                 else:  # ogp_image is set
                     # ogp_image is defined as being relative to the site root.
@@ -256,7 +256,7 @@ def social_card_for_page(
     outdir: str | Path,
     config: Config,
     env: BuildEnvironment,
-):
+) -> str:
     # Description
     description_max_length = config_social.get(
         "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
@@ -294,8 +294,7 @@ def social_card_for_page(
     # We use os.path.sep to standardize behavior acros *nix and Windows
     url = config.ogp_site_url.strip("/")
     image_path = str(image_path).replace(os.path.sep, "/").strip("/")
-    image_url = f"{url}/{image_path}"
-    return image_url
+    return f"{url}/{image_path}"
 
 
 def html_page_context(

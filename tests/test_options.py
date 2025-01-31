@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 def get_tag(tags, tag_type, kind="property", prefix="og"):
-    return [tag for tag in tags if tag.get(kind) == f"{prefix}:{tag_type}"][0]
+    return next(tag for tag in tags if tag.get(kind) == f"{prefix}:{tag_type}")
 
 
 def get_tag_content(tags, tag_type, kind="property", prefix="og"):
@@ -20,9 +20,8 @@ def get_tag_content(tags, tag_type, kind="property", prefix="og"):
 
 
 def get_meta_description(tags):
-    return [tag for tag in tags if tag.get("name") == "description"][0].get(
-        "content", ""
-    )
+    tag = next(tag for tag in tags if tag.get("name") == "description")
+    return tag.get("content", "")
 
 
 @pytest.mark.sphinx("html", testroot="simple")

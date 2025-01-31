@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import matplotlib
+import matplotlib as mpl
 import matplotlib.font_manager
 import matplotlib.image as mpimg
 from matplotlib import pyplot as plt
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
     PltObjects: TypeAlias = tuple[Figure, Text, Text, Text, Text]
 
-matplotlib.use("agg")
+mpl.use("agg")
 
 LOGGER = logging.getLogger(__name__)
 HERE = Path(__file__).parent
@@ -77,11 +77,11 @@ def create_social_card(
     It also passes configuration through to the rendering function.
     If Matplotlib objects are present in the `app` environment, it reuses them.
     """
-
     # Add a hash to the image path based on metadata to bust caches
     # ref: https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/troubleshooting-cards#refreshing_images
     hash = hashlib.sha1(
-        (site_name + page_title + description + str(config_social)).encode()
+        (site_name + page_title + description + str(config_social)).encode(),
+        usedforsecurity=False,
     ).hexdigest()[:8]
 
     # Define the file path we'll use for this image
@@ -156,8 +156,7 @@ def create_social_card(
     env.ogp_social_card_plt_objects = plt_objects
 
     # Path relative to build folder will be what we use for linking the URL
-    path_relative_to_build = path_images_relative / filename_image
-    return path_relative_to_build
+    return path_images_relative / filename_image
 
 
 def render_social_card(
@@ -236,9 +235,7 @@ def create_social_card_objects(
             left_margin,
             site_title_y_offset,
             "Test site title",
-            {
-                "size": 24,
-            },
+            {"size": 24},
             ha="left",
             va="top",
             wrap=True,
@@ -260,7 +257,7 @@ def create_social_card_objects(
             c=page_title_color,
         )
 
-        txt_page._get_wrap_line_width = _set_page_title_line_width
+        txt_page._get_wrap_line_width = _set_page_title_line_width  # NoQA: SLF001
 
         # description
         # Just below site title, smallest font and many lines.
@@ -280,7 +277,7 @@ def create_social_card_objects(
             wrap=True,
             c=description_color,
         )
-        txt_description._get_wrap_line_width = _set_description_line_width
+        txt_description._get_wrap_line_width = _set_description_line_width  # NoQA: SLF001
 
         # url
         # Aligned to the left of the mini image

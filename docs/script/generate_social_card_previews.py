@@ -1,5 +1,5 @@
-"""
-A helper script to test out what social previews look like.
+"""A helper script to test out what social previews look like.
+
 I should remove this when I'm happy with the result.
 """
 

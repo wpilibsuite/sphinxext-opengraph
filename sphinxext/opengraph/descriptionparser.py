@@ -3,16 +3,14 @@ from __future__ import annotations
 import string
 from typing import TYPE_CHECKING
 
-import docutils.nodes as nodes
+from docutils import nodes
 
 if TYPE_CHECKING:
     from collections.abc import Set
 
 
 class DescriptionParser(nodes.NodeVisitor):
-    """
-    Finds the title and creates a description from a doctree
-    """
+    """Finds the title and creates a description from a doctree."""
 
     def __init__(
         self,
