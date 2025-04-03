@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import posixpath
 from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit
@@ -100,11 +101,16 @@ def get_tags(
     tags["og:type"] = config.ogp_type
 
     if not config.ogp_site_url and os.getenv("READTHEDOCS"):
-        config.ogp_site_url = read_the_docs_site_url(config.html_baseurl)
+        ogp_site_url = read_the_docs_site_url(config.html_baseurl)
+    else:
+        ogp_site_url = config.ogp_site_url
+
+    # If ogp_canonical_url is not set, default to the value of ogp_site_url
+    ogp_canonical_url = config.ogp_canonical_url or ogp_site_url
 
     # url tag
     # Get the URL of the specific page
-    page_url = urljoin(config.ogp_site_url, builder.get_target_uri(context["pagename"]))
+    page_url = urljoin(ogp_canonical_url, builder.get_target_uri(context["pagename"]))
     tags["og:url"] = page_url
 
     # site name tag, False disables, default to project if ogp_site_name not
@@ -156,6 +162,8 @@ def get_tags(
             title=title,
             description=description,
             pagename=context["pagename"],
+            ogp_site_url=ogp_site_url,
+            ogp_canonical_url=ogp_canonical_url,
             srcdir=srcdir,
             outdir=outdir,
             config=config,
@@ -202,7 +210,7 @@ def get_tags(
                 else:  # ogp_image is set
                     # ogp_image is defined as being relative to the site root.
                     # This workaround is to keep that functionality from breaking.
-                    root = config.ogp_site_url
+                    root = ogp_site_url
 
                 image_url = urljoin(root, image_url_parsed.path)
             tags["og:image"] = image_url
@@ -251,6 +259,8 @@ def social_card_for_page(
     title: str,
     description: str,
     pagename: str,
+    ogp_site_url: str,
+    ogp_canonical_url: str,
     *,
     srcdir: str | Path,
     outdir: str | Path,
@@ -272,7 +282,7 @@ def social_card_for_page(
     # Site URL
     site_url = config_social.get("site_url", True)
     if site_url is True:
-        url_text = config.ogp_site_url.split("://")[-1]
+        url_text = ogp_canonical_url.split("://")[-1]
     elif isinstance(site_url, str):
         url_text = site_url
 
@@ -286,15 +296,12 @@ def social_card_for_page(
         pagename,
         srcdir=srcdir,
         outdir=outdir,
-        config=config,
         env=env,
+        html_logo=config.html_logo,
     )
 
     # Link the image in our page metadata
-    # We use os.path.sep to standardize behavior acros *nix and Windows
-    url = config.ogp_site_url.strip("/")
-    image_path = str(image_path).replace(os.path.sep, "/").strip("/")
-    return f"{url}/{image_path}"
+    return posixpath.join(ogp_site_url, image_path.as_posix())
 
 
 def html_page_context(
@@ -320,6 +327,7 @@ def setup(app: Sphinx) -> ExtensionMetadata:
     # ogp_site_url="" allows relative by default, even though it's not
     # officially supported by OGP.
     app.add_config_value("ogp_site_url", "", "html")
+    app.add_config_value("ogp_canonical_url", "", "html")
     app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
     app.add_config_value("ogp_image", None, "html")
     app.add_config_value("ogp_image_alt", None, "html")
