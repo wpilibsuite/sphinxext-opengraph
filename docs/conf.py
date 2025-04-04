@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from subprocess import run
 
+import sphinxext.opengraph
+
 # -- Path setup --------------------------------------------------------------
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -22,8 +24,7 @@ copyright = (
     "2025-%Y, the Sphinx developers",
 )
 
-# The full version, including alpha/beta/rc tags
-release = "1.0"
+version = sphinxext.opengraph.__version__
 
 
 # -- General configuration ---------------------------------------------------
