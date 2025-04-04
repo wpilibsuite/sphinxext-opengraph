@@ -50,6 +50,28 @@ social_cards = [
 name = "Itay Ziv"
 email = "itay220204@gmail.com"
 
+[dependency-groups]
+docs = [
+    "furo>=2024",
+    "matplotlib",
+    "myst-parser>=4",
+    "sphinx-design",
+    "sphinx~=8.1.0",
+]
+lint = [
+    "ruff==0.9.2",
+]
+package = [
+    "betterproto==2.0.0b6",  # resolution fails without betterproto
+    "build",
+    "pypi-attestations==0.0.22",
+    "twine>=6.1",
+]
+test = [
+    "pytest==7.4.4",
+    "beautifulsoup4==4.12.3",
+]
+
 [tool.flit.module]
 name = "sphinxext.opengraph"
 
@@ -66,3 +88,6 @@ include = [
 exclude = [
     "doc/_build",
 ]
+
+[tool.uv]
+default-groups = "all"
