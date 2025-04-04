@@ -71,6 +71,12 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
+"utils/convert_attestations.py" = [
+    "ANN",  # utilities don't need annotations
+    "S101",  # allow use of assert
+    "T201",  # whitelist ``print`` for stdout messages
+]
+
 "tests/*" = [
     "ANN",  # tests don't need annotations
     "S101",  # allow use of assert

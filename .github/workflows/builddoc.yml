@@ -1,4 +1,4 @@
-name: Lint
+name: Render documentation
 
 on:
   push:
@@ -17,26 +17,7 @@ env:
   UV_SYSTEM_PYTHON: "1"  # make uv do global installs
 
 jobs:
-  ruff:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-
-    - name: Install Ruff
-      uses: astral-sh/ruff-action@v3
-      with:
-        args: --version
-
-    - name: Lint with Ruff
-      run: ruff check --output-format=github
-
-    - name: Format with Ruff
-      run: ruff format --diff
-
-  twine:
+  docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -53,8 +34,13 @@ jobs:
         version: latest
         enable-cache: false
     - name: Install dependencies
-      run: uv pip install --group package
-    - name: Lint with twine
-      run: |
-        python -m build .
-        twine check dist/*
+      run: uv pip install . --group docs
+    - name: Render the documentation
+      run: >
+        python -m sphinx
+        build -M html
+        ./docs/source
+        ./docs/build
+        --jobs=auto
+        --show-traceback
+        --fail-on-warning
