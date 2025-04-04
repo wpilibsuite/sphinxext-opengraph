@@ -6,7 +6,7 @@ build-backend = "flit_core.buildapi"
 [project]
 name = "sphinxext-opengraph"
 description = "Sphinx Extension to enable OGP support"
-readme = "README.md"
+readme = "README.rst"
 urls.Code = "https://github.com/sphinx-doc/sphinxext-opengraph/"
 urls.Documentation = "https://sphinxext-opengraph.readthedocs.io/"
 urls.Download = "https://pypi.org/project/sphinxext-opengraph/"
