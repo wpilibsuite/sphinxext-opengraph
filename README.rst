@@ -71,7 +71,7 @@ The extension will automatically retrieve your site URL.
   Configuration for automatically creating social media card PNGs for each page.
   For more information, see `the social media cards docs`__.
 
-  __ https://github.com/sphinx-doc/sphinxext-opengraph/blob/main/docs/source/socialcards.md
+  __ https://github.com/sphinx-doc/sphinxext-opengraph/blob/main/docs/socialcards.md
 
 ``ogp_image``
   **Optional.**

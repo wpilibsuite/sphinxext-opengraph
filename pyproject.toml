@@ -54,7 +54,6 @@ email = "itay220204@gmail.com"
 docs = [
     "furo>=2024",
     "matplotlib",
-    "myst-parser>=4",
     "sphinx-design",
     "sphinx~=8.1.0",
 ]

@@ -23,7 +23,7 @@ def docs(session: nox.Session) -> None:
     """Build the documentation. Use `-- live` to build with a live server."""
     session.install("--group", "docs")
     session.install("-e", ".")
-    common_args = '-M', 'html', 'docs/source', 'docs/build'
+    common_args = '-M', 'html', 'docs', 'docs/build'
     if "live" in session.posargs:
         session.install("ipython")
         session.install("sphinx-autobuild")

@@ -12,7 +12,7 @@ from subprocess import run
 
 # -- Path setup --------------------------------------------------------------
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # -- Project information -----------------------------------------------------
 
@@ -32,7 +32,6 @@ release = "1.0"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "myst_parser",
     "sphinx_design",
     "sphinxext.opengraph",
 ]
@@ -68,7 +67,5 @@ ogp_social_cards = {
 }
 
 # Generate sample social media preview images
-path_script = Path(
-    __file__, "..", "..", "script", "generate_social_card_previews.py"
-).resolve()
-run(("python", path_script), check=False)  # NoQA: S603
+path_script = Path(__file__, "..", "script", "generate_social_card_previews.py").resolve()
+run((sys.executable, path_script), check=False)  # NoQA: S603

@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import random
 from pathlib import Path
-from textwrap import dedent
 
 from sphinxext.opengraph.socialcards import (
     MAX_CHAR_DESCRIPTION,
@@ -22,18 +21,21 @@ from sphinxext.opengraph.socialcards import (
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Dummy lorem text
-lorem = """
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
-""".split()
+lorem = """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum""".split()
 
 kwargs_fig = {
-    "image": PROJECT_ROOT / "docs/source/_static/og-logo.png",
+    "image": PROJECT_ROOT / "docs/_static/og-logo.png",
     "image_mini": PROJECT_ROOT / "sphinxext/opengraph/_static/sphinx-logo-shadow.png",
 }
 
 print("Generating previews of social media cards...")
 plt_objects = create_social_card_objects(**kwargs_fig)
-embed_text = []
+grid_items = []
 for perm in range(20):
     # Create dummy text description and pagetitle for this iteration
     random.shuffle(lorem)
@@ -57,28 +59,16 @@ for perm in range(20):
         plt_objects=plt_objects,
     )
 
-    path_examples_page_folder = PROJECT_ROOT / "docs"
-    embed_text.append(
-        dedent(
-            f"""
-    ````{{grid-item}}
-    ```{{image}} ../{path_out.relative_to(path_examples_page_folder)}
-    ```
-    ````
-    """
-        )
-    )
+    path_examples_page_folder = PROJECT_ROOT / "docs" / "tmp"
+    grid_items.append(f"""\
+   .. grid-item::
 
-embed_text = "\n".join(embed_text)
-embed_text = f"""
-`````{{grid}} 2
-:gutter: 5
+      .. image:: ./tmp/{path_out.name}
+""")
 
-{embed_text}
-`````
-"""
+embed_text = '.. grid:: 2\n   :gutter: 5\n\n' + '\n'.join(grid_items)
 
-# Write markdown text that we can use to embed these images in the docs
+# Write text that we can use to embed these images in the docs
 (PROJECT_ROOT / "docs/tmp/embed.txt").write_text(embed_text)
 
 print("Done generating previews of social media cards...")

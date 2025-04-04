@@ -39,7 +39,7 @@ jobs:
       run: >
         python -m sphinx
         build -M html
-        ./docs/source
+        ./docs
         ./docs/build
         --jobs=auto
         --show-traceback
