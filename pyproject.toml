@@ -45,6 +45,11 @@ dynamic = ["version"]
 social_cards = [
     "matplotlib>=3",
 ]
+rtd = [
+    "furo>=2024",
+    "sphinx-design",
+    "sphinx~=8.1.0",
+]
 
 [[project.authors]]
 name = "Itay Ziv"
