@@ -1,6 +1,6 @@
 # sphinxext-opengraph
 
-[![Build](https://github.com/wpilibsuite/sphinxext-opengraph/workflows/Test%20and%20Deploy/badge.svg)](https://github.com/wpilibsuite/sphinxext-opengraph/actions)
+[![Build](https://github.com/sphinx-doc/sphinxext-opengraph/workflows/Test%20and%20Deploy/badge.svg)](https://github.com/sphinx-doc/sphinxext-opengraph/actions)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/format.json)](https://github.com/astral-sh/ruff)
 
 Sphinx extension to generate [Open Graph metadata](https://ogp.me/) for each page of your documentation.
@@ -40,7 +40,7 @@ Users hosting documentation on Read The Docs *do not* need to set any of the fol
     * This is not required. Name of the site. This is displayed above the title. Defaults to the Sphinx [`project`](https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-project) config value.  Set to `False` to unset and use no default.
 * `ogp_social_cards`
     * Configuration for automatically creating social media card PNGs for each page.
-      For more information, see [the social media cards docs](https://github.com/wpilibsuite/sphinxext-opengraph/blob/main/docs/source/socialcards.md).
+      For more information, see [the social media cards docs](https://github.com/sphinx-doc/sphinxext-opengraph/blob/main/docs/source/socialcards.md).
 * `ogp_image`
     * This is not required. Link to image to show. Note that all relative paths are converted to be relative to the root of the html output as defined by `ogp_site_url`.
 * `ogp_image_alt`

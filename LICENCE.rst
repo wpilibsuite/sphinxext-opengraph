@@ -1,4 +1,5 @@
-Copyright (c) 2020 FIRST
+Copyright (c) 2020, FIRST
+Copyright (c) 2025, the Sphinx developers
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

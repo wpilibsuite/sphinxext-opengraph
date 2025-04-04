@@ -17,8 +17,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 # -- Project information -----------------------------------------------------
 
 project = "sphinxext-opengraph"
-copyright = "2020, FIRST"
-author = "WPILib"
+copyright = (
+    "2020, FIRST",
+    "2025-%Y, the Sphinx developers",
+)
 
 # The full version, including alpha/beta/rc tags
 release = "1.0"
