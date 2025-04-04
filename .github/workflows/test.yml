@@ -67,6 +67,8 @@ jobs:
         python-version: ${{ matrix.python }}
     - name: Check Python version
       run: python --version --version
+    - name: Export UV_PYTHON
+      run: echo "UV_PYTHON=$(which python)" >> $GITHUB_ENV
     - name: Install uv
       uses: astral-sh/setup-uv@v5
       with:
