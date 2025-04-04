@@ -1,5 +1,5 @@
 [build-system]
-requires = ["flit_core>=3.7"]
+requires = ["flit_core>=3.12"]
 build-backend = "flit_core.buildapi"
 
 # project metadata
@@ -12,7 +12,7 @@ urls.Documentation = "https://sphinxext-opengraph.readthedocs.io/"
 urls.Download = "https://pypi.org/project/sphinxext-opengraph/"
 urls.Homepage = "https://github.com/sphinx-doc/sphinxext-opengraph/"
 urls."Issue tracker" = "https://github.com/sphinx-doc/sphinxext-opengraph/issues"
-license.text = "BSD-3-Clause"
+license = "BSD-3-Clause"
 requires-python = ">=3.9"
 
 # Classifiers list: https://pypi.org/classifiers/
@@ -22,7 +22,6 @@ classifiers = [
     "Environment :: Web Environment",
     "Framework :: Sphinx :: Extension",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.9",
@@ -56,7 +55,6 @@ name = "sphinxext.opengraph"
 
 [tool.flit.sdist]
 include = [
-    "LICENSE.md",
     # Documentation
     "docs/",
     # Resources
