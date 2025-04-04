@@ -79,10 +79,10 @@ jobs:
     - name: Test with pytest
       run: python -m pytest -vv
       env:
-        PYTHONWARNINGS: "error"  # treat all warnings as errors
+        PYTHONWARNINGS: "error,ignore::DeprecationWarning:sphinx.builders.gettext"  # treat all warnings as errors
     - name: Install social-cards extra
       run: uv pip install .[social-cards]
     - name: Test with pytest (social-cards)
       run: python -m pytest -vv
       env:
-        PYTHONWARNINGS: "error"  # treat all warnings as errors
+        PYTHONWARNINGS: "error,ignore::EncodingWarning:matplotlib.font_manager,ignore::DeprecationWarning:sphinx.builders.gettext"  # treat all warnings as errors

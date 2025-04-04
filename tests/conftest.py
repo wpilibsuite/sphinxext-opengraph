@@ -6,6 +6,13 @@ import pytest
 import sphinx
 from bs4 import BeautifulSoup
 
+try:
+    import matplotlib as mpl
+except ImportError:
+    pass
+else:
+    mpl.rcParams['figure.max_open_warning'] = 0
+
 pytest_plugins = ['sphinx.testing.fixtures']
 
 
@@ -27,9 +34,9 @@ def content(app):
 
 def _meta_tags(content, subdir=None):
     if subdir is None:
-        c = (content.outdir / 'index.html').read_text()
+        c = (content.outdir / 'index.html').read_text(encoding='utf-8')
     else:
-        c = (content.outdir / subdir / 'index.html').read_text()
+        c = (content.outdir / subdir / 'index.html').read_text(encoding='utf-8')
     return BeautifulSoup(c, 'html.parser').find_all('meta')
 
 
