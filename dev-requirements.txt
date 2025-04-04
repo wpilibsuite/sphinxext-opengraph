@@ -1,4 +1,0 @@
-sphinx
-build>=1
-pytest==7.4.4
-beautifulsoup4==4.12.3
