@@ -13,8 +13,6 @@ ref: https://nox.thea.codes/
 
 from __future__ import annotations
 
-from shlex import split
-
 import nox
 
 nox.options.reuse_existing_virtualenvs = True
@@ -25,14 +23,13 @@ def docs(session: nox.Session) -> None:
     """Build the documentation. Use `-- live` to build with a live server."""
     session.install("--group", "docs")
     session.install("-e", ".")
+    common_args = '-M', 'html', 'docs/source', 'docs/build'
     if "live" in session.posargs:
         session.install("ipython")
         session.install("sphinx-autobuild")
-        session.run(*split("sphinx-autobuild -b html docs/source docs/build/html"))
+        session.run('sphinx-autobuild', *common_args)
     else:
-        session.run(
-            *split("sphinx-build -nW --keep-going -b html docs/source docs/build/html"),
-        )
+        session.run('sphinx-build', *common_args, '-nW', '--keep-going')
 
 
 @nox.session
