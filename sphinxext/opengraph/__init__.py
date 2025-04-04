@@ -31,8 +31,8 @@ except ImportError:
     create_social_card = None
     DEFAULT_SOCIAL_CONFIG = {}
 
-__version__ = '0.9.1'
-version_info = (0, 9, 1)
+__version__ = '0.10.0'
+version_info = (0, 10, 0)
 
 DEFAULT_DESCRIPTION_LENGTH = 200
 DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS = 160
