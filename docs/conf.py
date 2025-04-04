@@ -32,6 +32,7 @@ release = "1.0"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.intersphinx",
     "sphinx_design",
     "sphinxext.opengraph",
 ]
@@ -53,6 +54,10 @@ html_title = "sphinxext-opengraph"
 html_logo = "_static/og-logo.png"
 html_theme = "furo"
 
+
+intersphinx_mapping = {
+    'sphinx': ('https://www.sphinx-doc.org/', None),
+}
 
 # -- Configuration for this theme --------------------------------------------
 
