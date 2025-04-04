@@ -18,10 +18,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # -- Project information -----------------------------------------------------
 
-project = "sphinxext-opengraph"
+project = 'sphinxext-opengraph'
 copyright = (
-    "2020, FIRST",
-    "2025-%Y, the Sphinx developers",
+    '2020, FIRST',
+    '2025-%Y, the Sphinx developers',
 )
 
 version = sphinxext.opengraph.__version__
@@ -33,13 +33,13 @@ version = sphinxext.opengraph.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.intersphinx",
-    "sphinx_design",
-    "sphinxext.opengraph",
+    'sphinx.ext.intersphinx',
+    'sphinx_design',
+    'sphinxext.opengraph',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -51,9 +51,9 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_title = "sphinxext-opengraph"
-html_logo = "_static/og-logo.png"
-html_theme = "furo"
+html_title = 'sphinxext-opengraph'
+html_logo = '_static/og-logo.png'
+html_theme = 'furo'
 
 
 intersphinx_mapping = {
@@ -62,16 +62,18 @@ intersphinx_mapping = {
 
 # -- Configuration for this theme --------------------------------------------
 
-ogp_site_url = "https://sphinxext-opengraph.readthedocs.io/en/latest/"
+ogp_site_url = 'https://sphinxext-opengraph.readthedocs.io/en/latest/'
 
 # Configuration for testing but generally we use the defaults
 # Uncomment lines to see their effect.
 ogp_social_cards = {
-    "site_url": "sphinxext-opengraph.readthedocs.io",
+    'site_url': 'sphinxext-opengraph.readthedocs.io',
     # "image": "TODO: add another image to test",
     # "line_color": "#4078c0",
 }
 
 # Generate sample social media preview images
-path_script = Path(__file__, "..", "script", "generate_social_card_previews.py").resolve()
+path_script = Path(
+    __file__, '..', 'script', 'generate_social_card_previews.py'
+).resolve()
 run((sys.executable, path_script), check=False)  # NoQA: S603

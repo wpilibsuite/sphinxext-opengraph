@@ -13,10 +13,10 @@ class HTMLTextParser(HTMLParser):
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         # For example:
         # attrs = [("content", "My manual description"), ("name", "description")]
-        if ("name", "description") in attrs:
+        if ('name', 'description') in attrs:
             self.meta_description = True
             for name, value in attrs:
-                if name == "content":
+                if name == 'content':
                     self.meta_description = value
                     break
 

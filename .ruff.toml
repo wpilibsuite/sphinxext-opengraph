@@ -3,7 +3,7 @@ line-length = 88
 output-format = "full"
 
 [format]
-quote-style = "double"
+quote-style = "single"
 docstring-code-format = true
 
 [lint]
@@ -82,6 +82,9 @@ ignore = [
     "S101",  # allow use of assert
     "SLF001",  # allow private member access
 ]
+
+[lint.flake8-quotes]
+inline-quotes = "single"
 
 [lint.flake8-type-checking]
 exempt-modules = []

@@ -29,37 +29,37 @@ cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum""".split()
 
 kwargs_fig = {
-    "image": PROJECT_ROOT / "docs/_static/og-logo.png",
-    "image_mini": PROJECT_ROOT / "sphinxext/opengraph/_static/sphinx-logo-shadow.png",
+    'image': PROJECT_ROOT / 'docs/_static/og-logo.png',
+    'image_mini': PROJECT_ROOT / 'sphinxext/opengraph/_static/sphinx-logo-shadow.png',
 }
 
-print("Generating previews of social media cards...")
+print('Generating previews of social media cards...')
 plt_objects = create_social_card_objects(**kwargs_fig)
 grid_items = []
 for perm in range(20):
     # Create dummy text description and pagetitle for this iteration
     random.shuffle(lorem)
-    title = " ".join(lorem[:100])
-    title = title[: MAX_CHAR_PAGE_TITLE - 3] + "..."
+    title = ' '.join(lorem[:100])
+    title = title[: MAX_CHAR_PAGE_TITLE - 3] + '...'
 
     random.shuffle(lorem)
-    desc = " ".join(lorem[:100])
-    desc = desc[: MAX_CHAR_DESCRIPTION - 3] + "..."
+    desc = ' '.join(lorem[:100])
+    desc = desc[: MAX_CHAR_DESCRIPTION - 3] + '...'
 
-    path_tmp = Path(PROJECT_ROOT / "docs/tmp")
+    path_tmp = Path(PROJECT_ROOT / 'docs/tmp')
     path_tmp.mkdir(exist_ok=True)
-    path_out = Path(path_tmp / f"num_{perm}.png")
+    path_out = Path(path_tmp / f'num_{perm}.png')
 
     plt_objects = render_social_card(
         path=path_out,
-        site_title="Sphinx Social Card Demo",
+        site_title='Sphinx Social Card Demo',
         page_title=title,
         description=desc,
-        siteurl="sphinxext-opengraph.readthedocs.io",
+        siteurl='sphinxext-opengraph.readthedocs.io',
         plt_objects=plt_objects,
     )
 
-    path_examples_page_folder = PROJECT_ROOT / "docs" / "tmp"
+    path_examples_page_folder = PROJECT_ROOT / 'docs' / 'tmp'
     grid_items.append(f"""\
    .. grid-item::
 
@@ -69,6 +69,6 @@ for perm in range(20):
 embed_text = '.. grid:: 2\n   :gutter: 5\n\n' + '\n'.join(grid_items)
 
 # Write text that we can use to embed these images in the docs
-(PROJECT_ROOT / "docs/tmp/embed.txt").write_text(embed_text)
+(PROJECT_ROOT / 'docs/tmp/embed.txt').write_text(embed_text)
 
-print("Done generating previews of social media cards...")
+print('Done generating previews of social media cards...')

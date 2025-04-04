@@ -20,7 +20,7 @@ class DescriptionParser(nodes.NodeVisitor):
         known_titles: Set[str] = frozenset(),
     ) -> None:
         super().__init__(document)
-        self.description = ""
+        self.description = ''
         self.desc_len = desc_len
         self.list_level = 0
         self.known_titles = known_titles
@@ -42,7 +42,7 @@ class DescriptionParser(nodes.NodeVisitor):
         if isinstance(node, nodes.Sequential):
             self.list_level += 1
             if self.list_level > 1:
-                self.description += "-"
+                self.description += '-'
 
         # Skip the first title if it's the title of the page
         if not self.first_title_found and isinstance(node, nodes.title):
@@ -55,11 +55,11 @@ class DescriptionParser(nodes.NodeVisitor):
 
         # Only include leaf nodes in the description
         if len(node.children) == 0:
-            text = node.astext().replace("\r", "").replace("\n", " ").strip()
+            text = node.astext().replace('\r', '').replace('\n', ' ').strip()
 
             # Remove double spaces
-            while text.find("  ") != -1:
-                text = text.replace("  ", " ")
+            while text.find('  ') != -1:
+                text = text.replace('  ', ' ')
 
             # Put a space between elements if one does not already exist.
             if (
@@ -68,31 +68,31 @@ class DescriptionParser(nodes.NodeVisitor):
                 and self.description[-1] not in string.whitespace
                 and text[0] not in string.whitespace + string.punctuation
             ):
-                self.description += " "
+                self.description += ' '
 
             self.description += text
 
     def dispatch_departure(self, node: nodes.Element) -> None:
         # Separate title from text
         if isinstance(node, nodes.title):
-            self.description += ":"
+            self.description += ':'
 
         # Separate list elements
         if isinstance(node, nodes.Part):
-            self.description += ","
+            self.description += ','
 
         # Separate end of list from text
         if isinstance(node, nodes.Sequential):
-            if self.description and self.description[-1] == ",":
+            if self.description and self.description[-1] == ',':
                 self.description = self.description[:-1]
-            self.description += "."
+            self.description += '.'
             self.list_level -= 1
 
         # Check for length
         if len(self.description) > self.desc_len:
             self.description = self.description[: self.desc_len]
             if self.desc_len >= 3:
-                self.description = self.description[:-3] + "..."
+                self.description = self.description[:-3] + '...'
 
             self.stop = True
 

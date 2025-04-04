@@ -27,11 +27,11 @@ try:
         create_social_card,
     )
 except ImportError:
-    print("matplotlib is not installed, social cards will not be generated")
+    print('matplotlib is not installed, social cards will not be generated')
     create_social_card = None
     DEFAULT_SOCIAL_CONFIG = {}
 
-__version__ = "0.9.1"
+__version__ = '0.9.1'
 version_info = (0, 9, 1)
 
 DEFAULT_DESCRIPTION_LENGTH = 200
@@ -40,22 +40,22 @@ DEFAULT_PAGE_LENGTH_SOCIAL_CARDS = 80
 
 # A selection from https://www.iana.org/assignments/media-types/media-types.xhtml#image
 IMAGE_MIME_TYPES = {
-    "gif": "image/gif",
-    "apng": "image/apng",
-    "webp": "image/webp",
-    "jpeg": "image/jpeg",
-    "jpg": "image/jpeg",
-    "png": "image/png",
-    "bmp": "image/bmp",
-    "heic": "image/heic",
-    "heif": "image/heif",
-    "tiff": "image/tiff",
+    'gif': 'image/gif',
+    'apng': 'image/apng',
+    'webp': 'image/webp',
+    'jpeg': 'image/jpeg',
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+    'bmp': 'image/bmp',
+    'heic': 'image/heic',
+    'heif': 'image/heif',
+    'tiff': 'image/tiff',
 }
 
 
-def make_tag(property: str, content: str, type_: str = "property") -> str:
+def make_tag(property: str, content: str, type_: str = 'property') -> str:
     # Parse quotation, so they won't break html tags if smart quotes are disabled
-    content = content.replace('"', "&quot;")
+    content = content.replace('"', '&quot;')
     return f'<meta {type_}="{property}" content="{content}" />'
 
 
@@ -70,12 +70,12 @@ def get_tags(
     env: BuildEnvironment,
 ) -> str:
     # Get field lists for per-page overrides
-    fields = context["meta"]
+    fields = context['meta']
     if fields is None:
         fields = {}
 
-    if "ogp_disable" in fields:
-        return ""
+    if 'ogp_disable' in fields:
+        return ''
 
     tags = {}
     meta_tags = {}  # For non-og meta tags
@@ -83,24 +83,24 @@ def get_tags(
     # Set length of description
     try:
         desc_len = int(
-            fields.get("ogp_description_length", config.ogp_description_length)
+            fields.get('ogp_description_length', config.ogp_description_length)
         )
     except ValueError:
         desc_len = DEFAULT_DESCRIPTION_LENGTH
 
     # Get the title and parse any html in it
-    title, title_excluding_html = get_title(context["title"])
+    title, title_excluding_html = get_title(context['title'])
 
     # Parse/walk doctree for metadata (tag/description)
     description = get_description(doctree, desc_len, {title, title_excluding_html})
 
     # title tag
-    tags["og:title"] = title
+    tags['og:title'] = title
 
     # type tag
-    tags["og:type"] = config.ogp_type
+    tags['og:type'] = config.ogp_type
 
-    if not config.ogp_site_url and os.getenv("READTHEDOCS"):
+    if not config.ogp_site_url and os.getenv('READTHEDOCS'):
         ogp_site_url = read_the_docs_site_url(config.html_baseurl)
     else:
         ogp_site_url = config.ogp_site_url
@@ -110,8 +110,8 @@ def get_tags(
 
     # url tag
     # Get the URL of the specific page
-    page_url = urljoin(ogp_canonical_url, builder.get_target_uri(context["pagename"]))
-    tags["og:url"] = page_url
+    page_url = urljoin(ogp_canonical_url, builder.get_target_uri(context['pagename']))
+    tags['og:url'] = page_url
 
     # site name tag, False disables, default to project if ogp_site_name not
     # set.
@@ -122,28 +122,28 @@ def get_tags(
     else:
         site_name = config.ogp_site_name
     if site_name:
-        tags["og:site_name"] = site_name
+        tags['og:site_name'] = site_name
 
     # description tag
     if description:
-        tags["og:description"] = description
+        tags['og:description'] = description
 
         if config.ogp_enable_meta_description and not get_meta_description(
-            context["metatags"]
+            context['metatags']
         ):
-            meta_tags["description"] = description
+            meta_tags['description'] = description
 
     # image tag
     # Get basic values from config
-    if "og:image" in fields:
-        image_url = fields["og:image"]
+    if 'og:image' in fields:
+        image_url = fields['og:image']
         ogp_use_first_image = False
-        ogp_image_alt = fields.get("og:image:alt")
-        fields.pop("og:image", None)
+        ogp_image_alt = fields.get('og:image:alt')
+        fields.pop('og:image', None)
     else:
         image_url = config.ogp_image
         ogp_use_first_image = config.ogp_use_first_image
-        ogp_image_alt = fields.get("og:image:alt", config.ogp_image_alt)
+        ogp_image_alt = fields.get('og:image:alt', config.ogp_image_alt)
 
     # Decide whether to add social media card images for each page.
     # Only do this as a fallback if the user hasn't given any configuration
@@ -153,7 +153,7 @@ def get_tags(
     config_social.update(social_card_user_options)
     if (
         not (image_url or ogp_use_first_image)
-        and config_social.get("enable") is not False
+        and config_social.get('enable') is not False
         and create_social_card is not None
     ):
         image_url = social_card_for_page(
@@ -161,7 +161,7 @@ def get_tags(
             site_name=site_name,
             title=title,
             description=description,
-            pagename=context["pagename"],
+            pagename=context['pagename'],
             ogp_site_url=ogp_site_url,
             ogp_canonical_url=ogp_canonical_url,
             srcdir=srcdir,
@@ -172,19 +172,19 @@ def get_tags(
         ogp_use_first_image = False
 
         # Alt text is taken from description unless given
-        if "og:image:alt" in fields:
-            ogp_image_alt = fields.get("og:image:alt")
+        if 'og:image:alt' in fields:
+            ogp_image_alt = fields.get('og:image:alt')
         else:
             ogp_image_alt = description
 
         # If the social card objects have been added we add special metadata for them
         # These are the dimensions *in pixels* of the card
         # They were chosen by looking at the image pixel dimensions on disk
-        tags["og:image:width"] = "1146"
-        tags["og:image:height"] = "600"
-        meta_tags["twitter:card"] = "summary_large_image"
+        tags['og:image:width'] = '1146'
+        tags['og:image:height'] = '600'
+        meta_tags['twitter:card'] = 'summary_large_image'
 
-    fields.pop("og:image:alt", None)
+    fields.pop('og:image:alt', None)
 
     first_image = None
     if ogp_use_first_image:
@@ -192,16 +192,16 @@ def get_tags(
         first_image = doctree.next_node(nodes.image)
         if (
             first_image
-            and Path(first_image.get("uri", "")).suffix[1:].lower() in IMAGE_MIME_TYPES
+            and Path(first_image.get('uri', '')).suffix[1:].lower() in IMAGE_MIME_TYPES
         ):
-            image_url = first_image["uri"]
-            ogp_image_alt = first_image.get("alt", None)
+            image_url = first_image['uri']
+            ogp_image_alt = first_image.get('alt', None)
         else:
             first_image = None
 
     if image_url:
         # temporarily disable relative image paths with field lists
-        if "og:image" not in fields:
+        if 'og:image' not in fields:
             image_url_parsed = urlparse(image_url)
             if not image_url_parsed.scheme:
                 # Relative image path detected, relative to the source. Make absolute.
@@ -213,43 +213,43 @@ def get_tags(
                     root = ogp_site_url
 
                 image_url = urljoin(root, image_url_parsed.path)
-            tags["og:image"] = image_url
+            tags['og:image'] = image_url
 
         # Add image alt text (either provided by config or from site_name)
         if isinstance(ogp_image_alt, str):
-            tags["og:image:alt"] = ogp_image_alt
+            tags['og:image:alt'] = ogp_image_alt
         elif ogp_image_alt is None and site_name:
-            tags["og:image:alt"] = site_name
+            tags['og:image:alt'] = site_name
         elif ogp_image_alt is None and title:
-            tags["og:image:alt"] = title
+            tags['og:image:alt'] = title
 
     # arbitrary tags and overrides
-    tags.update({k: v for k, v in fields.items() if k.startswith("og:")})
+    tags.update({k: v for k, v in fields.items() if k.startswith('og:')})
 
     return (
-        "\n".join(
+        '\n'.join(
             [make_tag(p, c) for p, c in tags.items()]
-            + [make_tag(p, c, "name") for p, c in meta_tags.items()]
+            + [make_tag(p, c, 'name') for p, c in meta_tags.items()]
             + config.ogp_custom_meta_tags
         )
-        + "\n"
+        + '\n'
     )
 
 
 def read_the_docs_site_url(html_baseurl: str | None) -> str:
     # readthedocs addons sets the READTHEDOCS_CANONICAL_URL variable,
     # or defines the ``html_baseurl`` variable in conf.py
-    if rtd_canonical_url := os.getenv("READTHEDOCS_CANONICAL_URL"):
+    if rtd_canonical_url := os.getenv('READTHEDOCS_CANONICAL_URL'):
         parse_result = urlsplit(rtd_canonical_url)
     elif html_baseurl is not None:
         parse_result = urlsplit(html_baseurl)
     else:
-        msg = "ReadTheDocs did not provide a valid canonical URL!"
+        msg = 'ReadTheDocs did not provide a valid canonical URL!'
         raise RuntimeError(msg)
 
     # Grab root url from canonical url
     return urlunsplit(
-        (parse_result.scheme, parse_result.netloc, parse_result.path, "", "")
+        (parse_result.scheme, parse_result.netloc, parse_result.path, '', '')
     )
 
 
@@ -269,20 +269,20 @@ def social_card_for_page(
 ) -> str:
     # Description
     description_max_length = config_social.get(
-        "description_max_length", DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
+        'description_max_length', DEFAULT_DESCRIPTION_LENGTH_SOCIAL_CARDS - 3
     )
     if len(description) > description_max_length:
-        description = description[:description_max_length].strip() + "..."
+        description = description[:description_max_length].strip() + '...'
 
     # Page title
     pagetitle = title
     if len(pagetitle) > DEFAULT_PAGE_LENGTH_SOCIAL_CARDS:
-        pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + "..."
+        pagetitle = pagetitle[:DEFAULT_PAGE_LENGTH_SOCIAL_CARDS] + '...'
 
     # Site URL
-    site_url = config_social.get("site_url", True)
+    site_url = config_social.get('site_url', True)
     if site_url is True:
-        url_text = ogp_canonical_url.split("://")[-1]
+        url_text = ogp_canonical_url.split('://')[-1]
     elif isinstance(site_url, str):
         url_text = site_url
 
@@ -312,7 +312,7 @@ def html_page_context(
     doctree: nodes.document,
 ) -> None:
     if doctree:
-        context["metatags"] += get_tags(
+        context['metatags'] += get_tags(
             context,
             doctree,
             srcdir=app.srcdir,
@@ -326,24 +326,24 @@ def html_page_context(
 def setup(app: Sphinx) -> ExtensionMetadata:
     # ogp_site_url="" allows relative by default, even though it's not
     # officially supported by OGP.
-    app.add_config_value("ogp_site_url", "", "html")
-    app.add_config_value("ogp_canonical_url", "", "html")
-    app.add_config_value("ogp_description_length", DEFAULT_DESCRIPTION_LENGTH, "html")
-    app.add_config_value("ogp_image", None, "html")
-    app.add_config_value("ogp_image_alt", None, "html")
-    app.add_config_value("ogp_use_first_image", False, "html")
-    app.add_config_value("ogp_type", "website", "html")
-    app.add_config_value("ogp_site_name", None, "html")
-    app.add_config_value("ogp_social_cards", None, "html")
-    app.add_config_value("ogp_custom_meta_tags", [], "html")
-    app.add_config_value("ogp_enable_meta_description", True, "html")
+    app.add_config_value('ogp_site_url', '', 'html')
+    app.add_config_value('ogp_canonical_url', '', 'html')
+    app.add_config_value('ogp_description_length', DEFAULT_DESCRIPTION_LENGTH, 'html')
+    app.add_config_value('ogp_image', None, 'html')
+    app.add_config_value('ogp_image_alt', None, 'html')
+    app.add_config_value('ogp_use_first_image', False, 'html')
+    app.add_config_value('ogp_type', 'website', 'html')
+    app.add_config_value('ogp_site_name', None, 'html')
+    app.add_config_value('ogp_social_cards', None, 'html')
+    app.add_config_value('ogp_custom_meta_tags', [], 'html')
+    app.add_config_value('ogp_enable_meta_description', True, 'html')
 
     # Main Sphinx OpenGraph linking
-    app.connect("html-page-context", html_page_context)
+    app.connect('html-page-context', html_page_context)
 
     return {
-        "version": __version__,
-        "env_version": 1,
-        "parallel_read_safe": True,
-        "parallel_write_safe": True,
+        'version': __version__,
+        'env_version': 1,
+        'parallel_read_safe': True,
+        'parallel_write_safe': True,
     }

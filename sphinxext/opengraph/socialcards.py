@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
     PltObjects: TypeAlias = tuple[Figure, Text, Text, Text, Text]
 
-mpl.use("agg")
+mpl.use('agg')
 
 LOGGER = logging.getLogger(__name__)
 HERE = Path(__file__).parent
@@ -30,18 +30,18 @@ MAX_CHAR_DESCRIPTION = 175
 
 # Default configuration for this functionality
 DEFAULT_SOCIAL_CONFIG = {
-    "enable": True,
-    "site_url": True,
-    "site_title": True,
-    "page_title": True,
-    "description": True,
+    'enable': True,
+    'site_url': True,
+    'site_title': True,
+    'page_title': True,
+    'description': True,
 }
 
 
 # Default configuration for the figure style
 DEFAULT_KWARGS_FIG = {
-    "enable": True,
-    "site_url": True,
+    'enable': True,
+    'site_url': True,
 }
 
 
@@ -84,8 +84,8 @@ def create_social_card(
     ).hexdigest()[:8]
 
     # Define the file path we'll use for this image
-    path_images_relative = Path("_images/social_previews")
-    filename_image = f"summary_{page_path.replace('/', '_')}_{hash}.png"
+    path_images_relative = Path('_images/social_previews')
+    filename_image = f'summary_{page_path.replace("/", "_")}_{hash}.png'
 
     # Absolute path used to save the image
     path_images_absolute = Path(outdir) / path_images_relative
@@ -102,28 +102,28 @@ def create_social_card(
     kwargs_fig: dict[str, str | Path | None] = {}
 
     # Large image to the top right
-    if cs_image := config_social.get("image"):
-        kwargs_fig["image"] = Path(srcdir) / cs_image
+    if cs_image := config_social.get('image'):
+        kwargs_fig['image'] = Path(srcdir) / cs_image
     elif html_logo:
-        kwargs_fig["image"] = Path(srcdir) / html_logo
+        kwargs_fig['image'] = Path(srcdir) / html_logo
 
     # Mini image to the bottom right
-    if cs_image_mini := config_social.get("image_mini"):
-        kwargs_fig["image_mini"] = Path(srcdir) / cs_image_mini
+    if cs_image_mini := config_social.get('image_mini'):
+        kwargs_fig['image_mini'] = Path(srcdir) / cs_image_mini
     else:
-        kwargs_fig["image_mini"] = (
-            Path(__file__).parent / "_static/sphinx-logo-shadow.png"
+        kwargs_fig['image_mini'] = (
+            Path(__file__).parent / '_static/sphinx-logo-shadow.png'
         )
 
     # Validation on the images
-    for img in ["image_mini", "image"]:
+    for img in ['image_mini', 'image']:
         impath = kwargs_fig.get(img)
         if not impath:
             continue
 
         # If image is an SVG replace it with None
-        if impath.suffix.lower() == ".svg":
-            LOGGER.warning("[Social card] %s cannot be an SVG image, skipping...", img)
+        if impath.suffix.lower() == '.svg':
+            LOGGER.warning('[Social card] %s cannot be an SVG image, skipping...', img)
             kwargs_fig[img] = None
 
         # If image doesn't exist, throw a warning and replace with none
@@ -132,7 +132,7 @@ def create_social_card(
             kwargs_fig[img] = None
 
     # These are passed directly from the user configuration to our plotting function
-    pass_through_config = ("text_color", "line_color", "background_color", "font")
+    pass_through_config = ('text_color', 'line_color', 'background_color', 'font')
     for config in pass_through_config:
         if cs_config := config_social.get(config):
             kwargs_fig[config] = cs_config
@@ -183,20 +183,20 @@ def render_social_card(
 def create_social_card_objects(
     image: Path | None = None,
     image_mini: Path | None = None,
-    page_title_color: str = "#2f363d",
-    description_color: str = "#585e63",
-    site_title_color: str = "#585e63",
-    site_url_color: str = "#2f363d",
-    background_color: str = "white",
-    line_color: str = "#5A626B",
+    page_title_color: str = '#2f363d',
+    description_color: str = '#585e63',
+    site_title_color: str = '#585e63',
+    site_url_color: str = '#2f363d',
+    background_color: str = 'white',
+    line_color: str = '#5A626B',
     font: str | None = None,
 ) -> PltObjects:
     """Create the Matplotlib objects for the first time."""
     # If no font specified, load the Roboto Flex font as a fallback
     if font is None:
-        path_font = Path(__file__).parent / "_static/Roboto-Flex.ttf"
+        path_font = Path(__file__).parent / '_static/Roboto-Flex.ttf'
         roboto_font = matplotlib.font_manager.FontEntry(
-            fname=str(path_font), name="Roboto Flex"
+            fname=str(path_font), name='Roboto Flex'
         )
         matplotlib.font_manager.fontManager.addfont(path_font)
         font = roboto_font.name
@@ -215,28 +215,28 @@ def create_social_card_objects(
 
     # Image axis
     ax_x, ax_y, ax_w, ax_h = (0.65, 0.65, 0.3, 0.3)
-    axim_logo = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor="NE")
+    axim_logo = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor='NE')
 
     # Image mini axis
     ax_x, ax_y, ax_w, ax_h = (0.82, 0.1, 0.1, 0.1)
-    axim_mini = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor="NE")
+    axim_mini = fig.add_axes((ax_x, ax_y, ax_w, ax_h), anchor='NE')
 
     # Line at the bottom axis
     axline = fig.add_axes((-0.1, -0.04, 1.2, 0.1))
 
     # Axes configuration
     left_margin = 0.05
-    with plt.rc_context({"font.family": font}):
+    with plt.rc_context({'font.family': font}):
         # Site title
         # Smaller font, just above page title
         site_title_y_offset = 0.87
         txt_site = axtext.text(
             left_margin,
             site_title_y_offset,
-            "Test site title",
-            {"size": 24},
-            ha="left",
-            va="top",
+            'Test site title',
+            {'size': 24},
+            ha='left',
+            va='top',
             wrap=True,
             c=site_title_color,
         )
@@ -248,10 +248,10 @@ def create_social_card_objects(
         txt_page = axtext.text(
             left_margin,
             page_title_y_offset,
-            "Test page title, a bit longer to demo",
-            {"size": 46, "color": "k", "fontweight": "bold"},
-            ha="left",
-            va="top",
+            'Test page title, a bit longer to demo',
+            {'size': 46, 'color': 'k', 'fontweight': 'bold'},
+            ha='left',
+            va='top',
             wrap=True,
             c=page_title_color,
         )
@@ -267,12 +267,12 @@ def create_social_card_objects(
             left_margin,
             description_y_offset,
             (
-                "A longer description that we use to ,"
-                "show off what the descriptions look like."
+                'A longer description that we use to ,'
+                'show off what the descriptions look like.'
             ),
-            {"size": 17},
-            ha="left",
-            va="bottom",
+            {'size': 17},
+            ha='left',
+            va='bottom',
             wrap=True,
             c=description_color,
         )
@@ -284,11 +284,11 @@ def create_social_card_objects(
         txt_url = axtext.text(
             left_margin,
             url_y_axis_ofset,
-            "testurl.org",
-            {"size": 22},
-            ha="left",
-            va="bottom",
-            fontweight="bold",
+            'testurl.org',
+            {'size': 22},
+            ha='left',
+            va='bottom',
+            fontweight='bold',
             c=site_url_color,
         )
 

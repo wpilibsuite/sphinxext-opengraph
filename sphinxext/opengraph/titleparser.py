@@ -9,9 +9,9 @@ class HTMLTextParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         # All text found
-        self.text = ""
+        self.text = ''
         # Only text outside of html tags
-        self.text_outside_tags = ""
+        self.text_outside_tags = ''
         self.level = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
