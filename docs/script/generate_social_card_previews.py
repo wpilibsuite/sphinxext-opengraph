@@ -11,7 +11,7 @@ from __future__ import annotations
 import random
 from pathlib import Path
 
-from sphinxext.opengraph.socialcards import (
+from sphinxext.opengraph._social_cards import (
     MAX_CHAR_DESCRIPTION,
     MAX_CHAR_PAGE_TITLE,
     create_social_card_objects,

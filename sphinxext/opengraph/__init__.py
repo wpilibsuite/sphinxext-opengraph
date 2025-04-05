@@ -8,9 +8,9 @@ from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit
 
 from docutils import nodes
 
-from sphinxext.opengraph.descriptionparser import get_description
-from sphinxext.opengraph.metaparser import get_meta_description
-from sphinxext.opengraph.titleparser import get_title
+from sphinxext.opengraph._description_parser import get_description
+from sphinxext.opengraph._meta_parser import get_meta_description
+from sphinxext.opengraph._title_parser import get_title
 
 if TYPE_CHECKING:
     from typing import Any
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from sphinx.util.typing import ExtensionMetadata
 
 try:
-    from sphinxext.opengraph.socialcards import (
+    from sphinxext.opengraph._social_cards import (
         DEFAULT_SOCIAL_CONFIG,
         create_social_card,
     )
