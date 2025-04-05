@@ -45,18 +45,6 @@ DEFAULT_KWARGS_FIG = {
 }
 
 
-# These functions are used when creating social card objects to set MPL values.
-# They must be defined here otherwise Sphinx errors when trying to pickle them.
-# They are dependent on the `multiple` variable defined when the figure is created.
-# Because they are depending on the figure size and renderer used to generate them.
-def _set_page_title_line_width() -> int:
-    return 825
-
-
-def _set_description_line_width() -> int:
-    return 1000
-
-
 def create_social_card(
     config_social: dict[str, bool | str],
     site_name: str,
@@ -318,3 +306,15 @@ def create_social_card_objects(
     for ax in fig.axes:
         ax.set_axis_off()
     return fig, txt_site, txt_page, txt_description, txt_url
+
+
+# These functions are used when creating social card objects to set MPL values.
+# They must be defined here otherwise Sphinx errors when trying to pickle them.
+# They are dependent on the `multiple` variable defined when the figure is created.
+# Because they are depending on the figure size and renderer used to generate them.
+def _set_page_title_line_width() -> int:
+    return 825
+
+
+def _set_description_line_width() -> int:
+    return 1000

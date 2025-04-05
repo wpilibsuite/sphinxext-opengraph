@@ -3,6 +3,14 @@ from __future__ import annotations
 from html.parser import HTMLParser
 
 
+def get_meta_description(meta_tags: str) -> bool:
+    htp = HTMLTextParser()
+    htp.feed(meta_tags)
+    htp.close()
+
+    return htp.meta_description
+
+
 class HTMLTextParser(HTMLParser):
     """Parse HTML into text."""
 
@@ -19,11 +27,3 @@ class HTMLTextParser(HTMLParser):
                 if name == 'content':
                     self.meta_description = value
                     break
-
-
-def get_meta_description(meta_tags: str) -> bool:
-    htp = HTMLTextParser()
-    htp.feed(meta_tags)
-    htp.close()
-
-    return htp.meta_description

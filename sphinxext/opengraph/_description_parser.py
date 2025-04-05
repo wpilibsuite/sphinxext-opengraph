@@ -9,6 +9,18 @@ if TYPE_CHECKING:
     from collections.abc import Set
 
 
+def get_description(
+    doctree: nodes.document,
+    description_length: int,
+    known_titles: Set[str] = frozenset(),
+) -> str:
+    mcv = DescriptionParser(
+        doctree, desc_len=description_length, known_titles=known_titles
+    )
+    doctree.walkabout(mcv)
+    return mcv.description
+
+
 class DescriptionParser(nodes.NodeVisitor):
     """Finds the title and creates a description from a doctree."""
 
@@ -95,15 +107,3 @@ class DescriptionParser(nodes.NodeVisitor):
                 self.description = self.description[:-3] + '...'
 
             self.stop = True
-
-
-def get_description(
-    doctree: nodes.document,
-    description_length: int,
-    known_titles: Set[str] = frozenset(),
-) -> str:
-    mcv = DescriptionParser(
-        doctree, desc_len=description_length, known_titles=known_titles
-    )
-    doctree.walkabout(mcv)
-    return mcv.description

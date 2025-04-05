@@ -53,10 +53,23 @@ IMAGE_MIME_TYPES = {
 }
 
 
-def make_tag(property: str, content: str, type_: str = 'property') -> str:
-    # Parse quotation, so they won't break html tags if smart quotes are disabled
-    content = content.replace('"', '&quot;')
-    return f'<meta {type_}="{property}" content="{content}" />'
+def html_page_context(
+    app: Sphinx,
+    pagename: str,
+    templatename: str,
+    context: dict[str, Any],
+    doctree: nodes.document,
+) -> None:
+    if doctree:
+        context['metatags'] += get_tags(
+            context,
+            doctree,
+            srcdir=app.srcdir,
+            outdir=app.outdir,
+            config=app.config,
+            builder=app.builder,
+            env=app.env,
+        )
 
 
 def get_tags(
@@ -302,23 +315,10 @@ def social_card_for_page(
     return posixpath.join(ogp_site_url, image_path.as_posix())
 
 
-def html_page_context(
-    app: Sphinx,
-    pagename: str,
-    templatename: str,
-    context: dict[str, Any],
-    doctree: nodes.document,
-) -> None:
-    if doctree:
-        context['metatags'] += get_tags(
-            context,
-            doctree,
-            srcdir=app.srcdir,
-            outdir=app.outdir,
-            config=app.config,
-            builder=app.builder,
-            env=app.env,
-        )
+def make_tag(property: str, content: str, type_: str = 'property') -> str:
+    # Parse quotation, so they won't break html tags if smart quotes are disabled
+    content = content.replace('"', '&quot;')
+    return f'<meta {type_}="{property}" content="{content}" />'
 
 
 def setup(app: Sphinx) -> ExtensionMetadata:
