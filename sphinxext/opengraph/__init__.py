@@ -101,7 +101,7 @@ def get_tags(
     tags['og:type'] = config.ogp_type
 
     if not config.ogp_site_url and os.getenv('READTHEDOCS'):
-        ogp_site_url = read_the_docs_site_url(config.html_baseurl)
+        ogp_site_url = ambient_site_url()
     else:
         ogp_site_url = config.ogp_site_url
 
@@ -236,13 +236,11 @@ def get_tags(
     )
 
 
-def read_the_docs_site_url(html_baseurl: str | None) -> str:
+def ambient_site_url() -> str:
     # readthedocs addons sets the READTHEDOCS_CANONICAL_URL variable,
     # or defines the ``html_baseurl`` variable in conf.py
     if rtd_canonical_url := os.getenv('READTHEDOCS_CANONICAL_URL'):
         parse_result = urlsplit(rtd_canonical_url)
-    elif html_baseurl is not None:
-        parse_result = urlsplit(html_baseurl)
     else:
         msg = 'ReadTheDocs did not provide a valid canonical URL!'
         raise RuntimeError(msg)
